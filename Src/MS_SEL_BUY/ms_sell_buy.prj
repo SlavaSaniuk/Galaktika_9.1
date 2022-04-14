@@ -1,0 +1,36 @@
+#param /linc:""
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+#include glotypes.inc
+
+#include ms_sell_buy_inc.inc
+
+#include ExtAttr.vih
+#include KatOrgAttr.vih
+#include adrfunc.vih
+#include SpecialPropetiesForG.vih
+
+//**********************************************************
+//** Модули "Управление снабжением" и "Управление сбытом" **
+//**********************************************************
+
+// *********************************************************
+// *********** Счета-фактуры (СФ, sf) **********************
+// Путь: Управление сбытом -> Документы -> Счета, ДО на продажу -> [ВЫБРАТЬ_СФ] ->
+// -> Печать -> Печать документа
+// ******** Отчет: 2021 Счет(Аренда) ***********************
+#make "Frm\sf\ms_sellBuy_sfArenda2021_frm.frm"
+// ******** Отчет: 2021 Счет(Аренда) параметры расчета
+// из месяца=МесяцДатаДокумента*
+#make "Frm\sf\ms_sellBuy_sfArenda2021ParametersMD_frm.frm"
+// ******** Отчет: 2022 Счет(Аренда) ***********************
+// NOTE: Переместить заготовку ms_sf_arenda_2022.xlsx на сервер в директорию Xls\MS_RES\ms_sell_buy
+#make "Frm\sf\ms_sellBuy_sfArenda2022_frm.frm"
+// ******** Отчет: 2022 Счет-фактура (Электроэнергия, RTF)*
+#make "Frm\sf\ms_sellBuy_sfElEnergy2022_rtf.rtf"
+// ******** Отчет: 2021 Счет-фактура (Аренда  АМС)*
+#make "Frm\sf\ms_sellBuy_sfArendaAms2021_rtf.rtf"
+// ******** Отчет: 2021 Счет-фактура (Юниты, с адресом и подписантом, RTF)*
+#make "Frm\sf\ms_sellBuy_sfUnitsAdrPodp2021_rtf.rtf"
