@@ -286,7 +286,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="53" PosY="22" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="16" PosY="14" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="Src\MS_SEL_BUY\ms_sell_buy.prj" Priority="0">
@@ -301,6 +301,11 @@
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArendaAms2021_rtf.rtf"/>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfElEnergy2022_rtf.rtf"/>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfUnitsAdrPodp2021_rtf.rtf"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="acts">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsMues6_rtf.rtf"/>
 								</ProjectItems>
 							</ProjectFolder>
 						</ProjectItems>
@@ -327,7 +332,7 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="E:\06DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44665,4089478935" DateTimeCompile="0,000346087959769648" StateHistory="False">
+			<CompileMessenger Name="E:\06DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44666,4445337037" DateTimeCompile="0,000281111111689825" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText=" онстанта &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируетс€" SourceFileName="\\GAL_SERV9\GALSRV\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3201,7 +3206,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="«начение преобразовано к строке" SourceFileName="E:\06DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="141" SourceColumn="98"/>
 					<CompileMessage MessageType="mtWarning" MessageText="ѕриведение строки к числу" SourceFileName="E:\06DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="202" SourceColumn="109"/>
 					<CompileMessage MessageType="mtWarning" MessageText="ѕриведение строки к числу" SourceFileName="E:\06DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="211" SourceColumn="109"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.04.2022 9:49:23"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.04.2022 10:40:32"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
