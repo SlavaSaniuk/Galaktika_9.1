@@ -1,0 +1,38 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_CompReg Implements IUserReport;
+Interface UserReport_CompReg;
+create view;
+
+procedure Run;
+begin
+  RunInterface(MS_Saniuk::Compreg);
+end;
+
+function GetReportName: String;
+begin
+  GetReportName := 'Выгрузка основных средств';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Учет ПК';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 1;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := 'B_OSN';
+ end;
+end;
+end.

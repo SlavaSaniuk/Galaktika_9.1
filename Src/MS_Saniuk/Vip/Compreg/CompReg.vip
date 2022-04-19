@@ -1,0 +1,157 @@
+#component "MS_Saniuk"
+
+table struct CompregTable (
+  innum: string,
+  zavnom: string,
+  datek: date,
+  datv: date,
+  kod: string,
+  name: string
+);
+
+interface Compreg 'Учет ПК'
+  show (0,0,70,5);
+  var
+    sPickFile: string; // Путь к директории экспорта;
+    isFormed: boolean; // Флаг формирования картотеки ОС;
+    isReaded: boolean; // Флаг считывания из DSK файла;
+
+  create view
+  as select *
+  from
+    KatOs (readonly),
+    KatMol (readonly),
+    CompregTable katoses
+  where ((
+    KatOs.cmol == KatMol.nrec
+  ));
+
+  File fileToExport; // Файл для экспорта;
+
+  /*
+   *  Выгрузить данные по основным средствам из БД
+   * и записать их в таблицу памяти 'katoses';
+   */
+  procedure formKatOs;
+  {
+    delete all katoses; // Очищаем таблицу в памяти katoses;
+    // Отображаем бегунок выполнения запроса:
+    StartNewVisual(vtRotateVisual, vfTimer, 'Получение данных основных средств', 0);
+
+    // Перебираем таблицу KatOs:
+    _loop KatOs {
+        ClearBuffer(#katoses); // Очистка текущей записи таблицы памяти katoses;
+        // Инициализируем текущую запись katoses:
+        katoses.innum := KatOs.innum; // Инвентарный номер;
+        katoses.zavnom := KatOs.zavnom; // Заводской номер;
+        katoses.datek := KatOs.datek; // Дата ввода в эксплуатацию;
+        katoses.datv := katOs.datv; // Дата выбытия;
+        katoses.kod := KatOs.kod; // Код партии;
+
+        if(getfirst KatMol = tsOk) {
+          katoses.name := KatMol.name; // МОЛ
+        }
+
+        insert current katoses;
+        NextVisual;
+    }
+    StopVisual;
+    isFormed:= true;
+    message('Формирование основных средств завершено');
+  }
+
+  procedure exportKatOs;
+  {
+     var full_path_name, str_to_write: string;
+     full_path_name:= sPickFile +'\' +'KatOS' +'.txt';
+
+     // Создание файла и запись в него
+     if(fileToExport.openFile(full_path_name, stCreate) = true) {
+        StartNewVisual(vtRotateVisual, vfTimer, 'Экспорт данных об основных средствах', 0);
+
+        // Перебираем таблицу katoses:
+        _loop katoses {
+            str_to_write:= katoses.innum +';'
+                            +katoses.zavnom +';'
+                            +DateToStr(katoses.datek,'DD.MM.YYYY') +';'
+                            +DateToStr(katoses.datv,'DD.MM.YYYY') +';'
+                            +katoses.kod+';'
+                            +katoses.name;
+
+            fileToExport.writeLn(str_to_write);
+            NextVisual;
+        }
+        StopVisual;
+        fileToExport.close();
+        message('Файл экспортирован успешно');
+     }
+  }
+
+  /*
+   *  Панель с вкладками.
+   */
+   tabbedSheet tabs
+      //Анкета: Параметры экспорта
+      screen MainScreen 'Параметры экспорта'
+        show at(,,,)
+        fields
+          sPickFile ('Выбрать файл'): Protect, PickButton;
+        buttons
+          cmForm,,, 'Формировать';
+          cmExport,,, 'Экспортировать';
+        <<
+
+          Директория для экспорта .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                    <.Формировать.>     <.Экспортировать.>
+
+        >>
+      end;
+      // Конец: Параметры экспорта.
+
+      //Таблица: Выгруженные ОС
+      browse brwKatOS 'Выгруженные ОС';
+        show at(,,,)
+        table katoses;
+        fields
+          katoses.innum 'Инвентарный номер' : [10], protect; // Инвентарный номер;
+          katoses.zavnom 'Заводской номер' : [10], protect; // Заводской номер;
+          katoses.datek 'Дата ввода в эксплуатацию' : [10], protect;// Дата ввода в эксплуатацию;
+          katoses.datv 'Дата выбытия' : [10], protect;// Дата выбытия;
+          katoses.kod 'Код партии' : [10], protect;// Код партии;
+          katoses.name 'МОЛ' : [10], protect; // МОЛ;
+      end;
+      //Конец: Выгруженные ОС
+   end;
+   // Конец панели с вкладками
+
+  // Heandle events:
+  handleEvent
+    // Инициализация окна интерфейса:
+    cmInit: {
+      isFormed := false;
+      // Директория для экспорта:
+      if(ReadMyDsk(sPickFile, 'compreg-dir-to-export', isReaded) = false) sPickFile := 'C:\';
+      SetTabbedSheetVisible(brwKatOS, isFormed);
+    }
+    // Выбор директории для экспорта
+    cmPick:
+      case curfield of
+        #sPickFile: {
+          set sPickFile:=GetDirName('Путь для экспорта файла', sPickFile);
+        }
+      end;
+    // Обработка события кнопки 'Формировать':
+    cmForm: {
+      SaveMyDsk(sPickFile, 'compreg-dir-to-export');
+      formKatOs;
+      SetTabbedSheetVisible(brwKatOS, isFormed);
+    }
+    // Обработка события кнопки 'Экспортировать':
+    cmExport: {
+      exportKatOs;
+    }
+  end;
+  // End of handle events
+
+end.
