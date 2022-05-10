@@ -5,6 +5,7 @@
 #include glovars.inc
 #include glotypes.inc
 
+// Константы модуля:
 #include ms_sell_buy_inc.inc
 
 #include ExtAttr.vih
