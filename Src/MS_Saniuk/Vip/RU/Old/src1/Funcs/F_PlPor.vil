@@ -1,0 +1,21 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_PlPor
+
+#ifdef ComponentVersion
+#component "F_PlPor"
+#end
+
+#include PosMarker.vih // Автопометка с функцией обхода помеченных записей в порядке их пометки
+
+VipInterface Corpo_Avizo    licensed (FREE)  Parameters (plMark : longint);
+VipInterface GetBankAndOrg  licensed (FREE)  Parameters (NRecOrg : comp; NRecBank : comp);
+VipInterface GetNOper       licensed (FREE)  Parameters (parIntMode : word; myS : string[20]; frec : comp);
+VipInterface GetNPlat       licensed (FREE)  Parameters (parIntMode : word; myS : string[81]; in_tidk : integer; frec : comp);
+VipInterface G_PlPor        licensed (FREE)  Parameters (pwMode, pwPlMode, myTipDoc, myTipUser : word; myPerson, myOrg, NRecPL : comp);
+VipInterface PlDocLegend    licensed (FREE);
+VipInterface PlDocInfo      licensed (FREE)  Parameters (_pNRec : Comp; pMarker : IPosMarker);
+
+VipInterface PlMove         licensed (FREE)  Parameters (pMarker : IPosMarker; myTiDkGal : word; myTiDkUser : word);
+VipInterface PlPrior        licensed (FREE)  Parameters (pMarker : IPosMarker; myTiDkGal : word; myTiDkUser : word);
+
+VipInterface Tools_02       licensed (FREE)  Parameters (cPl : comp);

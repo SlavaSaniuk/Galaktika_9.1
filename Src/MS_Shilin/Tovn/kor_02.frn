@@ -1,0 +1,29 @@
+.begin
+  var KolLine, KolLine2: word;
+
+  inc(KolPage);
+  inc(KolSpSopr);
+
+#ifdef _kor_
+  KolLine  := KolAddInStr (Название, 29, true);
+  KolLine2 := KolAddInStr (КодМц, 9, true);
+#else
+  KolLine  := KolAddInStr (Название, 25, true);
+  KolLine2 := KolAddInStr (КодМц, 5, true);
+#end
+
+  if (KolLine2 > KolLine)
+    KolLine := KolLine2;
+
+  if (KolLine > 0)
+  {
+    KolPage := KolPage + KolLine;
+
+    if (KolPage > FixKolPage)
+    {
+      NextPage   := true;
+      KolAdd     := KolLine + 1;
+      FixKolPage := FixKol;
+    }
+  }
+end.

@@ -1,0 +1,10 @@
+.begin
+  CountKolF        := 0;
+  MassaBrItog      := 0;
+  MassaNetItog     := 0;
+  iStrname         := 1;
+
+!Адрес грузополучателя заполнять адресом пункта разгрузки
+  if ( boGetTune('Doc.SD.PrnNakl.AdrPunktRazgr') )
+    Грузополучатель_Адрес:= ТТН_ПунктР_Адрес;
+end.

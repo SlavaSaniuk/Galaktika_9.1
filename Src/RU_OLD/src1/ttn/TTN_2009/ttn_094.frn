@@ -1,0 +1,31 @@
+!Для расчета строк на странице
+.create view KolSpSopr
+var pNrec:comp;
+from
+  SpSopr
+, KatMc
+, KatParty
+, KatSopr
+
+where
+((
+  pNrec         == SpSopr.cSopr  and
+  PrUsl        >>= SpSopr.PrMc   and
+  SpSopr.cMCUSL == KatMC.NRec    and
+  SpSopr.cParty == KatParty.NRec
+))
+;
+!Для розничных накладных
+.create view TypeRozn
+var pNrec:comp;
+from
+  SpSopr,
+  RzSpDoc,
+  RzDoc
+where
+((
+  pNrec         == SpSopr.NRec   and
+  SpSopr.cOwner == RzSpDoc.NRec  and
+  RzSpDoc.cSopr == RzDoc.NRec
+))
+;

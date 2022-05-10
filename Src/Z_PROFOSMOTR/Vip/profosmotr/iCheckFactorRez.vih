@@ -1,0 +1,42 @@
+
+#Component  "Z_PROFOSMOTR"
+
+objinterface CheckFactorRezObj;
+
+#doc
+ Функция проверки необходимости прохождения профосомтра по фактору
+ coFactorPers - нрек фактора рабочего места сотрудника
+ wYear        - год плановго профосмотра
+#end
+public function FactorInclude (coFactorPers:comp; wYear:word): boolean;
+
+#doc
+ Функция для получения строковых значений фактора, класса, периодичности
+ stipField - что нужно получить(возможные значения: 'Factor','Klass''Period')
+ coNrecRec - нрек набора
+#end
+Public Function StrValueNabor(stipField:string;coNrecRec:comp):string;
+
+#doc
+ Функция для получения стажа работы в условиях определенного фактора
+ dCurDat   - дата на которую нужно получить стаж
+ coNrecRec - нрек фактора рабочего места сотрудника
+#end
+Public Function GetStajFactor(dCurDat:date;coNrecRec:comp):word;
+
+#doc
+ Функция для получения даты последнего профосмотра по фактору сотрудника
+ coNrecRec - нрек фактора рабочего места сотрудника
+#end
+Public Function DateLastOsmotr(coNrecRec:comp):date;
+
+#doc
+ Функция для получения плановой даты профосмотра по фактору сотрудника
+ coNrecRec - нрек фактора рабочего места сотрудника
+#end
+Public Function DatePlanOsmotr(coNrecRec:comp):date;
+
+end;
+
+vipinterface iCheckFactorRez implements CheckFactorRezObj
+;

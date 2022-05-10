@@ -1,0 +1,208 @@
+.var
+  Cena_Pr
+, Cena_PrTTN
+, Cena_PrR
+, Cena_PrRTTN
+, Cena_PrV
+, Cena_PrVTTN
+, Kol_Pr
+, Capas_Pr
+, Massa_Pr
+, Massa_Tn // масса в тоннах
+, Massa_Kg // масса в килограммах
+, Massa_Gr // масса в граммах
+, Str_Rub1
+, Str_Rub2
+, Str_Tys1
+, Str_Tys2
+, Skidka_Pr
+, NDS_St   // ставка НДС
+, RoundGrm
+, strDr
+, sSymb
+    : string;
+
+  nn
+, ii
+    : word;
+
+  KolZn
+, wRoundMass2
+, wRoundCap
+, wNDS_St
+, wSkidka_Pr
+    : byte;
+
+.endvar
+.begin
+  Massa_Pr := '\3p[|-]3666`666`666`666.888';
+  sSymb    := sGetTune('Doc.SD.PrnNakl.SepSymbol');
+
+  // Масса округляется по настройке
+  Massa_Tn := Massa_Kg := Massa_Gr := '\0p[|-]3666`666`666`666';
+
+  wRoundMass2 := bGetTune('Doc.SD.PrnNakl.MassaRound');
+  wRoundCap   := bGetTune('Doc.Capacity.KolCapacitySym');
+
+  if (wRoundMass2 > 0)
+    Massa_Tn := PadCh('\' + string(wRoundMass2)       + 'p[|-]3666`666`666`666.', '8', 24 + wRoundMass2);
+
+  if (wRoundMass2 > 3)
+    Massa_Kg := PadCh('\' + string(wRoundMass2 mod 3) + 'p[|-]3666`666`666`666.', '8', 21 + wRoundMass2);
+
+  if (wRoundMass2 > 6)
+    Massa_Gr := PadCh('\' + string(wRoundMass2 mod 3) + 'p[|-]3666`666`666`666.', '8', 18 + wRoundMass2);
+
+  //------------------------------------------------------------------------------
+  NDS_St  := '\0p[|-]3666';
+  wNDS_St := bGetTune('Doc.SD.PrnNakl.KolSignNDS');
+
+  if (wNDS_St > 0)
+    NDS_St := PadCh('\'+string(wNDS_St) + 'p[|-]3666.', '8', 12 + wNDS_St);
+
+  if (wRoundCap > 0)
+    Capas_Pr := '\' + string(wRoundCap) + 'p[|-]3666`666`666`666~' + PadCh('', '9', wRoundCap);
+
+  //------------------------------------------------------------------------------
+  Skidka_Pr  := '\0p[|-]3666';
+  wSkidka_Pr := bGetTune('Doc.SD.PrnNakl.KolSignProcNac');
+
+  if (wSkidka_Pr > 0)
+    Skidka_Pr := PadCh('\'+string(wSkidka_Pr) + 'p[|-]3666.', '8', 12 + wSkidka_Pr);
+
+  if (wSkidka_Pr > 0)
+    Skidka_Pr := '\' + string(wSkidka_Pr) + 'p[|-]3666`666`666`666~' + PadCh('', '9', wSkidka_Pr);
+
+  //------------------------------------------------------------------------------
+  #ifdef USE_SEP_SYMBOL
+  RoundGrm := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  RoundGrm := '[|-]3666666666666666';
+  #end
+
+  nn := wGetTune('Doc.SD.PrnNakl.GrmRound');
+
+  for (ii := 1; ii <= nn; ii++)
+    RoundGrm += if (ii = 1, '.8', '8');
+
+  RoundGrm := '\' + string(nn) + 'p' + RoundGrm;
+
+  If nn <> 0
+    strDr := '\n4, 5'
+  else
+    strDr := '\0p4';
+
+  KolZn := bGetTune('Doc.SD.PrnNakl.GrmRound');
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_Pr := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_Pr := '[|-]3666666666666666';
+  #end
+
+  Str_Rub1 := '';
+  Str_Rub2 := ',';
+  Str_Tys1 := '999';
+  Str_Tys2 := ',999';
+
+  nn := GetPrecisionGroup('brForSopr_RVPrice');
+
+  for (ii := 1; ii <= nn; ii++)
+    {
+     Cena_Pr  += if (ii = 1, '.8', '8');
+     Str_Rub1 += '9';
+     Str_Rub2 += '9';
+     Str_Tys1 += '9';
+     Str_Tys2 += '9';
+    }
+
+  Cena_Pr  := '\' + string(nn) + 'p' + Cena_Pr;
+  Str_Rub2 := '\' + string(nn) + 'p' + Str_Rub2 + ' ';
+  Str_Tys2 := '\' + string(nn) + 'p' + Str_Tys2 + ' ';
+
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_PrTTN := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_PrTTN := '[|-]3666666666666666';
+  #end
+
+  nn := GetPrecisionGroup('brForSoprTTN_RVPrice');
+
+  for (ii := 1; ii <= nn; ii++)
+    Cena_PrTTN += if (ii = 1, '.8', '8');
+
+  Cena_PrTTN := '\' + string(nn) + 'p' + Cena_PrTTN;
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_PrR := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_PrR := '[|-]3666666666666666';
+  #end
+
+  nn := GetPrecisionGroup('brForSopr_Price');
+
+  for (ii := 1; ii <= nn; ii++)
+    Cena_PrR += if (ii = 1, '.8', '8');
+
+  Cena_PrR := '\' + string(nn) + 'p' + Cena_PrR;
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_PrRTTN := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_PrRTTN := '[|-]3666666666666666';
+  #end
+
+  nn := GetPrecisionGroup('brForSoprTTN_Price');
+
+  for (ii := 1; ii <= nn; ii++)
+    Cena_PrRTTN += if (ii = 1, '.8', '8');
+
+  Cena_PrRTTN := '\' + string(nn) + 'p' + Cena_PrRTTN;
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_PrV := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_PrV := '[|-]3666666666666666';
+  #end
+
+  nn := GetPrecisionGroup('brForSopr_VPrice');
+
+  for (ii := 1; ii <= nn; ii++)
+    Cena_PrV += if (ii = 1, '.8', '8');
+
+  Cena_PrV := '\'+string(nn)+'p' + Cena_PrV;
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Cena_PrVTTN := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Cena_PrVTTN := '[|-]3666666666666666';
+  #end
+
+  nn := GetPrecisionGroup('brForSoprTTN_VPrice');
+
+  for (ii := 1; ii <= nn; ii++)
+    Cena_PrVTTN += if (ii = 1, '.8', '8');
+
+  Cena_PrVTTN := '\' + string(nn) + 'p' + Cena_PrVTTN;
+  //------------------------------------------------------------------------------
+
+  #ifdef USE_SEP_SYMBOL
+  Kol_Pr := '[|-]3666' + sSymb + '666' + sSymb + '666' + sSymb + '666' + sSymb + '666';
+  #else
+  Kol_Pr := '[|-]3666666666666666';
+  #end
+
+  nn := bGetTune('Round.KolSign');
+
+  for (ii := 1; ii <= nn; ii++)
+    Kol_Pr += if (ii = 1, '.8', '8');
+
+  Kol_Pr := '\' + string(nn) + 'p' + Kol_Pr;
+end.

@@ -1,0 +1,12 @@
+.Form 'bOTP_raz'
+.ard
+.Group 'пюгдекэмши свер-оепянмюк'
+.NameInList '(гюрпюрш 70.1.0.0) бШЦПСГЙЮ пюяундш мю нокюрс рпсдю-нросяйю асд.оепхндю '
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('L_Sklad::MakeExtKAU_Import_fromParty');
+end.
+.endform

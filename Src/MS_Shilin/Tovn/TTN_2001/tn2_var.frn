@@ -1,0 +1,20 @@
+!Переменные в форме ТН-2
+.var
+  strNN, kounter, fixkol, breakPage      : word;
+
+  CheckKol, PrnOK, PrnAlc, bAutoGrM,
+  bBarKodMC, isRozn911                   : boolean;
+
+      СтНацБН,    СтНДСНац,     СтНацСН,
+     АСтНацБН,     АНДСНац,    АСтНацСН,
+  strАСтНацБН,  strАНДСНац, strАСтНацСН,
+      sumkolf,    strАКолФ, strАКолВес   : double;
+
+  Название_Доп, КодМЦ_Доп,
+  KolGrM, KolOneGrM                      : string
+
+.endvar
+.begin
+  bBarKodMC := boGetTune('Doc.SD.PrnNakl.BarKodMC');
+  isRozn911 := FALSE;
+end.

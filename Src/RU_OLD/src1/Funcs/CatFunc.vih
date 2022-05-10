@@ -1,0 +1,150 @@
+/*
+  ╔═════════════════════════════════════════════════════════════════════╗
+  ║      Н Т О  "T O P   S O F T",  А О   "Н О В Ы Й   А Т Л А Н Т"     ║
+  ║      Проект    : ГАЛАКТИКА  (с) 2000                                ║
+  ║      Система   : Управление персоналом                              ║
+  ║      Версия    : 5.8                                                ║
+  ║      Разработал: Антонович А.К.     22/06/2001                      ║
+  ║      Назначение: Функции работы с каталогом                         ║
+  ║      Изменения :                                                    ║
+  ╚═════════════════════════════════════════════════════════════════════╝
+*/
+
+#ifndef _CatFunc_vih_Included
+#define _CatFunc_vih_Included
+
+#ifdef ComponentVersion
+#component "z_StaffCat"
+#end
+
+#doc
+Функции работы с каталогом
+#end
+ObjInterface ObjCatFunc;
+
+//------------------------------------------------------------------------------
+#doc
+Функция возвращает название в Catalogs по Nrec
+#end
+Public function GetCatalogsName(cPar: comp) : string;
+
+#doc
+Функция возвращает длинное название в Catalogs по Nrec, если его нет то короткое
+#end
+Public function GetCatalogsLongName(cPar: comp) : string;
+
+#doc
+Функция возвращает название в Catalogs по SysCode
+#end
+Public function GetCatalogsNameSys(cSysCode: integer) : string;
+
+#doc
+Функция возвращает Code в Catalogs по SysCode
+#end
+Public function GetCatalogsCodeSysCode(cSysCode: integer) : string;
+
+#doc
+Функция возвращает Code в Catalogs по Nrec
+#end
+Public function GetCatalogsCode(cPar: comp) : string;
+
+#doc
+Функция возвращает Nrec в Catalogs по SysCode
+#end
+Public function GetCatalogsNRec(cSysCode: integer) : comp;
+
+#doc
+Функция возвращает SysCode по NRec
+#end
+Public function GetSysCode(cPar: comp) : integer;
+
+#doc
+Функция возвращает SysCod верхушки иерархии
+#end
+Public function GetSysCodeIer(cNRec: comp) : integer;
+
+#doc
+Функция определяет является ли запись с cSysCode предком для записи с cNRec
+#end
+Public function isParenSysCode(cSysCode: integer; cNRec: comp) : boolean;
+
+#doc
+Функция возвращает среднемесячные часы за год
+#end
+Public function GetSMG : Double;
+
+#doc
+Функция возвращает nrec филиала - таблица KatOrg
+#end
+Public function GetFilialNrec(cNRec: comp) : comp;
+
+#doc
+Функция возвращает наименование филиала - таблица KatOrg
+#end
+Public function GetFilialName(cNRec: comp) : string;
+
+#doc
+Функция возвращает nrec филиала - таблица Сatalogs
+#end
+Public function GetCatFilialNrec(cNRec: comp) : comp;
+
+#doc
+Функция возвращает наименование филиала - таблица Сatalogs
+#end
+Public function GetCatFilialName(cNRec: comp) : string;
+
+//------------------------------------------------------------------------------
+end;
+
+#doc
+Расширение интерфейса ObjCatFunc
+#end
+objinterface ObjCatFunc1;
+
+#doc
+функция получения среднемесячного количества часов с учетом настройки
+"В отчет выводится тарифная ставка" </brief>
+Параметр:
+cRejimNrec -- Nrec режима работы
+#end
+public function ReceiveSMH_Tuning(cRejimNrec: comp): double;
+
+#doc
+функция получения среднемесячного количества часов без учета настройки
+"В отчет выводится тарифная ставка" </brief>
+Параметр:
+cRejimNrec -- Nrec режима работы
+#end
+public function ReceiveSMH_NoTuning(cRejimNrec: comp): double;
+
+end;
+
+#doc
+Расширение интерфейса ObjCatFunc
+#end
+objinterface ObjCatFunc2;
+
+#doc
+#end
+Public function GetCatalogsCatData(cPar: comp) : string;
+
+end;
+
+#doc
+Расширение интерфейса ObjCatFunc
+#end
+objinterface ObjCatFunc3;
+
+#doc
+#end
+public function SetSysCode(name: string; parSysCode: longInt; newSysCode: longInt): boolean;
+
+end;
+
+//------------------------------------------------------------------------------
+VipInterface CatalogsFunctions implements ObjCatFunc, ObjCatFunc1, ObjCatFunc2, ObjCatFunc3
+#ifdef ATL51
+Licensed (free)
+#end
+;
+#endif

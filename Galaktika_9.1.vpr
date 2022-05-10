@@ -2,14 +2,16 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>2</ActiveIndex>
+		<ActiveIndex>1</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
+			<ProjectVar Name="$[OutDir]" Value="d:\01_DEV\Galaktika_9.1\Out\"/>
+			<ProjectVar Name="$[RunRes]"/>
 		</ProjectVarList>
 		<CoreVip>
 			<VipParameters>
-				<AtlDir>E:\03VIP\ZZVIPER\Viper_7.5\bin\7.5.3.0\Exe</AtlDir>
+				<AtlDir>D:\01_DEV\01_VIPER\Viper 7.5\bin\7.5.6.0\Exe</AtlDir>
 				<ComponentName>$[FileName]</ComponentName>
 				<ClearResource>True</ClearResource>
 				<SaveSource>True</SaveSource>
@@ -17,7 +19,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\*
-					\\GAL_SERV9\GalSrv\FRM\SRC\*
+					..\00_GAL_SRC\Data\*
 					Src\*
 				</IncludeList>
 				<ResourceList>
@@ -249,11 +251,18 @@
 					\\GAL_SERV9\GalSrv\exe\Z_Zar.res
 					\\GAL_SERV9\GalSrv\exe\Z_ZarNastr.res
 					\\GAL_SERV9\GalSrv\exe\Z_ZarRep.res
+					\\GAL_SERV9\GalSrv\exe\C_AtlCore.res
+					\\GAL_SERV9\GalSrv\exe\C_Crypto.res
+					\\GAL_SERV9\GalSrv\exe\C_MQLink.res
+					\\GAL_SERV9\GalSrv\exe\CodeSysT.res
+					\\GAL_SERV9\GalSrv\exe\F_FpDBIPD.res
+					\\GAL_SERV9\GalSrv\exe\F_FpLimit.res
+					\\GAL_SERV9\GalSrv\exe\Z_Test.res
 					$[GalExe]\C_StatLine.res
 				</ResourceList>
 				<OutputResource>D:\01_DEV\Galaktika_9.1\Out\$[FileName]</OutputResource>
 				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
-				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<ConfWorkResource>$[Tmp]\$[FileName].crf</ConfWorkResource>
 				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
 				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
 				<StartPathDirectory>\\GAL_SERV9\GalSrv\EXE</StartPathDirectory>
@@ -273,6 +282,11 @@
 				<PackFR>True</PackFR>
 				<SourceFR>$[FilePath]\Fr3</SourceFR>
 			</VipFR>
+			<VipMacroParameters>
+				<PredefinedMacroList>
+					RunRes=$[FileName]
+				</PredefinedMacroList>
+			</VipMacroParameters>
 		</CoreVip>
 		<DatabaseConfiguration>
 			<ConfigurationList>
@@ -285,10 +299,6 @@
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
-		<FileList>
-			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="16" PosY="14" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="42" PosY="11" OpenEditor="True" Active="True"/>
-		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="Src\MS_SEL_BUY\ms_sell_buy.prj" Priority="0">
 				<ProjectItems>
@@ -307,6 +317,10 @@
 							<ProjectFolder Name="acts">
 								<ProjectItems>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsMues6_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsGroupStd_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsMues5_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsStdPodpis_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\acts\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf"/>
 								</ProjectItems>
 							</ProjectFolder>
 						</ProjectItems>
@@ -341,20 +355,269 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\Compreg\URepCompReg.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="RepDogAll">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip"/>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\RepDogAll\UseRep.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_SKLAD\ms_sklad.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Frm">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_SKLAD\Frm\ms_skald_actSpisNorms2022wKom3_frm.frm"/>
+							<ProjectFolder Name="order">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_SKLAD\Frm\order\ms_sklad_msSkladOrder_frm.frm"/>
+									<ProjectFile FileName="Src\MS_SKLAD\Frm\order\ms_sklad_birkiMcPoOrderu_frm.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="nakl">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_SKLAD\Frm\nakl\ms_sklad_spravkaSoderzhdrMetVMcPoNakl_frm.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_Shilin\ms_shilin.prj" Priority="0"/>
+			<ProjectCompileFile FileName="Src\MS_OSiNMA\ms_os_nma.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Frm">
+						<ProjectItems>
+							<ProjectFolder Name="inv_card">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\inv_card\ms_osnma_invCard2014Short_frm.frm"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\inv_card\ms_osnma_invCardOs6wMetodOpred2019_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\inv_card\ms_osnma_partRemoveOs6_rtf.rtf"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="nalichie_os">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_oSVed02BelExce_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_oSVed02Excelx11xx_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_oSVed02Excelx111x1_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_oSVed02Excelx111x22_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_oSVed02Excelx111xx_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_vedomIznosaOsWinvBRTPC_frm.frm"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_vedomIznosaOsWoPriceOkrug2017_frm.frm"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_msVedomAmorOs_slk.slk"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="vnut_peremesh">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\vnut_peremesh\ms_osnma_os2_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\vnut_peremesh\ms_osnma_osGroup_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\vnut_peremesh\ms_osnma_osGroup2021_rtf.rtf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_ZP\ms_zp.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Frm">
+						<ProjectItems>
+							<ProjectFolder Name="bank_asb_web">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\bank.dlg"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\MS_reestr_alim.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\MS_reestr_av.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\MS_reestr_ot.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\Ms_reestr_zar.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\bank_asb_web\reestr_na_kart-schet.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="rasch_list">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\boln_mc.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\dial_FIO_buh.dlg"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\MS_R_Listok.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\MS_R_Listok_3_col.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\SpravkaKred_M2.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\SpravkaKred_M5.frm"/>
+									<ProjectFile FileName="Src\MS_ZP\Frm\rasch_list\SpravkaKred_M6.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_FRO\ms_fro.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Vip">
+						<ProjectItems>
+							<ProjectFolder Name="RUZAT98X">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_FRO\Vip\RUZAT98X\80RUZAT98X.vip"/>
+									<ProjectFile FileName="Src\MS_FRO\Vip\RUZAT98X\UserReport_80RUZAT98X.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\Z_PROFOSMOTR\Z_PROFOSMOTR.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Vip">
+						<ProjectItems>
+							<ProjectFolder Name="profosmotr">
+								<ProjectItems>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\constProfOsmotr.inc"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\CreateTune.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iAllFactrorPers.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iAllRezultPers.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iAvtoCreateGraf.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iCatFactor.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iCatReasonBound.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iCheckFactorRez.vih"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iCheckFactorRez.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iFactorPers.vih"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iFactorPers.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iGetBound.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iGetClose.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iGetRezult.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iGrafProfosmotr.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iGroupInsertNabor.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iImportKatFact.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iMainProfosmotr.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iNaborFactClasPer.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iPrintGrafMain.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iPrintRep.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iRepSpisBound.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iRepSpisNeGodn.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\iRepSpisProf.vip"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\panGrafProfosmotr.vpp"/>
+									<ProjectFile FileName="Src\Z_PROFOSMOTR\Vip\profosmotr\UserRep.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_TRANSPORT\ms_transport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Frm">
+						<ProjectItems>
+							<ProjectFolder Name="tex-ekspl-pokaz">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto1Mues_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto1Mues2019_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto2Mues_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto5Mues_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto5Mues2017_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto5MuesNew_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto6Mues_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto7Mues_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog2bakVniz_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog2bakVverh_rtf.rtf"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="uchet_gsm">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUcheRashToplWMotachasMS_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUchetVRazbAvto_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\ms_sell_buy_actUsl_crf.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.cnf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.crf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\ms_sell_buy_Do_crf.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.cnf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.crf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\RU_OLD\ru_old.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Src\RU_OLD\MyDlg_koef.vip"/>
+					<ProjectFile FileName="Src\RU_OLD\MyDlg_Podr.vip"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_os_koef.ard"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_os_koef.vip"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_zar.ard"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_zar.vip"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_zatr.ard"/>
+					<ProjectFile FileName="Src\RU_OLD\oborot_zatr.vip"/>
+					<ProjectFile FileName="Src\RU_OLD\OS_kart.ard"/>
+					<ProjectFile FileName="Src\RU_OLD\os_kart_balst_nov.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\ms_sklad_naklVnPerem_crf.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.cnf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.crf"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Doc">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Doc\иземенения.jpg"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\MS_OLD\ms_old.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Vip">
+						<ProjectItems>
+							<ProjectFolder Name="OS_Vorotilov">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_OLD\Vip\OS_Vorotilov\get4OS.vip"/>
+									<ProjectFile FileName="Src\MS_OLD\Vip\OS_Vorotilov\get4OS_11.02.2011_old.vip"/>
+									<ProjectFile FileName="Src\MS_OLD\Vip\OS_Vorotilov\get4OS_kk.vip"/>
+									<ProjectFile FileName="Src\MS_OLD\Vip\OS_Vorotilov\old_get4OS.vih"/>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44670,5934359954" DateTimeCompile="0,00016354167019017" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44687,6626003357" DateTimeCompile="0,000246886571403593" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\COMPREG\CompReg.vip" SourceLine="12" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Отсутствует информация о лицензировании COMPREG. Помечаем как не лицензированный." SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\COMPREG\CompReg.vip" SourceLine="157" SourceColumn="5"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Отсутствует информация о лицензировании UserReport_CompReg. Помечаем как не лицензированный." SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\COMPREG\URepCompReg.vip" SourceLine="38" SourceColumn="5"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="19.04.2022 14:14:47"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="106" SourceColumn="101"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="116" SourceColumn="98"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="183" SourceColumn="109"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="141" SourceColumn="98"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="202" SourceColumn="111"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="209" SourceColumn="105"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="92" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="06.05.2022 15:54:30"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
+		<FileList>
+			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="69" PosY="34" OpenEditor="True" Active="True"/>
+		</FileList>
 	</ProjectManager>
 </Viper>

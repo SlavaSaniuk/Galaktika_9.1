@@ -1,0 +1,18 @@
+#define ComponentVersion 
+#param /linc:""
+
+#statusline "statgal"
+
+//*************************************
+// Модуль: Управление транспортом
+//************************************
+
+#include galnet.inc end;
+#include glovars.inc
+
+#include glotypes.inc
+#include extattr.vih
+
+// Интерфейс: Загрузка бух. справок 984 и 988
+#make "Vip\RUZAT98X\80RUZAT98X.vip"
+#make "Vip\RUZAT98X\UserReport_80RUZAT98X.vip"

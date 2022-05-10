@@ -1,0 +1,372 @@
+#doc
+Справочник наборов соответствий(Фактор/класс/периодичность)(Белтелеком)
+Значения справочника хранятся в таблице DISTDOCHIERARCHY,
+((
+and constTypeNabor == DISTDOCHIERARCHY.WDOCTYPE
+))
+DISTDOCHIERARCHY.CUSERID      ----- ссылка на фактор
+DISTDOCHIERARCHY.WKOLNORM     ----- класс
+DISTDOCHIERARCHY.WKODGRKAU1   ----- периодичность
+#end
+
+Interface iNaborFactClasPer 'Набор соответствий(Фактор/класс/периодичность)' EscClose, Cyan, DoAccept;
+  Show at (7,3,73,19);
+
+var
+wIntMode    : word;
+coNabor     : comp;
+
+Create view
+as select
+*
+from
+ DISTDOCHIERARCHY
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers
+,DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+Where
+((
+    comp(0)                  == DISTDOCHIERARCHY.CPARENT
+and constTypeNabor           == DISTDOCHIERARCHY.WDOCTYPE
+
+and DISTDOCHIERARCHY.CUSERID == DISTDOCHIERARCHYfactor.nrec
+
+and constFactorPers          == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and DISTDOCHIERARCHY.nrec    == DISTDOCHIERARCHYfactorPers.CANVAL1(noindex)
+))
+;
+
+Parameters
+ wIntMode     //0(cgiNo) - обычный режим, 1(cgiPick) - режим выбора
+,coNabor      //нрек набора
+
+Function DISTDOCHIERARCHY_Pick: boolean; forward;
+
+Function DISTDOCHIERARCHY_DelOnProtect: boolean; forward;
+
+Function isPick : boolean;
+{
+  isPick := ((wIntMode and cgiPick) = cgiPick);
+}
+
+Procedure DISTDOCHIERARCHY_SetDefault;
+{
+  ClearBuffer(#DISTDOCHIERARCHY);
+  RescanPanel(#DISTDOCHIERARCHY);
+
+  DISTDOCHIERARCHY.nRec       := GetNextNRec(#DISTDOCHIERARCHY, 0);;
+  DISTDOCHIERARCHY.WDOCTYPE   := constTypeNabor;
+}
+
+Function DISTDOCHIERARCHY_CheckRecord:boolean;
+{
+   DISTDOCHIERARCHY_CheckRecord:=false;
+   if(DISTDOCHIERARCHY.CUSERID=comp(0))
+     {
+         message('Выберите фактор условий труда или удалите запись!',Warning);
+         SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+         exit;
+     }
+   else
+     {
+         if(DISTDOCHIERARCHY.WKOLNORM=0)
+           {
+             message('Задайте класс условий труда или удалите запись!',Warning);
+             SelectField(#DISTDOCHIERARCHY.WKOLNORM);
+             exit;
+           }
+         else
+           {
+             if(DISTDOCHIERARCHY.WKODGRKAU1=0)
+               {
+                 message('Задайте периодичность прохождения медосмотра или удалите запись!',Warning);
+                 SelectField(#DISTDOCHIERARCHY.WKODGRKAU1);
+                 exit;
+               }
+           }
+     }
+
+   if(RecordExists DISTDOCHIERARCHYcheck where ((comp(0)                    == DISTDOCHIERARCHYcheck.CPARENT
+                                            and constTypeNabor              == DISTDOCHIERARCHYcheck.WDOCTYPE
+                                            and DISTDOCHIERARCHY.CUSERID    == DISTDOCHIERARCHYcheck.CUSERID(noindex)
+                                            and DISTDOCHIERARCHY.WKOLNORM   == DISTDOCHIERARCHYcheck.WKOLNORM(noindex)
+                                            and DISTDOCHIERARCHY.WKODGRKAU1 == DISTDOCHIERARCHYcheck.WKODGRKAU1(noindex)
+                                            and (DISTDOCHIERARCHY.nrec      <> DISTDOCHIERARCHYcheck.nrec)))=tsok)
+      {
+        message('Запись с таким сочетанием значений фактор/класс/периодичность уже существует!'#13+
+                'Измените либо удалите запись.',Warning);
+        SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+        exit;
+      }
+   DISTDOCHIERARCHY_CheckRecord:=true;
+}
+
+Function DISTDOCHIERARCHY_DeleteRecord:boolean;
+{
+  DISTDOCHIERARCHY_DeleteRecord:=false;
+  if(RecordExists DISTDOCHIERARCHYfactorPers = tsok)
+    {
+       message('Удалять существующую запись из каталога нельзя.'#13+
+       'В документе "Факторы условий труда сотрудника" существуют записи ссылающиеся на нее!"',Warning);
+       exit;
+    }
+  else
+    {
+        if (message('Удалить текущую запись?',YesNo)=yes)
+           {
+             delete current DISTDOCHIERARCHY;
+           }
+        else
+           {
+             exit;
+           }
+    }
+  DISTDOCHIERARCHY_DeleteRecord:=true;
+}
+
+Window wCatNaborEdit 'Редактирование справочника набора соответствий' EscClose;
+  show at (7,3,73,20);
+Panel panCatNaborEdit;
+ table DISTDOCHIERARCHY;
+  Browse brCatNaborEdit;
+   Fields
+     DISTDOCHIERARCHYfactor.SNAME   #3'Наименование' ('Наименование фактора',, sci1378Esc):[28],protect;
+     DISTDOCHIERARCHY.WKOLNORM      #3'Класс' ('Класс условий труда',,sci1378Esc):
+     [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect;
+     DISTDOCHIERARCHY.WKODGRKAU1    #3'Периодичность' ('Периодичность условий труда',,sci1378Esc):
+     [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect;
+  end;
+
+HandleEvent
+cmSetDefault:
+{
+  DISTDOCHIERARCHY_SetDefault;
+  SelectField(#DISTDOCHIERARCHYfactor.Sname);
+  PutCommand(cmEdit);
+}
+cmPick:
+{
+  if (not DISTDOCHIERARCHY_Pick)
+   {
+    Abort;
+   }
+}
+
+cmDelOnProtect:
+{
+  if (not DISTDOCHIERARCHY_DelOnProtect)
+   {
+    Abort;
+   }
+}
+
+cmCheckRecord:
+{
+ if (not DISTDOCHIERARCHY_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmInsertRecord:
+{
+  insert current DISTDOCHIERARCHY;
+}
+cmUpdaterecord:
+{
+  update current DISTDOCHIERARCHY;
+}
+cmDeleteRecord:
+{
+ if (not DISTDOCHIERARCHY_DeleteRecord)
+   {
+     Abort;
+   }
+}
+end;
+end;
+
+HandleEvent
+cmDone:
+{
+  if(not UpDateTable)
+    {
+      abort;
+    }
+}
+end;
+end;
+
+Function DISTDOCHIERARCHY_Pick: boolean;
+var fcoFactor : comp;
+{
+
+  DISTDOCHIERARCHY_Pick:=false;
+
+  if(CurWindow <>wCatNaborEdit)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #DISTDOCHIERARCHYfactor.SNAME:
+          {
+            if(RecordExists DISTDOCHIERARCHYfactorPers = tsok)
+              {
+               message('Изменять существующую запись нельзя.'#13+
+                       'В документе "Факторы условий труда сотрудника" существуют записи ссылающиеся на нее!"',Warning);
+               exit;
+              }
+            else
+              {
+                if (RunInterface(iCatFactor,1,fcoFactor)=cmDefault)
+                   {
+                     set DISTDOCHIERARCHY.CUSERID := fcoFactor;
+                   }
+              }
+          }
+        #DISTDOCHIERARCHY.WKOLNORM:
+          {
+           if(RecordExists DISTDOCHIERARCHYfactorPers = tsok)
+             {
+               message('Изменять существующую запись нельзя.'#13+
+                       'В документе "Факторы условий труда сотрудника" существуют записи ссылающиеся на нее!"',Warning);
+               exit;
+             }
+          }
+        #DISTDOCHIERARCHY.WKODGRKAU1:
+          {
+           if(RecordExists DISTDOCHIERARCHYfactorPers = tsok)
+             {
+               message('Изменять существующую запись нельзя.'#13+
+                       'В документе "Факторы условий труда сотрудника" существуют записи ссылающиеся на нее!"',Warning);
+               exit;
+             }
+          }
+    end;
+    }
+
+  DISTDOCHIERARCHY_Pick:=true;
+}
+
+Function DISTDOCHIERARCHY_DelOnProtect:boolean;
+{
+  DISTDOCHIERARCHY_DelOnProtect:=false;
+
+  if(CurWindow <>wCatNaborEdit)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #DISTDOCHIERARCHYfactor.SNAME:
+          {
+            exit;
+          }
+    end;
+    }
+
+  DISTDOCHIERARCHY_DelOnProtect:=true;
+}
+
+Function CheckAccessNabor:boolean;
+{
+  CheckAccessNabor:=false;
+
+ if(bogettune('TUNE.OwnTune.Medosmotr.Access.Nabor'))
+   {
+      message('Вам запрещено редактировать справочник "Набор соответствий"!');
+      exit;
+   }
+
+  CheckAccessNabor:=true;
+}
+
+Panel panCatNabor;
+  table DISTDOCHIERARCHY;
+    browse brCatNabor (,,sci147EnEsc);
+      fields
+        DISTDOCHIERARCHYfactor.SNAME      #3'Наименование' ('Наименование фактора'):[28],protect;
+        DISTDOCHIERARCHY.WKOLNORM         #3'Класс' ('Класс условий труда'):
+        [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, Skip;
+        DISTDOCHIERARCHY.WKODGRKAU1       #3'Периодичность' ('Периодичность условий труда'):
+        [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, Skip;
+    end;
+end;
+
+Handleevent
+cmInit:
+{
+   if (isPick)
+     {
+       SetTitle('Выбор набора соответствия (фактор/класс/периодичность))');
+     }
+
+   if ( not isValid(#DISTDOCHIERARCHY))
+     {
+      if (message('Справочник наборов соответствий пуст.' +
+                 ''#13'Хотите заполнить его?',YesNo) <> cmYes)
+         {
+           abort;
+           exit;
+         }
+      else
+         {
+          if(not CheckAccessNabor)
+            {
+              abort;
+              exit;
+            }
+          else
+            {
+              PutCommand(cmInsert);
+            }
+         }
+     }
+}
+
+cmAddNewRec:
+{
+  if(not CheckAccessNabor)
+   {
+      abort;
+      exit;
+   }
+  else
+   {
+      PutCommand(cmInsert);
+      PutCommand(cmEdit);
+   }
+}
+
+cmDefault:
+{
+ if (isPick)
+  {
+    coNabor := DISTDOCHIERARCHY.nrec;
+  }
+ else
+  {
+    PutCommand(cmEdit);
+    Abort;
+  }
+}
+
+cmEdit:
+{
+ if(not CheckAccessNabor)
+   {
+    abort;
+    exit;
+   }
+ else
+   {
+    if (CurWindow <> wCatNaborEdit)
+      {
+        RunWindow(wCatNaborEdit);
+      }
+   }
+}
+end;
+End.

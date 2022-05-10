@@ -1,0 +1,45 @@
+.fields
+Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+#OrgFields(Получатель)
+Получатель_ОКПО
+Склад_Пол
+Получатель_ОКОНХ
+Директор_Должность
+DateToStr(Cur_Date, 'DD/MM/YYYY')
+Директор
+
+ТТН_ПунктР_Адрес
+#OrgFields(Грузоотправитель)
+#OrgFields(Поставщик)
+Номер_Договора
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'DD'), '     ')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'mon'), '')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'YYYY'), '')
+Номер
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'DD'), '     ')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'mon'), '')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'YYYY'), '')
+ТТН_Авто_Марка
+ТТН_Авто_НомерТС
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'DD'), '     ')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'mon'), '')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'YYYY'), '')
+if (LongInt(ТТН_ПунктР_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, 'DD'), '     ')
+if (LongInt(ТТН_ПунктР_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, 'mon'), '')
+if (LongInt(ТТН_ПунктР_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, 'YYYY'), '')
+Директор_Должность
+Директор
+
+Название
+КодМЦ
+ОтпЕд
+CodeEd
+if (КолФ > 0, DoubleToStr(КолФ, Kol_Pr),'')
+if (КолОпл > 0, DoubleToStr(КолОпл, Kol_Pr),'')
+
+if (wFillCol = 0, DoubleToStr(МассаМЦ * (Брак + Бой), Massa_Kg)
+  , DoubleToStr(Брак + Бой, Kol_Pr)) // выводится по настройке
+
+if (Nedostacha >0, DoubleToStr(Nedostacha, Kol_Pr), '')
+if (Izlishki >0, DoubleToStr(Izlishki, Kol_Pr), '')
+.endfields

@@ -1,0 +1,211 @@
+!-------------------------------------------------------------------------------
+! Функция возвращает True, если Srok1 = Srok2
+!-------------------------------------------------------------------------------
+.function SrokEquality (Srok1, Srok2 : double) : boolean;
+var
+  wEdIzm        : word;
+  SrokIspYear1,
+  SrokIspYear2  : integer;   // количество целых лет в сроке использования
+  SrokIspMonth1,
+  SrokIspMonth2 : integer;   // количество месяцев в остатке
+begin
+  wEdIzm       := wGetTune('OS.SrokIspEdIzm');
+
+  SrokEquality := False;
+
+  if (wEdIzm = 0)
+  {
+    //в месяцах
+    SrokIspYear1  := integer(Srok1) div 12;
+    SrokIspMonth1 := integer(Srok1) mod 12;
+
+    SrokIspYear2  := integer(Srok2) div 12;
+    SrokIspMonth2 := integer(Srok2) mod 12;
+  }
+  else
+  {
+    //в годах
+    SrokIspYear1  := integer(trunc(Srok1));
+    SrokIspMonth1 := integer(round((Srok1 - SrokIspYear1) * 12));
+
+    SrokIspYear2  := integer(trunc(Srok2));
+    SrokIspMonth2 := integer(round((Srok2 - SrokIspYear2) * 12));
+  }
+
+  SrokEquality    := ( (SrokIspYear1 = SrokIspYear2) AND (SrokIspMonth1 = SrokIspMonth2) );
+end.
+!-------------------------------------------------------------------------------
+! Функция возвращает срок использования в формате X лет X мес
+!-------------------------------------------------------------------------------
+.function SrokIspEdIzmWord (SrokIspNumber : double) : string;
+var
+  wEdIzm       : word;
+  PrintSrokIsp : word;
+  SrokIspYear  : integer;   // количество целых лет в сроке использования
+  SrokIspMonth : integer;   // количество месяцев в остатке
+  YearStr      : string;    // слово лет-год-года
+  tmpDouble    : double;
+begin
+  wEdIzm       := wGetTune('OS.SrokIspEdIzm');
+  PrintSrokIsp := wGetTune('OS.PrintSrokIsp');
+
+if (SrokIspNumber <> 0)
+{
+  case PrintSrokIsp of
+  0:
+  { // В годах и месяцах
+    if (wEdIzm = 0)
+    {
+      //в месяцах
+      SrokIspYear  := integer(SrokIspNumber) div 12;
+      SrokIspMonth := integer(SrokIspNumber) mod 12;
+    }
+    else
+    {
+      //в годах
+      SrokIspYear  := integer(trunc(SrokIspNumber));
+      SrokIspMonth := integer(round((SrokIspNumber - SrokIspYear) * 12));
+    }
+
+    YearStr := '';
+    if (length(string(SrokIspYear)) > 1)
+    {
+      tmpDouble := integer(SubStr(string(SrokIspYear),length(string(SrokIspYear))-1,2));
+      if (tmpDouble > 9)
+        if (tmpDouble >= 11) and (tmpDouble <= 19)
+          YearStr := 'лет';
+    }
+
+    if (YearStr = '')
+    {
+      tmpDouble := integer(SubStr(string(SrokIspYear),length(string(SrokIspYear)),1));
+      if ((tmpDouble >= 5) and (tmpDouble <= 9)) or (tmpDouble = 0)
+        YearStr := 'лет'
+      else
+      if (tmpDouble >= 2) and (tmpDouble <= 4)
+        YearStr := 'года'
+      else
+        YearStr := 'год';
+    }
+
+    SrokIspEdIzmWord := if (SrokIspYear > 0, string(SrokIspYear)+' '+YearStr+' ', '') +
+                        if (SrokIspMonth > 0, string(SrokIspMonth)+' мес', '');
+  }
+  1:
+  { // В месяцах
+    if (wEdIzm = 0)
+    {
+      //в месяцах
+      SrokIspEdIzmWord := Trim (string (SrokIspNumber, 10, 0)) + ' мес'
+    }
+    else
+    {
+      //в годах
+      SrokIspEdIzmWord := Trim (string (SrokIspNumber * 12, 10, 0)) + ' мес'
+    }
+  }
+  2:
+  { // В годах
+    SrokIspEdIzmWord := '';
+
+    if (wEdIzm = 0)
+    {
+      //в месяцах
+      SrokIspYear  := integer(SrokIspNumber) div 12;
+    }
+    else
+    {
+      //в годах
+      SrokIspYear  := integer(trunc(SrokIspNumber));
+    }
+
+    YearStr := '';
+    if (length(string(SrokIspYear)) > 1)
+    {
+      tmpDouble := integer(SubStr(string(SrokIspYear),length(string(SrokIspYear))-1,2));
+      if (tmpDouble > 9)
+        if (tmpDouble >= 11) and (tmpDouble <= 19)
+          YearStr := 'лет';
+    }
+
+    if (YearStr = '')
+    {
+      tmpDouble := integer(SubStr(string(SrokIspYear),length(string(SrokIspYear)),1));
+      if ((tmpDouble >= 5) and (tmpDouble <= 9)) or (tmpDouble = 0)
+        YearStr := 'лет'
+      else
+      if (tmpDouble >= 2) and (tmpDouble <= 4)
+        YearStr := 'года'
+      else
+        YearStr := 'год';
+    }
+
+    SrokIspEdIzmWord := if (SrokIspYear > 0, string(SrokIspYear)+' '+YearStr+' ', '');
+  }
+  else
+  {
+    SrokIspEdIzmWord := '';
+  }
+  end;
+}
+else
+{
+  SrokIspEdIzmWord := '';
+}
+end.
+
+!-------------------------------------------------------------------------------
+! AbbreviateInitials - "Фамилия Имя Отчество" в "Фамилия И.О."
+! (взята из serv_str.vpp)
+!-------------------------------------------------------------------------------
+.Function AbbreviateInitials(sFIO: string): string;
+  var i: word;
+  var sRes: string;
+  var bo1word: boolean;
+  var c: char;
+  var sNext: string[1];
+begin
+  // убираем лишние и повторяющиеся пробелы
+
+  DO
+  {
+    i := Pos('  ', sFIO);
+
+    if (i = 0)                         // в строке нет повторяющихся пробелов?
+      Break;
+
+    sFIO := SubStr(sFIO, 1, i) +                // строка до первого пробела (включая его)
+            SubStr(sFIO, i + 2, length(sFIO));  // плюс остаток за двумя пробелами
+  }
+  While (TRUE);
+
+  sRes := '';            // временный результат
+  bo1word := TRUE;       // признак обработки фамилии
+
+  for (i := 1; i <= length(sFIO); inc(i))
+  {
+    c := chr(SubStr(sFIO, i, 1));  // текущий символ
+
+    if (c = ' ') or (c = '.')                                  // пробел или точка?
+    {
+      sNext := subStr(sFIO, i+1, 1);                           // следующий символ
+
+      if (i = length(sFIO)) or (sNext = ' ') or (sNext = '.')  // если конец строки или пробел или точка
+        sNext := '';                                           // считаем что его нет
+
+      sRes := sRes +
+              if (bo1word, ' ', '') +       // добавляем пробел только после фамилии,
+              sNext +                       // а также следующий за пробелом символ
+              if (sNext = '', '', '.');     // и точку, если добавили таки символ
+
+      bo1word := FALSE;                     // дошли до пробела = фамилию уже обработали
+    }
+    else
+      if bo1word                              // фамилия еще не закончилась?
+        sRes := sRes + c;                     // копируем ее в результат
+  }
+
+  AbbreviateInitials := trim(sRes);
+!end.
+! Из-за того, что при выходе из include-файла конец строки воспринимается как пустая строка,
+! после вызова #include funcOs.frn нужно ставить end. в вызывающем файле.

@@ -1,0 +1,12 @@
+.Form 'MakeExKAUforMC'
+.ard
+.Group 'Внешние КАУ'
+.NameInList 'Групповое создание внешних КАУ к ТМЦ'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('L_Sklad::MakeExtKAU_MC');
+end.
+.endform

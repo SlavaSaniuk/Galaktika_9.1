@@ -1,0 +1,110 @@
+/*
+  ╔═════════════════════════════════════════════════════════════════════╗
+  ║      Н Т О  "T O P   S O F T",  А О   "Н О В Ы Й   А Т Л А Н Т"     ║
+  ║      Проект    : ГАЛАКТИКА  (с) 2000                                ║
+  ║      Система   : Управление персоналом                              ║
+  ║      Версия    : 5.8                                                ║
+  ║      Разработал: Антонович А.К.     01/02/2002                      ║
+  ║      Назначение: Функции работы со строками                         ║
+  ║      Изменения :                                                    ║
+  ╚═════════════════════════════════════════════════════════════════════╝
+*/
+
+#ifndef _StrFunc_vih_Included
+#define _SetFunc_vih_Included
+
+#ifdef ComponentVersion
+#component "z_Staff"
+#end
+
+#doc
+Функции работы со строками
+#end
+ObjInterface ObjStrFunc;
+
+#doc
+склонение количества лет, месяцев, дней
+#end
+Public function DeclYMD(countYMD : longint; typeYMD: longint) : string;
+
+#doc
+Функция возвращает Фамилию
+#end
+Public function GetFirstName(FIO : string) : string;
+
+#doc
+Функция возвращает Имя
+#end
+Public function GetLastName(FIO : string) : string;
+
+#doc
+Функция возвращает Отчество
+#end
+Public function GetPatronymic(FIO : string) : string;
+
+#doc
+Функция возвращает Фамилию и инициалы
+#end
+Public function GetFIO(FIO : string) : string;
+
+#doc
+функция преобразует число в строку и 0 заменяет пустой строкой
+#end
+Public function UnVisibleInt(iTemp : integer) : string;
+
+#doc
+функция преобразует число в строку и 0 заменяет пустой строкой
+#end
+Public function UnVisibleLong(iTemp : longInt) : string;
+
+#doc
+функция преобразует doubleTemp в строку и некорректное значение doubleTemp заменяет пустой строкой (для отчетов)
+#end
+Public function UnVisibleDouble(doubleTemp : double) : string;
+
+#doc
+функция преобразует дату в строку по формату formatStr
+и некорректную дату заменяет пустой строкой
+#end
+Public function UnVisibleDate(dateTemp : date; formatStr : string) : string;
+
+#doc
+Функция возвращает количество дней между датами без учета полных месяцев (для расчета испытательного срока)
+#end
+Public function GetCountDay(DateBeg : Date; DateEnd : Date) : longint;
+
+#doc
+Функция возвращает количество полных месяцев между датами (для расчета испытательного срока)
+#end
+Public function GetCountMonths(DateBeg : Date; DateEnd : Date) : longint;
+
+#doc
+Функция возвращает количество полных лет между датами (для расчета испытательного срока)
+#end
+Public function GetCountYears(DateBeg : Date; DateEnd : Date) : longint;
+
+#doc
+функция формирует строку периода месяц, квартал, полугодие, год, период
+#end
+Public function CreatePeriod(dateBeg : date; dateEnd : date) : string;
+
+#doc
+проверяет на пересечение периодов
+#end
+Public function isCrossPeriod(dateBeg1 : date; dateEnd1 : date; dateBeg2 : date; dateEnd2 : date) : boolean;
+
+#doc
+проверяет попадает ли dateTest в период
+#end
+Public function isHitPeriod(dateBeg : date; dateEnd : date; dateTest : date) : boolean;
+
+//------------------------------------------------------------------------------
+end;
+//------------------------------------------------------------------------------
+VipInterface StringFunctions implements ObjStrFunc
+#ifdef ATL51
+Licensed (free)
+#end
+;
+
+#endif

@@ -1,0 +1,235 @@
+#doc
+Формирование отчета
+"Список работающих с общими заболеваниями, препятствующими продолжению работы (по организации)"(Белтелеком)
+#end
+
+#include iCheckFactorRez.vih
+
+Interface iRepSpisNeGodn 'Формирование отчета' Gray, EscClose;
+  Show at (, , 45, 6);
+
+var
+objCheckFactorRez: iCheckFactorRez new;
+wMakroPageRun:word;
+
+file file_macro;
+
+Create view
+as select
+*
+from
+ Persons (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers (ReadOnly)
+,APPOINTMENTS (ReadOnly)
+,CATALOGS CATALOGSpost (ReadOnly)         //должность
+,CATALOGS CATALOGSStrEd (ReadOnly)
+Where
+((
+    'С'             == Persons.ISEMPLOYEE
+and date(0,0,0)     == Persons.DISDATE
+
+and Persons.nrec    == DISTDOCHIERARCHYfactorPers.CPARENT
+and constFactorPers == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and (DISTDOCHIERARCHYfactorPers.RESDATE<>date(0,0,0) and DISTDOCHIERARCHYfactorPers.WSORT=1)  //обрабатываем закрытые по причине болезни
+
+and Persons.APPOINTCUR        == APPOINTMENTS.nrec                //назначение
+
+and APPOINTMENTS.post         == CATALOGSpost.nrec                //должность
+
+and APPOINTMENTS.DEPARTMENT   == CATALOGSStrEd.nrec              //СЕ сотрудника
+))
+;
+
+Screen scrRepSpisNeGodn ('Параметры отчета', ,);
+Fields
+  wMakroPageRun  ('Применить макрос подгонки страницы к печати',,sci1Esc): NoProtect;
+Buttons
+  cmOk, Default,, 'Продолжить',, sci1Esc;
+  cmCancel,,,'Отмена',, sci1Esc;
+<<
+
+   [.] Применить макрос подгонки страницы к печати`
+
+     <. Сформировать .>  <.   ~О~тмена   .>
+
+>>
+end;
+
+Procedure StatTextExcel;
+{
+  xlPageSetupSetOrientation(2);
+
+  xlSetColumnWidth(4,1,1,1,1);       // ширина столбцов
+  xlSetColumnWidth(35,1,2,1,2);       // ширина столбцов
+  xlSetColumnWidth(6,1,3,1,3);       // ширина столбцов
+  xlSetColumnWidth(20,1,4,1,4);       // ширина столбцов
+  xlSetColumnWidth(15,1,5,1,5);       // ширина столбцов
+  xlSetColumnWidth(29,1,6,1,6);       // ширина столбцов
+  xlSetColumnWidth(17,1,7,1,7);       // ширина столбцов
+
+
+  xlSetFontstyle(1,1,1,1,7);  // жирным
+  xlSetFontSize(12,1,1,1,7);  // высота  шрифта
+  xlSetRowHeight(15,1,1,1,7);     //высота строки
+  xlMergeCells(1,1,1,7);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,1,1,1,7);
+  xlSetCellStringValue('Список работающих с общими заболеваниями, препятствующими продолжению работы (по организации)',1,1,1,7);
+
+  xlSetFontSize(12,2,1,2,7);  // высота  шрифта
+  xlSetRowHeight(15,2,1,2,7);     //высота строки
+  xlMergeCells(2,1,2,7);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,2,1,2,7);
+  xlSetCellStringValue(sgettune('myorg'),2,1,2,7);
+  xlFrameCells(xlBorderB,xlThin, 0, 0, 2, 1, 2, 7);
+
+  xlSetFontSize(8,3,1,3,7);  // высота  шрифта
+  xlSetRowHeight(10,3,1,3,7);     //высота строки
+  xlMergeCells(3,1,3,7);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,3,1,3,7);
+  xlSetCellStringValue('наименование организации, адрес ее места нахождения',3,1,3,7);
+
+  xlSetRowHeight(120,4,1,4,7);     //высота строки
+  xlWrapText(4,1,4,7);
+  xlSetFontSize(10,4,1,4,7);     //высота  шрифта
+  xlAlignCellsEx(xlCenter,xlCenter,4,1,4,7);
+  xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+               xlThin, 0, 0, 4, 1, 4, 7);
+
+  xlSetCellStringValue('№ п/п',4,1,4,1);
+  xlSetCellStringValue('Фамилия, собственное имя, отчество (полностью)',4,2,4,2);
+  xlSetCellStringValue('Год рождения',4,3,4,3);
+  xlSetCellStringValue('Подразделение',4,4,4,4);
+  xlSetCellStringValue('Профессия (должность)',4,5,4,5);
+  xlSetCellStringValue('Вредные и (или) опасные факторы производственной среды, показатели тяжести и напряженности трудового процесса <1>, работы <2>',4,6,4,6);
+  xlSetCellStringValue('Код по международной классификации болезней и проблем, связанных со здоровьем, десятого пересмотра',4,7,4,7);
+}
+
+Procedure InsertRecExcel;
+var
+istr,n,npp:double;
+{
+istr:=5;
+npp:=1;
+ _loop Persons
+  {
+     n:=0;
+   if(not isValid(#DISTDOCHIERARCHYfactorPers))
+     {
+       continue;
+     }
+
+    _loop DISTDOCHIERARCHYfactorPers
+      {
+        xlSetCellStringValue(objCheckFactorRez.StrValueNabor('Factor',DISTDOCHIERARCHYfactorPers.CANVAL1),iStr,6,iStr,6);
+        xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+               xlThin, 0, 0, iStr, 6, iStr, 7);
+        xlAlignCellsEx(xlLeft,xlCenter,iStr,6,iStr,7);
+        xlSetFontSize(8,iStr, 6, iStr, 7);
+        xlWrapText(iStr,6,iStr,7);
+        iStr+=1;
+        n+=1;
+      }
+
+    xlMergeCells(iStr-n,1,iStr-1,1);
+    xlMergeCells(iStr-n,2,iStr-1,2);
+    xlMergeCells(iStr-n,3,iStr-1,3);
+    xlMergeCells(iStr-n,4,iStr-1,4);
+    xlMergeCells(iStr-n,5,iStr-1,5);
+    xlAlignCellsEx(xlCenter,xlCenter,iStr-n,1,iStr-1,1);
+    xlAlignCellsEx(xlLeft,xlCenter,iStr-n,2,iStr-1,2);
+    xlAlignCellsEx(xlCenter,xlCenter,iStr-n,3,iStr-1,3);
+    xlAlignCellsEx(xlLeft,xlCenter,iStr-n,4,iStr-1,5);
+    xlSetFontSize(8,iStr-n,1,iStr-1,5);
+    xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+             xlThin, 0, 0, iStr-n, 1, iStr-1, 5);
+    xlSetCellStringValue(npp,iStr-n,1,iStr-1,1);
+
+    xlSetCellStringValue(Persons.Fio,iStr-n,2,iStr-1,2);
+    xlSetCellStringValue(Year(PERSONS.BORNDATE),iStr-n,3,iStr-1,3);
+    if(getfirst Appointments=tsok)
+      {
+        if(getfirst CATALOGSStrEd=tsok)
+          {
+            xlSetCellStringValue(CATALOGSStrEd.Name,iStr-n,4,iStr-1,4);
+          }
+        if(getfirst CATALOGSPost=tsok)
+          {
+            xlSetCellStringValue(CATALOGSPost.Name,iStr-n,5,iStr-1,5);
+          }
+      }
+    xlWrapText(iStr-n,1,iStr-1,5);
+    npp+=1;
+  }
+}
+
+Procedure CreateMacro;     //процедура создания макросов
+{
+ file_macro.OpenFile(GetDefaultUserPath+'MacroRepSpisNeGodn.bas', stCreate);
+ //////макрос для того чтобы при окончании листа не обрезалась объединенная строка
+ file_macro.WriteLn('Sub MakePagesBreack()');
+ file_macro.WriteLn('Dim rUsRng As Range, li As Long, lCnt As Long');
+ file_macro.WriteLn('Set rUsRng = Range("A1", Cells.SpecialCells(11))');
+ file_macro.WriteLn('For li = 1 To rUsRng.Rows.Count+1000');
+ file_macro.WriteLn('If rUsRng.Rows(li).PageBreak <> xlNone Then');
+ file_macro.WriteLn('If rUsRng.Cells(li, 1).MergeCells Then');
+ file_macro.WriteLn('lCnt = li - Cells(li, 1).MergeArea.Row');
+ file_macro.WriteLn('If lCnt > 0 Then Rows(li - lCnt).Resize(lCnt).Insert: lCnt = 0');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('Next li');
+ file_macro.WriteLn('End Sub');
+ file_macro.WriteLn('');
+ ///////////
+
+ file_macro.WriteLn('');
+ //////макрос для установки заголовка, который будет повторяться на каждом листе
+ file_macro.WriteLn('Sub PrintTop()');
+ file_macro.WriteLn('Application.PrintCommunication = False');
+ file_macro.WriteLn('With ActiveSheet.PageSetup');
+ file_macro.WriteLn('.PrintTitleRows = "$4:$4"');     // координаты строки с заголовком
+ file_macro.WriteLn('.PrintTitleColumns = ""');
+ file_macro.WriteLn('End With');
+ file_macro.WriteLn('End Sub');
+ ///////
+ file_macro.Close;
+}
+
+Procedure CreateRepExcel;
+{
+  xlCreateExcel(GetDefaultUserPath+'Список работающих с общими заболеваниями, препятствующими продолжению работы (по организации)',true);
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm,
+                 'Формирование отчета', 1);
+
+  StatTextExcel;
+  InsertRecExcel;
+
+  CreateMacro;
+
+  if(xlImportModule(GetDefaultUserPath+'MacroRepSpisNeGodn.bas'))
+    {
+      xlRunMacro('PrintTop');
+
+      if(wMakroPageRun=1)
+        {
+          xlRunMacro('MakePagesBreack');
+        }
+    }
+
+  StopVisual('', 0);
+  xlSaveWorkBook(1);
+  message('Отчет сформирован!');
+  xlKillExcel;
+}
+
+HandleEvent
+cmOk:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+  CreateRepExcel;
+  CloseInterFace(0);
+}
+end;
+End.

@@ -1,0 +1,63 @@
+!инициализация переменных для fast-отчетов
+.begin
+   IF FASTREPORT.getfirst Katsopr where ((накладная_нрек  == Katsopr.NRec)) = tsOk
+    {
+      KatSoprVhodNal := FASTREPORT.KatSopr.VhodNal;
+      KatSoprVidSopr := FASTREPORT.KatSopr.VidSopr;
+    }
+
+   case KatSoprVidSopr of
+     600..606:
+       isTTN_Fast := FALSE;
+   end;
+end.
+!Общая инициализация
+.begin
+!Округление
+#ifndef _IN_VAL_DOC_
+ Cena_Pr := Cena_PrR
+#end
+end.
+!Инициализация переменных для ТТН-1
+#ifdef _TTN_FRN_
+.begin
+  strNN   := 0;
+  kounter := 0;
+  PrnOK   := FALSE;
+  sumves  := 0;
+  sumkolf := 0;
+  АНДСНац  := 0;
+  АСтНацБН := 0;
+  АСтНацСН := 0;
+  strАСтНацБН := 0;
+  strАНДСНац  := 0;
+  strАСтНацСН := 0;
+  strАКолФ    := 0;
+  strАКолВес  := 0;
+ #ifdef _TTN_2009F_
+  if (NOT readmydsk(breakPage, 'OptionsTTN2009', FALSE))
+    breakPage := 1;
+ #end
+!Автоматический расчет количества грузовых мест
+#ifdef _TTN_DOC_600_
+  bAutoGrM := boGetTune('SKLAD.CALCGRM');
+#else
+  bAutoGrM := boGetTune('OPER.SELL.NAKL.CALCGRM');
+#end
+end.
+#end
+!Инициализация переменных для ТН-2
+#ifdef _TN2_PC_FRN_
+.begin
+  strNN    := 0;
+  kounter  := 0;
+  PrnOK    := FALSE;
+  sumkolf  := 0
+  АНДСНац  := 0;
+  АСтНацБН := 0;
+  АСтНацСН := 0;
+
+  if (NOT readmydsk(breakPage, 'OptionsTN2', FALSE))
+    breakPage := 1;
+end.
+#end

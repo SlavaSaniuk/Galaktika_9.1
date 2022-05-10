@@ -1,0 +1,88 @@
+.fields
+#OrgFields(Получатель)
+Получатель_ОКПО
+Склад_Пол
+Получатель_ОКОНХ
+Директор_Должность
+DateToStr(Cur_Date, 'DD/MM/YYYY')
+Директор
+
+ТТН_ПунктР_Адрес
+#OrgFields(Грузоотправитель)
+#OrgFields(Поставщик)
+Номер_Договора
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'DD'), '     ')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'mon'), '')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'YYYY'), '')
+СчФакт_Номер
+if (LongInt(СчФакт_Дата) <> LongInt(0), DateToStr(СчФакт_Дата, 'DD'), '     ')
+if (LongInt(СчФакт_Дата) <> LongInt(0), DateToStr(СчФакт_Дата, 'mon'), '')
+if (LongInt(СчФакт_Дата) <> LongInt(0), DateToStr(СчФакт_Дата, 'YYYY'), '')
+Номер
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'DD'), '     ')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'mon'), '')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'YYYY'), '')
+ТТН_Авто_Марка
+ТТН_Авто_НомерТС
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'DD'), '     ')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'mon'), '')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'YYYY'), '')
+ТТН_ПунктП_Имя
+if (LongInt(ТТН_ПунктР_Дата_С) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, 'DD/MM/YYYY'), '')
+if (LongInt(ТТН_ПунктР_Время_С) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, ' в HH:MM'), '')
+if (LongInt(ТТН_ПунктР_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, 'DD/MM/YYYY'), '')
+if (LongInt(ТТН_ПунктР_Время_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, ' в HH:MM'), '')
+
+DoubleToStr(КолДок     ,Kol_Pr)
+DoubleToStr(ДокБрутто  ,Massa_Kg)
+DoubleToStr(ДокТара    ,Massa_Kg)
+DoubleToStr(ДокНетто   ,Massa_Kg)
+DoubleToStr(КолФакт    ,Kol_Pr)
+DoubleToStr(ФактБрутто ,Massa_Kg)
+DoubleToStr(ФактТара   ,Massa_Kg)
+DoubleToStr(ФактНетто  ,Massa_Kg)
+DoubleToStr(РасхКол    ,Kol_Pr)
+DoubleToStr(РасхБрутто ,Massa_Kg)
+DoubleToStr(РасхТара   ,Massa_Kg)
+DoubleToStr(РасхНетто  ,Massa_Kg)
+
+Название
+ОтпЕд
+CodeEd
+if (wFillCol = 0, DoubleToStr(МассаМЦ * КолФ, Massa_Kg)
+  , DoubleToStr(КолФ, Kol_Pr)) // выводится по настройке
+DoubleToStr(ЦНацСН, Cena_PrR)
+DoubleToStr(СтНацСН0, Cena_PrR)
+DoubleToStr(ИтогоДок, Cena_PrR)
+
+if (wFillCol = 0, DoubleToStr(МассаМЦ2 * КолОпл2, Massa_Kg)
+  , DoubleToStr(КолОпл2, Kol_Pr)) // выводится по настройке
+DoubleToStr(СтНацCН2/КолФ2, Cena_PrR)
+DoubleToStr(СтНацCНОпл2, Cena_PrR)
+
+if (wFillCol = 0, DoubleToStr(МассаМЦ2 * Брак2, Massa_Kg)
+  , DoubleToStr(Брак2, Kol_Pr)) // выводится по настройке
+DoubleToStr(СтНацCН2/КолФ2 * Брак2, Cena_PrR)
+
+if (wFillCol = 0, DoubleToStr(МассаМЦ2 * Бой2, Massa_Kg)
+  , DoubleToStr(Бой2, Kol_Pr)) // выводится по настройке
+DoubleToStr(СтНацCН2/КолФ2 * Бой2, Cena_PrR)
+
+NedostachaStr
+SumNedostachaStr
+IzlishkiStr
+SumIzlishkiStr
+
+DoubleToStr(ИтогоФакт, Cena_PrR)
+if (wFillCol = 0, DoubleToStr(ItogBrak, Massa_Kg)
+  , DoubleToStr(ItogBrak, Kol_Pr)) // выводится по настройке
+DoubleToStr(SumItogBrak, Cena_PrR)
+if (wFillCol = 0, DoubleToStr(ItogBoi, Massa_Kg)
+  , DoubleToStr(ItogBoi, Kol_Pr)) // выводится по настройке
+DoubleToStr(SumItogBoi, Cena_PrR)
+
+DoubleToStr(ИтогоНедостача, Cena_PrR)
+DoubleToStr(ИтогоИзлишки, Cena_PrR)
+
+Главный_Бухгалтер
+.endfields

@@ -1,0 +1,25 @@
+#include Predefs.inc
+
+!сдесь описаны объекты
+#include ExtAttr.Vih
+#include ExtClass.Vih
+
+!сдесь описаны диалоги
+#include c_common.vil 
+#include Z_Katpodr.vil
+
+!формы
+
+#make "birka.frm"
+#make "f_os15.frm"
+#make "Gl.frm"
+#make "izv_mues.frm"
+#make "ms_dover.frm"
+#make "ms_drag_sklad.frm"
+#make "ms_inv_sklad.frm"
+#make "ms_skl_order.frm"
+#make "ms_ved_an.frm"
+#make "ms_zavod.frm"
+#make "ms_ob_sklad.frm"
+#make "ms_skl_dm.frm"
+#make "sfo_nal.frm"

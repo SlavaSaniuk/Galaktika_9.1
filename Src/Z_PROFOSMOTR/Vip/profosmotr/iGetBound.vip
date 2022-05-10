@@ -1,0 +1,153 @@
+#doc
+Интерфейс для изменения ограничения профпригодности по фактору сотрудника(Белтелеком)
+#end
+
+Interface iGetBound 'Значения ограничения' Gray, DoAccept, EscClose;
+  Show at (, , 65, 8);
+
+var
+paramdatOpen:date;
+paramcoNrecBound:comp;
+sBound:string;
+coBound:comp;
+ddateOpen:date
+
+Create view
+as select
+*
+from
+  DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+;
+
+Parameters
+ paramdatOpen         //входной/выходной параметр дата окончания действия ограничения
+,paramcoNrecBound     //входной/выходной параметр ограничение
+;
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(ddateOpen=date(0,0,0))
+    {
+      message('Для продолжения необходимо заполнить дату окончания действия ограничения!');
+      Exit;
+    }
+  if(sBound='Не выбрано' or coBound=0)
+    {
+      message('Для продолжения необходимо выбрать ограничение!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Function GroupGetBound_Pick: boolean;
+var
+fcoBound : comp;
+{
+   GroupGetBound_Pick:=false;
+
+   case CurField of
+     #sBound:
+        {
+          sBound   :='Не выбрано';
+          coBound  :=0;
+          if (RunInterface(iCatReasonBound,1,fcoBound)=cmDefault)
+            {
+              if(getfirst DISTDOCHIERARCHYcheck WHERE ((fcoBound == DISTDOCHIERARCHYcheck.nrec))=tsok)
+                {
+                  sBound  :=DISTDOCHIERARCHYcheck.sname;
+                  coBound :=DISTDOCHIERARCHYcheck.nrec;
+                }
+            }
+        }
+   end;
+
+   ReReadRecord;
+
+   GroupGetBound_Pick:=true;
+}
+
+Function GroupGetBound_DelOnProtect: boolean;
+{
+  GroupGetBound_DelOnProtect:=false;
+
+  CASE (CurField) OF
+    #sBound :
+      {
+        sBound := 'Не выбрано';
+        coBound:=0;
+      }
+   end;
+
+  ReReadRecord;
+
+  GroupGetBound_DelOnProtect:=true;
+}
+
+Screen scrPrintRep ('Параметры ограничения', ,);
+Fields
+  ddateOpen         ('Дата окончания действия ограничения',,): NoProtect;
+  sBound            ('Ограничение', , sci13EnEsc) : protect;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+      `Дата окончания действия ограничения:`  .@@@@@@@@@@@
+
+      `Ограничение  :`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+            <. Установить .>  <.   ~О~тмена   .>
+
+>>
+end;
+
+
+Handleevent
+cmInit:
+{
+  ddateOpen:=paramdatOpen;
+
+  if(getfirst DISTDOCHIERARCHYcheck WHERE ((paramcoNrecBound == DISTDOCHIERARCHYcheck.nrec))=tsok)
+    {
+      sBound  :=DISTDOCHIERARCHYcheck.sname;
+      coBound :=DISTDOCHIERARCHYcheck.nrec;
+    }
+  else
+    {
+      coBound  :=0;
+      sBound := 'Не выбрано';
+    }
+}
+cmOK:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+ if(not CheckEmptyField)
+   {
+     Abort;
+   }
+ else
+   {
+     paramdatOpen     := ddateOpen;
+     paramcoNrecBound := coBound;
+   }
+}
+cmPick:
+{
+   if (not GroupGetBound_Pick)
+    {
+     Abort;
+    }
+}
+cmDelOnProtect:
+{
+   if (not GroupGetBound_DelOnProtect)
+    {
+     Abort;
+    }
+}
+end;
+End.

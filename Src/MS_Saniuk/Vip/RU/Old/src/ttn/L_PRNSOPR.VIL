@@ -1,0 +1,17 @@
+
+#ifdef ComponentVersion
+#component "L_PRNSOPR"
+#end
+
+VipInterface Prn_Org   licensed (FREE) Parameters (frmHandle              : longint;
+                                                   pOrg,pBank,pCity,pState: comp;
+                                                   TypePrn                : word);
+
+VipInterface PrintSopr licensed (FREE) Parameters (pNRec: comp; MarkerNZ: longint;
+                                                   wParam: word);
+
+VipInterface PrintSopr_fr   licensed (FREE) Parameters (pNRec: comp; MarkerNZ: longint; wParam: word);
+VipInterface GetPersSign    licensed (FREE);
+VipInterface PrnTTInfo      licensed (FREE) Parameters (pForm, pTable: longint; pNRec: comp);
+VipInterface Prn_DocOfGoods licensed (FREE) Parameters (pRecClass : comp; wCodeClass : word; pSpSopr : comp; sDocsReturn : string);
+VipInterface PrnVariatMcUsl licensed (FREE) Parameters (pKatSopr: comp; wParam: word);

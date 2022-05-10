@@ -1,0 +1,112 @@
+.fields
+  Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+  #OrgFields(Грузоотправитель)
+  #OrgFieldsBank(Грузоотправитель)
+  Грузоотправитель_ОКПО
+  Поставщик_ОКОНХ               // KatOrg.OKONH
+
+  номер
+  if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+
+  Склад
+  Склад_Пол
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол
+#end
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол
+#end
+
+  DoubleToStr(KolItog     , RoundGrm)
+  oPrnSoprFun.GetMassaBr (1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr (1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+ // DoubleToStr(Sum2Itog, Cena_Pr0)
+ // DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол
+#end
+
+    Название
+    КодМЦ
+    УчЕд
+    CodeEd
+   // if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд)
+    KolOneGrM
+    KolGrM
+
+    oPrnSoprFun.GetMassaBr(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч))
+    oPrnSoprFun.GetMassaBr(Признак_МЦ, (МассаМЦ * КолУч))
+
+  #ifdef _IN_VAL_DOC_
+    DoubleToStr(oPrnSoprFun.GetPrice(спецификацияМЦ_нрек, ЦНакБНУч, ЦНакСНУч), if (GetPrecisionGroup('brForSopr_RVPrice')<> 5, Cena_PrTTN, Cena_Pr0))
+    DoubleToStr(СтНакБН , Cena_Pr0)
+  #else
+    DoubleToStr(oPrnSoprFun.GetPrice(спецификацияМЦ_нрек, ЦНацБНУч, ЦНацСНУч), if (GetPrecisionGroup('brForSopr_VPrice')<> 5, Cena_PrVTTN, Cena_Pr0))
+    DoubleToStr(СтНацБН , Cena_Pr0)
+  #end
+  //  if (ставка_первого_налога = 0, sGetTune('Doc.SD.AbbrField.NDSStZero'), DoubleToStr(ставка_первого_налога, NDS_St))
+  //  if (СтНДСНац = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНац, Cena_Pr0))
+  //  DoubleToStr(СтНацСН , Cena_Pr0)
+
+
+  DoubleToStr(KolItog, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr(1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+ // DoubleToStr(Sum2Itog, Cena_Pr0)
+  //DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItog, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr (1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr (1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+//  DoubleToStr(Sum2Itog, Cena_Pr0)
+//  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItogFull, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItogFull)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr(1, MassaNetItogFull), '')
+
+  DoubleToStr(Sum1ItogFull, Cena_Pr0)
+ // DoubleToStr(Sum2ItogFull, Cena_Pr0)
+ // DoubleToStr(Sum3ItogFull, Cena_Pr0)
+
+  отпуск_разрешил_должность
+  отпуск_разрешил
+
+  #ifdef _IN_VAL_DOC_
+   doubleToString(Валюта_нрек, Round(Sum1ItogFull, GetPrecisionGroup('brForSopr_RVPrice')))
+  #else
+   doubleToString(0, Round(Sum1ItogFull, GetPrecisionGroup('brForSopr_Price')))
+  #end
+
+  сдал_отправитель_должность
+  сдал_отправитель
+
+  Спецсимвол
+.endfields

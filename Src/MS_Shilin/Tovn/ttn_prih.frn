@@ -1,0 +1,141 @@
+/*
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                     (c) 1994,97 корпорация ГАЛАКТИКА                      ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Приходные накладные                                       ║
+ ║ Версия        : 5.8х                                                      ║
+ ║ Назначение    : Приходные накладные в бизнес-тексте                       ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+*/
+
+!Общие формы накладных
+#include ttn_comm.frn
+
+!===============================================================================
+!
+#doc
+Учетная карточка импортируемых товаров
+#end
+.linkform 'ttn_prih02' prototype is 'tovn'
+.NameInList 'Учетная карточка импортируемых товаров'
+.group 'Приходные накладные'
+.create view loKS
+var
+  cKatSopr     : comp;
+  cBaseDocNRec : comp;
+from
+    KatSoprMemTTN
+  , SpSoprMemTTN
+  , BaseDoc
+  , KlVal
+  , synonym KatOrg Pol
+  , synonym KatBank BankPol
+  , KatOtpEd
+where
+((
+      cKatSopr             == KatSoprMemTTN.NRec
+ and  KatSoprMemTTN.cValut == KlVal.NRec
+ and  KatSoprMemTTN.Nrec   == SpSoprMemTTN.cSopr
+ and  SpSoprMemTTN.cSpStep == SpStep.NRec
+ and  SpStep.cStepDoc      == StepDoc.NRec
+ and  StepDoc.cBaseDoc     == BaseDoc.NRec
+ and  coGetTune('MyOrg')   == Pol.NRec
+ and  BaseDoc.cMyBank      == BankPol.NRec
+ and  SpSoprMemTTN.cOtpEd  == KatOtpEd.NRec
+
+))
+;
+.var
+  PSINum  : string
+  FormRasc: string
+  NomerDO : string;
+  DateDO  : Date;
+.endvar
+.begin
+  loKS.cKatSopr := накладная_нрек;
+  if (loKS.GetFirst KatSoprMemTTN = 0)
+  {
+    var ExAttr : iExtAttr;
+    var ExClass: iExtClass;
+    var wTypeAttr: word;
+    cBaseDocNRec := loKS.BaseDoc.NRec;
+
+    // ПС
+    PSINum := ExAttr.sGetAttr(coBaseDoc, cBaseDocNRec, 'Паспорт сделки (ПС)');
+
+    //форма расчетов
+    wTypeAttr := ExClass.GetClassCode(coBaseDoc,'Форма расчетов');
+
+    if (wTypeAttr = 0)
+      FormRasc := ''
+    else
+     {
+       FormRasc := ExClass.GetSegName(wTypeAttr,cBaseDocNRec);
+
+       if (Length(FormRasc) > 2)
+         FormRasc := SubStr(FormRasc, 1, 2);
+     }
+  }
+end.
+.fields
+  CommonFormHeader
+  '' PSINum ''
+  loKS.BankPol.Schet1 loKS.Pol.Name
+  loKS.Pol.OKPO
+  NomerDO if(DateDO = Date(0,0,0), '', DateToStr(DateDO, 'DD.MM.YYYY'))
+  Номер loKS.SpSoprMemTTN.dOprTTN
+  КодМЦ Номер_пп СтВалСН
+  loKS.KlVal.ISO FormRasc КолФ loKS.KatOtpEd.bKod
+  СпецСимвол
+.endfields
+.{
+^
+.if tovn01
+.end
+.if tovn02
+.end
+.{
+.begin
+  if (loKS.GetFirst SpSoprMemTTN where ((спецификацияМЦ_нрек == SpSoprMemTTN.NRec))=0) {}
+  NomerDO := Основание;
+  DateDO  := ДатаОснования;
+end.
+                        БУЧЕТНАЯ КАРТОЧКА ИМПОРТИРУЕМЫХ ТОВАРОВ Б
+ И┌──────────┬───┬────────────────────────────────────────────────┬────┬───────────────────┐
+│ №  Б@@@@@@ Б │   │ ПСи- Б@@@@@@@@@@@@@@@@@@@@@@@@@ Б                  │    │ КС -  Б@@@@@@@@@@ Б   │
+├──────────┴───┴─────────────────┬──────────────────────────────┴────┴───────────────────┤
+│ В.сч. -  Б@@@@@@@@@@@@ Б           │ Импортер -  Б@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Б │
+├──────────────────────┬─────────┴───────────────────────────────────────────────────────┤
+│ ОКПО -  Б@@@@@@@@ Б      │ Контракт №  Б@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Б                      │
+├──────────────────────┼─────────────────────────────────────────┬───────────────────────┤
+│ Дата -  Б@@@@@@@@@@ Б    │ ГТД -  Б@@@@@@@@@@@@@@@@@@@ Б               │ Дата В. -  Б@@@@@@@@@@ Б  │
+├───┬──────────────────┴──────────┬──────────────────┬───────────┴────────────┬──────────┤
+│   │ Товар -  Б@@@@@@@@@ Б           │                  │                        │          │
+├───┼──┬──┬──┬──┬──┬──┬──┬──┬──┬──┤Номер товара -  Б@@ Б │Сумма Т -  Б&&&&&&&&&&&&&& Б├──────────┤
+│   │  │  │  │  │  │  │  │  │  │  │                  │                        │          │
+├───┴──┴──┴┬─┴──┴──┼──┴──┼──┴──┴──┴──────────────────┴───────┬────────────────┴──────────┤
+│Информация│  КВ   │  ФР │ Количество товара                 │ Единица измерения         │
+│          ├───────┼─────┼───────────────────────────────────┼───────────────────────────┤
+│ о товаре │  Б@@@ Б   │   Б@@ Б │  Б&&&&&&&&&&&&&&&& Б                  │  Б@@@@@@@@@@ Б                │
+├──────────┴───────┴─────┴───────────────────────────────────┴───────────────────────────┤
+│ Особые отметки _______________________________________________________________________ │
+│ ______________________________________________________________________________________ │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+                                                            М.П.             И.О.Фамилия И
+
+
+
+
+
+
+.}
+.{ CHECKENTER TOVNUSL
+.}
+.{
+.}
+#ifdef __SKYSHOP__
+#include sky.inc
+#end
+ ^
+.}
+.endform

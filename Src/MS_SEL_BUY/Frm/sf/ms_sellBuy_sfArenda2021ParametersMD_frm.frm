@@ -26,6 +26,13 @@
   KodTarif:String
    sNDov, sDDov, sFIO, sIOF, sFullName, sDolzh : string;
    PersNRec : comp;
+  executor_position:String
+  executor_name:String
+  executor_sname:String
+  executor_fname:String
+  executor_pname:String
+  executor_tel:String
+  executor_tel_last_nums:String
 .endvar
 .Create   view AppArenda
 from
@@ -41,6 +48,7 @@ from
  ,Katpodr
  ,Kattar
  ,TRSTV
+ ,tuneval, tuneval tuneval_fio, persons, appointments, catalogs
 where
 ((
     BaseDocNrec      == BaseDoc.nRec
@@ -61,6 +69,18 @@ and Dogovor.CCURPODR == Katpodr.nrec
 and SpStep.cmcusl    == KatUsl.nrec
 
 and Basedoc.cBank    == KatBankKontr.nrec
+
+// Получить исполнителя по дескриптору пользователя:
+and 184h == tuneval.ctune
+and BaseDoc.descr == tuneval.strval
+and 1 == tuneval_fio.obj
+and tuneval.cuser == tuneval_fio.cuser
+and 0001000000003EE1h == tuneval_fio.ctune
+and tuneval_fio.compval == persons.nrec
+
+// Получить должность исполнителя:
+and persons.appointcur == appointments.nrec
+and appointments.post  == catalogs.nrec
 ));
 .fields
 .endfields
@@ -102,7 +122,7 @@ if(boRunReport)
            xlSetCellStringValue(oKatOrgAttr.GetPostAddr(AppArenda.Katorg.nrec),12,2,12,9);
          }
 
-       writeMessageLog('Обработано ДО номер '+AppArenda.BaseDoc.NODOC+' от '+AppArenda.basedoc.DFORM+' контрагента '+NameOrg+'!');
+       writeMessageLog('Обработано ДО номер '+AppArenda.BaseDoc.NODOC+' от '+String(AppArenda.basedoc.DFORM)+' контрагента '+NameOrg+'!');
 
        if(AppArenda.getfirst KatBankKontr = tsok)
          {
@@ -112,7 +132,7 @@ if(boRunReport)
 
        if(AppArenda.getfirst Dogovor =tsok)
          {
-           xlSetCellStringValue('Дог. '+AppArenda.Dogovor.NODOC_EXT+' от '+AppArenda.Dogovor.DDOC+' г.',17,2,17,8);
+           xlSetCellStringValue('Дог. '+AppArenda.Dogovor.NODOC_EXT+' от '+String(AppArenda.Dogovor.DDOC)+' г.',17,2,17,8);
 
            if(AppArenda.getfirst Katpodr =tsok)
            {
@@ -317,6 +337,38 @@ if(boRunReport)
 
       iRowStart:=iRowStart+1;
       xlSetCellStringValue(sIOF,iRowStart,2,iRowStart,2);
+
+     // **** ФИО и должность исполнителя: ****
+     // Должность
+     if(AppArenda.getfirst Catalogs = tsok) {
+         executor_position := Catalogs.name;
+         writeMessageLog('Должность исполнителя: ' +executor_position);
+         iRowStart:=iRowStart+3;
+         xlSetCellStringValue(executor_position,iRowStart,1,iRowStart,1);
+     }
+
+     // Фимилия И.О.
+     if(AppArenda.getfirst Persons = tsok) {
+         executor_name := Persons.fio;
+         executor_sname := substr(executor_name,1,(Instr(' ',executor_name))-1);
+         executor_name:=substr(executor_name,Instr(' ', executor_name)+1,Length(executor_name)- Instr(' ', executor_name)+1);
+         executor_fname := substr(executor_name,1,1)+'.';
+         executor_name:=substr(executor_name,Instr(' ', executor_name)+1,Length(executor_name)- Instr(' ', executor_name)+1);
+         executor_pname := substr(executor_name,1,1)+'.';
+         executor_name:= executor_fname +executor_pname +' ' +executor_sname;
+         writeMessageLog('Исполнитель: ' +executor_name);
+         iRowStart:=iRowStart+1;
+         xlSetCellStringValue(executor_name,iRowStart,2,iRowStart,2);
+      }
+
+     // Телефон (269XXXX)
+     if(AppArenda.getfirst Tuneval = tsok) {
+       executor_tel_last_nums := trim(sGetTuneEx('USER.REMARK', UserOfficeFilial(Tuneval.cuser), Tuneval.cuser));
+       executor_tel := 'Тел. ' +'8(017) ' +'269-' +executor_tel_last_nums;
+       writeMessageLog('Телефон: ' +executor_tel);
+       iRowStart:=iRowStart+1;
+       xlSetCellStringValue(executor_tel,iRowStart,1,iRowStart,1);
+      }
 
      xlKillExcel;
     }

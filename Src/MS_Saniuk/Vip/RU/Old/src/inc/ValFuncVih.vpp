@@ -1,0 +1,422 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Общие функции
+// Декларирование методов объекта работы с валютами
+//******************************************************************************
+
+#doc
+возвращает количество из классификатора валют (или единицу, если не указано)
+#end
+Function GetValSumValut(cVal: comp): double;
+
+//******************************************************************************
+
+#doc
+возвращает курс валюты (ноль для национальной) на указанную дату
+#end
+Function Rate(
+              cValRate  : comp;
+              dat       : date
+             ): double;
+
+//******************************************************************************
+
+#doc
+переводит сумму из одной валюты в другую по курсу на дату
+#end
+Function CurrencyExchange(
+                          cValFrom  : comp;
+                          Sum       : double;
+                          cValTo    : comp;
+                          dat       : date
+                         ): double;
+
+//******************************************************************************
+
+#doc
+Обновление временных таблиц
+#end
+Procedure Refresh;
+
+//******************************************************************************
+
+#doc
+вывод отчета о ненайденных курсах валют
+#end
+Procedure WasErrorValut;
+
+
+//******************************************************************************
+
+#doc
+вазовая валюта
+#end
+Function ValBase: comp;
+
+//******************************************************************************
+
+#doc
+наименование базовой валюты
+#end
+Function ValBaseName: string[30];
+
+//******************************************************************************
+
+#doc
+символ базовой валюты
+#end
+Function ValBaseSimv: string[6];
+
+//******************************************************************************
+
+#doc
+валюта отчетов
+#end
+Function ValTar: comp;
+
+//******************************************************************************
+
+#doc
+наименование валюты отчетов
+#end
+Function ValTarName: string[30];
+
+//******************************************************************************
+
+#doc
+символ валюты отчетов
+#end
+Function ValTarSimv: string[6];
+
+//******************************************************************************
+
+#doc
+наименование национальной валюты
+#end
+Function ValNatName: string[30];
+
+//******************************************************************************
+
+#doc
+символ национальной валюты
+#end
+Function ValNatSimv: string[6];
+
+//******************************************************************************
+// использовать вместо GetSimvAndName
+
+#doc
+возвращает символ и наименование валюты в !!!ТВОРИТЕЛЬНОМ ПАДЕЖЕ!!!
+национальную тоже понимает, возвращает соответствующие настройки
+#end
+Function GetValSimvName(
+                        cVal     : comp;
+                        var Simv : string;
+                        var Name : string
+                       ): boolean;
+
+//******************************************************************************
+
+#doc
+возвращает символ валюты
+#end
+Function GetValSimv(_cVal: comp): string;
+
+//******************************************************************************
+
+#doc
+возвращает наименование валюты
+#end
+Function GetValName(_cVal: comp): string;
+
+//******************************************************************************
+
+#doc
+инициализация переменных объектного интерфейса для работоспособности некоторых функций
+#end
+Procedure InitVars;
+
+//******************************************************************************
+
+#doc
+инициализация объектного интерфейса
+#end
+Procedure InitVal;
+
+//******************************************************************************
+// вызывать перед ShowFile для вывода сообщения в случае, если при пересчете курсов были ошибки
+
+#doc
+вызывать перед ShowFile для вывода сообщения в случае, если при пересчете курсов были ошибки
+#end
+Procedure DoneVal;
+
+//******************************************************************************
+
+#doc
+поиск курса валюты cVal на дату DAT
+#end
+
+#ifdef _ValFuncV3_
+Function GetCurse(
+                  _cVal : comp;
+                  dat   : date;
+              var kurs  : double
+                 ): boolean;
+#else
+Function GetCurse(
+              var _cVal : comp;
+              var dat   : date;
+              var kurs  : double
+                 ): boolean;
+#end
+
+//******************************************************************************
+
+#doc
+#end
+#ifdef _ValFuncV3_
+Function GetCurrencyPrimitive(
+                              ValSrc  : comp;
+                              SumSrc  : double;
+                              ValTo   : comp;
+                              dCourse : date
+                             ): double;
+#else
+Function GetCurrencyPrimitive(
+                          var ValSrc  : comp;
+                          var SumSrc  : double;
+                          var ValTo   : comp;
+                          var dCourse : date
+                             ): double;
+#end
+//******************************************************************************
+
+#doc
+возврат суммы в валюте отчетов
+#end
+#ifdef _ValFuncV3_
+Function GetCurrency(
+                     ValSrc  : comp;
+                     SumSrc  : double;
+                     dCourse : date
+                    ): double;
+#else
+Function GetCurrency(
+                 var ValSrc  : comp;
+                 var SumSrc  : double;
+                 var dCourse : date
+                    ): double;
+#end
+//******************************************************************************
+
+#doc
+возврат суммы в базовой валюте
+#end
+#ifdef _ValFuncV3_
+Function GetBaseCurrency(
+                         ValSrc  : comp;
+                         SumSrc  : double;
+                         dCourse : date
+                        ): double;
+#else
+Function GetBaseCurrency(
+                     var ValSrc  : comp;
+                     var SumSrc  : double;
+                     var dCourse : date
+                        ): double;
+#end
+//******************************************************************************
+
+#doc
+возврат суммы в национальной валюте
+#end
+#ifdef _ValFuncV3_
+Function GetNatCurrency(
+                        ValSrc  : comp;
+                        SumSrc  : double;
+                        dCourse : date
+                       ): double;
+#else
+Function GetNatCurrency(
+                    var ValSrc  : comp;
+                    var SumSrc  : double;
+                    var dCourse : date
+                       ): double;
+#end
+//******************************************************************************
+
+#doc
+возврат суммы в любой заданной валюте
+#end
+#ifdef _ValFuncV3_
+Function GetAnyCurrency(
+                        ValSrc  : comp;
+                        SumSrc  : double;
+                        dCourse : date;
+                        targval : comp
+                       ): double;
+#else
+Function GetAnyCurrency(
+                    var ValSrc  : comp;
+                    var SumSrc  : double;
+                    var dCourse : date;
+                    var targval : comp
+                       ): double;
+#end
+//******************************************************************************
+
+#doc
+возврат суммы в национальной валюте
+#end
+#ifdef _ValFuncV3_
+Procedure GetNatTarCurrency(
+                            ValSrc1 : comp;
+                            SumSrc1 : double;
+                            ValSrc2 : comp;
+                            SumSrc2 : double;
+                            dCourse : date;
+                        var ResNat  : double;
+                        var ResTar  : double
+                           );
+#else
+Procedure GetNatTarCurrency(
+                        var ValSrc1 : comp;
+                        var SumSrc1 : double;
+                        var ValSrc2 : comp;
+                        var SumSrc2 : double;
+                        var dCourse : date;
+                        var ResNat  : double;
+                        var ResTar  : double
+                           );
+#end
+
+//******************************************************************************
+
+#doc
+возврат суммы в валюте отчетов исходя из 2 сумм: в национальной и указанной валютах
+#end
+Function GetTarCurrency(
+                        ValSrc  : comp;        // валюта операции
+                        SumSrcV : double;      // сумма в валюте
+                        SumSrcR : double;      // сумма в НДЕ
+                        dCourse : date         // дата операции
+                       ): double;
+
+//******************************************************************************
+
+#doc
+анализ настройки пользователя для пересчета валют
+#end
+Function ReCalcCursVal: boolean;
+
+//******************************************************************************
+
+#doc
+выбор валюты Pick и пересчет сумм
+#end
+#ifdef _ValFuncV3_
+Function ChoiceVal(
+               var ValSrc  : comp;
+                   dCourse : date;
+               var SumSrc  : double;
+               var SumSrcV : double
+                  ): boolean;
+#else
+Function ChoiceVal(
+               var ValSrc  : comp;
+               var dCourse : date;
+               var SumSrc  : double;
+               var SumSrcV : double
+                  ): boolean;
+#end
+//******************************************************************************
+
+#doc
+обработка сумм в НДЕ, валюте и даты операции
+пересчет сумм в валюте (НДЕ) при корректировке соответствующего поля
+#end
+#ifdef _ValFuncV3_
+Procedure ReCalcSumRubVal(
+                          isSumRub : boolean;  //true-коррект. сумма в НДЕ = CurField
+                          dCourse  : date;
+                          ValSrc   : comp;
+                      var SumSrc   : double;
+                      var SumSrcV  : double
+                         );
+#else
+Procedure ReCalcSumRubVal(
+                          isSumRub : boolean;  //true-коррект. сумма в НДЕ = CurField
+                          dCourse  : date;
+                      var ValSrc   : comp;
+                      var SumSrc   : double;
+                      var SumSrcV  : double
+                         );
+#end
+//******************************************************************************
+
+#doc
+пересчет суммы в валюте в РУБЛИ с учетом процента к курсу
+if OkPlus = TRUE  -> сколько должен заплатить учетом процента
+          = FALSE -> сколько заплачено фактически с учетом процента
+#end
+Function CalcRubValMoney(
+                         OkPlus  : boolean;
+                         ValSrc  : comp;
+                         dCourse : date;
+                         sCourse : double;
+                         SumProc : double;
+                         SumSrcV : double
+                        ): double;
+
+//******************************************************************************
+
+
+#doc
+пересчет суммы в рублях в ВАЛЮТУ с учетом процента к курсу
+#end
+Function CalcValRubMoney(
+                         ValSrc  : comp;
+                         dCourse : date;
+                         sCourse : double;
+                         SumProc : double;
+                         SumSrcR : double
+                        ): double;
+
+//******************************************************************************
+
+#doc
+пересчет суммы ВАЛЮТЕ в РУБЛИ с учетом процента к курсу
+#end
+Function CalcSumValRubDO(
+                         ValSrc  : comp;
+                         dCourse : date;
+                         sCourse : double;
+                         SumProc : double;
+                         SumSrcV : double
+                        ): double;
+
+//******************************************************************************
+#ifdef _ValFuncV2_
+
+#doc
+пересчет суммы в валюте в рубли и наоборот
+#end
+Function CheckSumVal(
+                     ValSrc      : comp;
+                     dCourse     : date;
+                 var SumSrc  : double;
+                 var SumSrcV : double
+                    ): boolean;
+
+#end
+//******************************************************************************
+#ifdef _ValFuncV3_
+
+#doc
+Возвращает символ валюты по настройке 'NDE.ShowSymVal'
+#end
+Function GetValSymbol(ValSrc: comp): string;
+
+#end
+//******************************************************************************

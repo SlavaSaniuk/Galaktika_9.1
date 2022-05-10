@@ -1,0 +1,21 @@
+#ifndef __BigPrint_VIH__
+#define __BigPrint_VIH__
+
+#ifdef ComponentVersion
+#component "L_BASEDOC"
+#end
+
+ObjInterface BigPrintObj;
+  Procedure Query;
+  Procedure BegPrint(_cBaseDoc: comp);
+  Function  retGroup(var _KGROUPMC: String[80]; var _Name: String[80]; var _kol: double; var _Summa: double; cSpStep: comp): boolean;
+end;
+
+VipInterface BigPrint implements BigPrintObj
+
+#ifdef ATL51
+  licensed (free)
+#end
+;
+
+#end //__BigPrint_VIH__

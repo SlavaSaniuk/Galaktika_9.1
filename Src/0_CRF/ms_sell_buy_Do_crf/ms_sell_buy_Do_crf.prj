@@ -1,0 +1,7 @@
+#param /linc:""
+#statusline "statgal"
+
+#include galnet.inc end;
+
+
+#make "Crf\ms_sell_buy_Do_crf.cnf" 

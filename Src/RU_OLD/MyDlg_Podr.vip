@@ -1,0 +1,16 @@
+MyDlg_Podr DIALOG
+
+Fields
+NomDok('Здесь вводите число'):word;
+Buttons
+cmOk,Default,,'Подтверждение ввода';
+cmCancel,,,'Выход';
+<<
+
+
+КОД ФИЛИАЛА: .@@@@@
+
+
+<.~В~вод.> <.~О~тмена.>
+
+>>

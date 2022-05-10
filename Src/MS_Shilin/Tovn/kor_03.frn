@@ -1,0 +1,28 @@
+!подсчет сумм по странице и итоговых сумм
+.begin
+  inc(Nom);
+  inc(NomFull);
+
+  Sum1ItogFull := Sum1ItogFull +
+  if ((oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек)
+       -oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек) + oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек))>0,
+       oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек)
+       -oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек) + oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек), 0);
+  Sum2ItogFull := Sum2ItogFull +
+  if ((oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек)
+       -oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек) + oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек))<0,
+       Round(Abs(oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек)
+       -oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек) + oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек))), 0);
+  Sum3ItogFull := Sum3ItogFull +
+  if ((oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек))>0,
+       oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек), 0);
+  Sum4ItogFull := Sum4ItogFull +
+  if ((oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек))<0,
+       Abs(oPrnSoprFun.GetKDNalogOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDNalogNew(спецификацияМЦ_нрек)), 0);
+  Sum5ItogFull := Sum5ItogFull +
+  if ((oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек))>0,
+       oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек), 0);
+  Sum6ItogFull := Sum6ItogFull +
+  if ((oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек))<0,
+       Abs (oPrnSoprFun.GetKDSummaOld(спецификацияМЦ_нрек) - oPrnSoprFun.GetKDSummaNew(спецификацияМЦ_нрек)), 0);
+end.

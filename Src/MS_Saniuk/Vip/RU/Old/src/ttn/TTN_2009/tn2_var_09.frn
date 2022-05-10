@@ -1,0 +1,35 @@
+!Переменные в форме ТН-2
+.var
+  strNN, kounter, fixkol, breakPage,
+  wSkidkaDO, wShortAutoTR                : word;
+
+  CheckKol, PrnOK, PrnAlc, bAutoGrM,
+  bNalProd, bDocEveryStr, bFixGrMC,
+  bBarKodMC                              : boolean;
+
+      СтНацБН,    СтНДСНац,     СтНацСН,
+     АСтНацБН,     АНДСНац,    АСтНацСН,     АСтНацСБН,
+  strАСтНацБН,  strАНДСНац, strАСтНацСН,  strАСтНацСБН,
+      sumkolf,    strАКолФ, strАКолВес,
+  PrSkidkaDO, PriceMC                    : double;
+
+  Название_Доп, КодМЦ_Доп,
+  KolGrM, KolOneGrM, FixGrMCCode,
+  sPriceMC, sSummaMC, sPrim,
+  sNameFPrice, sNameProcSN, sNamePriceDO,
+  sNameProcDO, sNameNP, sNameNPStavka    : string
+
+.endvar
+.begin
+  wSkidkaDO    := wGetTune('Doc.SD.PrnNakl.PrnSkidkaDO');
+  bDocEveryStr := boGetTune('Doc.SD.PrnNakl.DocOfGood');
+  bBarKodMC    := boGetTune('Doc.SD.PrnNakl.BarKodMC');
+  FixGrMCCode  := String(coGetTune('PICK.CGRMCF'));
+  sNameFPrice  := sGetTune('Doc.SD.AbbrField.FPrice');
+  sNameProcSN  := sGetTune('Doc.SD.AbbrField.ProcSN');
+  sNamePriceDO := sGetTune('Doc.SD.AbbrField.PriceDO');
+  sNameProcDO  := sGetTune('Doc.SD.AbbrField.ProcDO');
+  sNameNP      := sGetTune('Doc.SD.AbbrField.NP');
+  sNameNPStavka:= sGetTune('Doc.SD.AbbrField.NPStavka');
+  wShortAutoTR := wGetTune('Doc.SD.PrnNakl.ShortAutoTR');
+end.

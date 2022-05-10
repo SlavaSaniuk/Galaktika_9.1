@@ -1,0 +1,358 @@
+!Поля в ТТН1
+!Cena_Pr определяется в format.frn и ttn_init.frn
+#ifdef _TTN_DOC_600_
+#define _TTN_SKL_ORG_
+#end
+#ifdef _TTN_DOC_ROZN_600_
+#define _TTN_SKL_ORG_
+#end
+
+#ifdef _TTN_SKL_ORG_
+  #include 600_002.frn
+#else
+  #include TTN_002.frn
+#end
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#end
+
+Номер  DateToStr(Дата,'DD mon YYYY г.')  strNN
+
+#ifdef _TTN_SKL_ORG_
+  #include 600_003.frn
+#else
+  #include TTN_003.frn
+#end
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#end
+
+#ifdef _TTN_2001R_
+     Номер_пп
+#end
+     Название_Доп
+     КодМЦ_Доп УчЕд
+     DoubleToStr(КолУч, Kol_Pr)
+
+// заводская цена
+#ifndef _TTN_2001R_
+ #ifdef _TTN_DOC_ROZN_
+   #ifdef _IN_VAL_DOC_
+     DoubleToStr(if (isRozn911, ЦНакБНУч / (100 + Исход_процент) * 100, ЦНакСНУч), Cena_Pr)
+   #else
+     DoubleToStr(if (isRozn911, ЦНацБНУч / (100 + Исход_процент) * 100, ЦНацСНУч), Cena_PrR)
+   #end
+ #else
+   #ifdef _IN_VAL_DOC_
+     if (Завод_ЦенаНак = 0, DoubleToStr(ЦНакБНУч, Cena_Pr), DoubleToStr(Завод_ЦенаНак,Cena_Pr))
+   #else
+     if (Завод_Цена = 0, DoubleToStr(ЦНацБНУч, Cena_PrR), DoubleToStr(Завод_Цена,Cena_PrR))
+   #end
+ #end
+#else
+     DoubleToStr(Завод_цена4, Cena_Pr)
+#end
+
+// надбавка
+#ifndef _TTN_2001R_
+     Скидка_Надбавка_cтрока
+#else
+     DoubleToStr(Надбавка5, '666')
+#end
+
+ // стоимость
+#ifndef _TTN_2001R_
+ #ifdef _TTN_DOC_ROZN_
+     DoubleToStr(if(isRozn911, СтНацБН, СтНацСН * (1 + Исход_процент / 100)), Cena_Pr)
+ #else
+     DoubleToStr(СтНацБН,Cena_Pr)
+ #end
+#else
+     DoubleToStr(Стоимость6, Cena_PrR)
+#end
+
+// ставка налога
+#ifndef _TTN_2001R_
+     DoubleToStr(ставка_первого_налога, NDS_St)
+#else
+     DoubleToStr(СтавкаНДС7, '66.88')
+#end
+
+// сумма НДС
+#ifndef _TTN_2001R_
+     DoubleToStr(СтНДСНац,Cena_Pr)
+#else
+     DoubleToStr(СуммаНДС8, Cena_PrR)
+#end
+
+// стоимость с НДС
+#ifdef _TTN_2001R_
+     DoubleToStr(ВсегоНДС9, Cena_PrR)
+     if (СтавкаНП10 = 0, '', DoubleToStr(СтавкаНП10, '66.88'))
+     DoubleToStr(СуммаНП11, Cena_PrR)
+     DoubleToStr(ВсегоНДСНП12, Cena_PrR)
+     DoubleToStr(РознЦена13, Cena_PrR)
+#else
+     DoubleToStr(СтНацСН, Cena_Pr)
+#end
+
+     if(ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ<>'',ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ,ОтпЕд)
+     KolGrM
+     KolOneGrM
+     КодГруза
+     КлассГруза
+   #ifdef _TTN_ALC_
+     DoubleToStr(КолВес, Massa_Kg)
+   #else
+     DoubleToStr(КолВес/1000, Massa_Tn)
+   #end
+     с_грузом_след_док
+     if(с_грузом_след_док<>'',' ','')+if(Номер_сертификата<>'','Серт.N'+Номер_сертификата,'')
+
+#ifdef _TTN_2001R_
+  ДрагМетНазв[1]   ДрагМетКол[1]   ДрагМетЕд[1]
+  ДрагМетНазв[2]   ДрагМетКол[2]   ДрагМетЕд[2]
+  ДрагМетНазв[3]   ДрагМетКол[3]   ДрагМетЕд[3]
+  ДрагМетНазв[4]   ДрагМетКол[4]   ДрагМетЕд[4]
+  ДрагМетНазв[5]   ДрагМетКол[5]   ДрагМетЕд[5]
+  ДрагМетНазв[6]   ДрагМетКол[6]   ДрагМетЕд[6]
+  ДрагМетНазв[7]   ДрагМетКол[7]   ДрагМетЕд[7]
+  ДрагМетНазв[8]   ДрагМетКол[8]   ДрагМетЕд[8]
+  ДрагМетНазв[9]   ДрагМетКол[9]   ДрагМетЕд[9]
+  ДрагМетНазв[10]  ДрагМетКол[10]  ДрагМетЕд[10]
+#end
+
+ПрейскурантЦен
+
+#ifndef _TTN_2001R_
+#ifdef _TTN_DOC_ROZN_
+ DoubleToStr(if(isRozn911, strАСтНацБН, strАСтНацСН * (1 + Исход_процент / 100)), Cena_Pr)
+#else
+ DoubleToStr(strАСтНацБН, Cena_Pr)
+#end
+ DoubleToStr(strАНДСНац,  Cena_Pr)
+ DoubleToStr(strАСтНацСН, Cena_Pr)
+ DoubleToStr(strАКолФ,'666666666666666')
+#ifdef _TTN_ALC_
+ DoubleToStr(strАКолВес, Massa_Kg)
+#else
+ DoubleToStr(strАКолВес/1000, Massa_Tn)
+#end
+
+#ifdef _IN_VAL_DOC_
+ doubleToString(Валюта_нрек, Round(strАНДСНац, GetPrecisionGroup('brForSopr_RVPrice')))
+ doubleToString(Валюта_нрек, Round(strАСтНацСН,GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+ doubleToString(0, Round(strАНДСНац, GetPrecisionGroup('brForSopr_Price')))
+ doubleToString(0, Round(strАСтНацСН,GetPrecisionGroup('brForSopr_Price')))
+#end
+#else
+  DoubleToStr(АСтоимость6, Cena_Pr)
+  DoubleToStr(АСуммаНДС8, Cena_Pr)
+  DoubleToStr(АВсегоНДС9, Cena_Pr)
+  DoubleToStr(АСуммаНП11, Cena_Pr)
+  DoubleToStr(АВсегоНДСНП12, Cena_Pr)
+  DoubleToStr(strАКолФ,'666666666666666')
+  DoubleToStr(strАКолВес/1000, Massa_Tn)
+  doubleToString(0, Round(АСуммаНДС8, GetPrecisionGroup('brForSopr_Price')))
+  doubleToString(0, Round(АВсегоНДСНП12,GetPrecisionGroup('brForSopr_Price')))
+#end
+
+ отпуск_разрешил_должность3 отпуск_разрешил3
+ отпуск_разрешил_должность2 отпуск_разрешил2
+ отпуск_разрешил_должность  отпуск_разрешил
+
+ DoubleToStr(strАКолФ,'4\n')
+ DoubleToStr(strАКолФ,'4\n')
+
+#ifdef _TTN_ALC_
+ MassaInWords (strАКолВес, if (wRoundMass2 > 3, wRoundMass2, 3))
+ MassaInWords (strАКолВес, if (wRoundMass2 > 3, wRoundMass2, 3))
+#else
+ MassaInWords (strАКолВес, wRoundMass2)
+ MassaInWords (strАКолВес, wRoundMass2)
+#end
+
+ сдал_отправитель_должность + ' ' + сдал_отправитель
+ Экспедитор
+ Экспедитор
+
+ ПрейскурантЦен
+
+#ifndef _TTN_2001R_
+#ifdef _TTN_DOC_ROZN_
+ DoubleToStr(if(isRozn911, strАСтНацБН, strАСтНацСН * (1 + Исход_процент / 100)), Cena_Pr)
+#else
+ DoubleToStr(strАСтНацБН, Cena_Pr)
+#end
+ DoubleToStr(strАНДСНац,  Cena_Pr)
+ DoubleToStr(strАСтНацСН, Cena_Pr)
+ DoubleToStr(strАКолФ,'666666666666666')
+#ifdef _TTN_ALC_
+ DoubleToStr(strАКолВес, Massa_Kg)
+#else
+ DoubleToStr(strАКолВес/1000, Massa_Tn)
+#end
+
+#ifdef _IN_VAL_DOC_
+ doubleToString(Валюта_нрек, Round(strАНДСНац, GetPrecisionGroup('brForSopr_RVPrice')))
+ doubleToString(Валюта_нрек, Round(strАСтНацСН,GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+ doubleToString(0, Round(strАНДСНац, GetPrecisionGroup('brForSopr_Price')))
+ doubleToString(0, Round(strАСтНацСН,GetPrecisionGroup('brForSopr_Price')))
+#end
+#else
+  DoubleToStr(АСтоимость6, Cena_Pr)
+  DoubleToStr(АСуммаНДС8, Cena_Pr)
+  DoubleToStr(АВсегоНДС9, Cena_Pr)
+  DoubleToStr(АСуммаНП11, Cena_Pr)
+  DoubleToStr(АВсегоНДСНП12, Cena_Pr)
+  DoubleToStr(strАКолФ,'666666666666666')
+  DoubleToStr(strАКолВес/1000, Massa_Tn)
+  doubleToString(0, Round(АСуммаНДС8, GetPrecisionGroup('brForSopr_Price')))
+  doubleToString(0, Round(АВсегоНДСНП12,GetPrecisionGroup('brForSopr_Price')))
+#end
+
+ отпуск_разрешил_должность3 отпуск_разрешил3
+ отпуск_разрешил_должность2 отпуск_разрешил2
+ отпуск_разрешил_должность  отпуск_разрешил
+
+ DoubleToStr(strАКолФ,'4\n')
+ DoubleToStr(strАКолФ,'4\n')
+
+#ifdef _TTN_ALC_
+ MassaInWords (strАКолВес, if (wRoundMass2 > 3, wRoundMass2, 3))
+ MassaInWords (strАКолВес, if (wRoundMass2 > 3, wRoundMass2, 3))
+#else
+ MassaInWords (strАКолВес, wRoundMass2)
+ MassaInWords (strАКолВес, wRoundMass2)
+#end
+
+ сдал_отправитель_должность + ' ' + сдал_отправитель
+ Экспедитор
+ Экспедитор
+
+ ПрейскурантЦен
+
+#ifndef _TTN_2001R_
+#ifdef _TTN_DOC_ROZN_
+ DoubleToStr(if(isRozn911, АСтНацБН, АСтНацСН * (1 + Исход_процент / 100)), Cena_Pr)
+#else
+ DoubleToStr(АСтНацБН, Cena_Pr)
+#end
+ DoubleToStr(АНДСНац,  Cena_Pr)
+ DoubleToStr(АСтНацСН, Cena_Pr)
+ if ((KolGrM = '-') AND (sumKolf = 0), '-', DoubleToStr(sumKolf, '666666666666666'))
+#ifdef _TTN_ALC_
+ DoubleToStr(sumves, Massa_Kg)
+#else
+ DoubleToStr(sumves/1000, Massa_Tn)
+#end
+#else
+  DoubleToStr(АСтоимость6, Cena_Pr)
+  DoubleToStr(АСуммаНДС8, Cena_Pr)
+  DoubleToStr(АВсегоНДС9, Cena_Pr)
+  DoubleToStr(АСуммаНП11, Cena_Pr)
+  DoubleToStr(АВсегоНДСНП12, Cena_Pr)
+  DoubleToStr(sumkolf,'666666666666666')
+  DoubleToStr(sumves/1000, Massa_Tn)
+#end
+
+#ifdef _TTN_ALC_
+ Номер  DateToStr(Дата,'DD mon YYYY г.')  strNN
+ Название2 удост_госгигиен_регистрации2 таможенные_разрешения2
+ акцизные_марки1 акцизные_марки2 акцизные_марки3 акцизные_марки4 акцизные_марки5
+ акцизные_марки6 акцизные_марки7 акцизные_марки8 акцизные_марки9 акцизные_марки10
+#end
+#ifdef _TTN_SKL_ORG_
+  #include 600_002.frn
+#else
+  #include TTN_002.frn
+#end
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#end
+
+ Номер  DateToStr(Дата,'DD mon YYYY г.')  strNN
+
+#ifndef _TTN_2001R_
+#ifdef _TTN_DOC_ROZN_
+ DoubleToStr(if(isRozn911, АСтНацБН, АСтНацСН * (1 + Исход_процент / 100)), Cena_Pr)
+#else
+ DoubleToStr(АСтНацБН, Cena_Pr)
+#end
+ DoubleToStr(АНДСНац,  Cena_Pr)
+ DoubleToStr(АСтНацСН, Cena_Pr)
+ if ((KolGrM = '-') AND (sumKolf = 0), '-', DoubleToStr(sumKolf, '666666666666666'))
+#ifdef _TTN_ALC_
+ DoubleToStr(sumves, Massa_Kg)
+#else
+ DoubleToStr(sumves/1000, Massa_Tn)
+#end
+
+#ifdef _IN_VAL_DOC_
+ doubleToString(Валюта_нрек, Round(АНДСНац, GetPrecisionGroup('brForSopr_RVPrice')))
+ doubleToString(Валюта_нрек, Round(АСтНацСН,GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+ doubleToString(0, Round(АНДСНац, GetPrecisionGroup('brForSopr_Price')))
+ doubleToString(0, Round(АСтНацСН,GetPrecisionGroup('brForSopr_Price')))
+#end
+#else
+  DoubleToStr(АСтоимость6, Cena_Pr)
+  DoubleToStr(АСуммаНДС8, Cena_Pr)
+  DoubleToStr(АВсегоНДС9, Cena_Pr)
+  DoubleToStr(АСуммаНП11, Cena_Pr)
+  DoubleToStr(АВсегоНДСНП12, Cena_Pr)
+  DoubleToStr(sumkolf,'666666666666666')
+  DoubleToStr(sumves/1000, Massa_Tn)
+  doubleToString(0, Round(АСуммаНДС8, GetPrecisionGroup('brForSopr_Price')))
+  doubleToString(0, Round(АВсегоНДСНП12, GetPrecisionGroup('brForSopr_Price')))
+#end
+
+отпуск_разрешил_должность3 отпуск_разрешил3
+отпуск_разрешил_должность2 отпуск_разрешил2
+отпуск_разрешил_должность  отпуск_разрешил
+
+НомерДовер
+
+if (ДатаДовер <> date(0,0,0), DateToStr(ДатаДовер,'"DD" mon YYYY г.'),' ')
+if (sumKolF = 0, '', DoubleToStr(sumKolF,'4\n'))
+if (sumKolF = 0, '', DoubleToStr(sumKolF,'4\n'))
+
+if (Trim(ФИОДовер) <> '',
+  if (Trim(ОргДовер) <> '', ОргДовер, Грузополучатель), '')
+
+#ifdef _TTN_ALC_
+ MassaInWords (sumves, if (wRoundMass2 > 3, wRoundMass2, 3))
+ MassaInWords (sumves, if (wRoundMass2 > 3, wRoundMass2, 3))
+#else
+ MassaInWords (sumves, wRoundMass2)
+ MassaInWords (sumves, wRoundMass2)
+#end
+
+сдал_отправитель_должность + ' ' + сдал_отправитель
+Экспедитор
+ДовЛицоДолжность + if(ДовЛицоДолжность<>'','   ','') + ФИОДовер
+Экспедитор
+
+транспортная_услуга_1
+транспортная_услуга_2
+
+ТТН_ПунктП_Орг_Имя
+ТТН_ПунктП_Метод
+If(ТТН_ПунктП_Дата_С=date(0,0,0), '', DateToStr(ТТН_ПунктП_Дата_С,'DD/MM/YY'))
+If((ТТН_ПунктП_Время_С = string(time(0,0,0,0))) and
+   (ТТН_ПунктП_Дата_С  = date(0,0,0)),         '', ТТН_ПунктП_Время_С)
+If(ТТН_ПунктП_Дата_По=date(0,0,0), '', DateToStr(ТТН_ПунктП_Дата_По,'DD/MM/YY'))
+If((ТТН_ПунктП_Время_По= string(time(0,0,0,0))) and
+   (ТТН_ПунктП_Дата_По = date(0,0,0)),         '', ТТН_ПунктП_Время_По)
+If(ТТН_ПунктП_Доп_Время=string(time(0,0,0,0)), '', ТТН_ПунктП_Доп_Время)
+ТТН_ПунктП_Доп_Имя
+ТТН_ПунктР_Орг_Имя
+Спецсимвол
+#ifdef _TTN_SKL_ORG_
+#undef _TTN_SKL_ORG_
+#end

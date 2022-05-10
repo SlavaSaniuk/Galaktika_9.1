@@ -1,0 +1,138 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Версия      : 8.10
+// Назначение  : Функции для работы с внешними класификаторами документов
+//------------------------------------------------------------------------------
+//  Параметры:
+//     _wTable      - co-код Таблицы
+//     _ClassName   - наименование классификации
+//     _ClassCode   - код классификации
+//     _cRec        - ссылка на запись в таблице
+//     _NeedMessage - выдавать сообщение об ошибке
+
+
+#ifndef _ExtClass_Func
+#define _ExtClass_Func
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+#doc
+Функции для работы с внешними класификаторами документов. <br>
+</brief>
+Параметры: <br>
+  <ul>
+   <li> _wTable      - co-код Таблицы <br>
+   <li> _ClassName   - наименование классификации <br>
+   <li> _ClassCode   - код классификации <br>
+   <li> _cRec        - ссылка на запись в таблице <br>
+   <li> _NeedMessage - выдавать сообщение об ошибке <br>
+  </ul>
+#end
+
+ObjInterface objExtClass;
+
+//------------------------------------------------------------------------------
+//   Набор функций для создания, получения кода, показа ошибки
+
+  #doc
+  возвращает Код Класса по названию класса для указанной таблицы
+  #end
+  Function GetClassCode ( _wTable: word;  _ClassName: string ) : word;
+
+  #doc
+  Формирует классификацию для таблицы _wTable по названию; Возвращает код классификации. 0 - ошибка
+  #end
+  Function CreateClass(_wTable: word; _ClassName: string; _UniqFeat : word) : word;
+
+  #doc
+  Добавляет сегмент в вн. классификацию. Возвращает nRec сегмента, иначе 0
+  #end
+  Function AddSegClass(_ClassCode : word; _SegName: string;  _SegCode: string; _cGroup: comp) : comp;
+
+  #doc
+  Установить требование автоматического выдачи сообщения при ошибке; Возвращает предыдущее значение
+  #end
+  Function SetNeedMessage ( _NeedMessage : boolean ) : boolean;
+  #doc
+  Выдать сообщение об ошибке
+  #end
+  Procedure ShowError (_err : word);
+  #doc
+  получить номер последней ошибки
+  #end
+  Function LastError : word ;
+
+
+!------------------------------------------------------------------------------
+!   Набор функций для извлечения Названия и кода сегмента вн. классификации
+  #doc
+  возвращает Название сегмента класса по коду класса для указанной таблицы с номером записи
+  #end
+  Function GetSegName ( _ClassCode : word; _cRec : comp ) : string ;
+  #doc
+  возвращает Код сегмента класса по коду класса для указанной таблицы с номером записи
+  #end
+  Function GetSegCode ( _ClassCode : word; _cRec : comp ) : string ;
+
+
+!------------------------------------------------------------------------------
+!   Набор функций для удаления, перемещения и копирования классификации
+  #doc
+  копирование
+  #end
+  Function CopyAllClassVal (_wTable: word;  _cRecFrom: comp;  _cRecTo : comp ) : boolean;
+
+  #doc
+  копирование в другую таблицу и создание если ее не существует для другой таблицы
+  #end
+  Function CopyAllClassValEx (_wTableFrom: word;  _cRecFrom: comp;  _wTableTo: word; _cRecTo : comp ) : boolean;
+
+  #doc
+  Копирует классификацию (ClassName, ClassSeg, ClassIer) из классификации с кодом _ClassCode в таблицу _wTableTo; <br>
+  Возвращает код классификации. 0 - ошибка
+  #end
+  Function CopyClassEx (_CodeFrom: word; _wTableTo: word) : word;
+
+  #doc
+  удаление всех значений (при удалении записи в таблице)
+  #end
+  Function DeleteAllClassVal (_wTable: word; _cRec: comp) : boolean;
+
+  #doc
+  перенос от старой записи к новой (откуда-куда)
+  #end
+  Function MoveAllClassVal (_wTable: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+
+  #doc
+  просмотр/редактирование значения в интерфейсе
+  #end
+  Function Pick(_CanEdit: boolean; _wTable: word;  _cRec: comp): boolean;
+
+  #doc
+  копирование c проверкой на уникальность. <br>
+  Если классификация уникальная, то при_bZam = <br>
+    true - заменять старое значение на новое, <br>
+    false - пропустить. <br>
+  #end
+  Function CopyAllClassValUniq (_wTable: word;  _cRecFrom: comp;  _cRecTo : comp; _bZam : boolean ) : boolean;
+
+  #doc
+  Копирование всех выбранных значений классификатора в указанную запись.
+  </brief>
+  Значения классификатора помечаются интерфейсом PickExClassVal и сбрасываются в маркер.
+  #end
+  Function CopyClassValPick (_wTable: word; _cRecFrom: comp; _cRecTo : comp ) : boolean;
+
+End;
+
+
+VipInterface iExtClass implements objExtClass
+#ifdef ATL51
+  licensed (FREE)
+#end
+;
+
+#endif
+

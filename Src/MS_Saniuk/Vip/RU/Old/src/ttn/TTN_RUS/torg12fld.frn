@@ -1,0 +1,171 @@
+.fields
+  #OrgFields(Грузоотправитель)
+  #OrgFieldsBank(Грузоотправитель)
+  Грузоотправитель_ОКПО
+#ifdef _TTN_PRIH_
+  Склад_Пол
+  Получатель_ОКОНХ
+#else
+  Склад
+  Поставщик_ОКОНХ               // KatOrg.OKONH
+#end
+
+  #OrgFields(Грузополучатель)
+  #OrgFieldsBank(Грузополучатель)
+  Грузополучатель_ОКПО
+
+  Поставщик_ОКПО
+  if(Грузоотправитель = Поставщик,
+     #OrgFieldsUr(Поставщик),
+     #OrgFields  (Поставщик)
+    )
+  #OrgFieldsBank(Поставщик)
+
+#ifdef _TTN_PRIH_
+  Получатель_ОКПО
+  #OrgFields(Получатель)
+  #OrgFieldsBank(Получатель)
+#else
+  Плательщик_ОКПО
+  if(Грузополучатель = Плательщик,
+     #OrgFieldsUr(Плательщик),
+     #OrgFields  (Плательщик)
+    )
+  #OrgFieldsBank(Плательщик)
+#end
+
+  if (Номер_Договора <> '', Номер_Договора,
+    if (НарядЗаказНомер <> '', НарядЗаказНомер,
+      if (Основание <> '', Основание, '')))
+
+  if (Номер_Договора <> '', 'Договор',
+    if (НарядЗаказНомер <> '', 'Заказ-наряд',
+      if (Основание <> '', 'Счет', '')))
+
+  if (Номер_Договора <> '', DateToStr(Дата_Договора, 'DD/MM/YYYY'),
+    if (НарядЗаказНомер <> '', DateToStr(НарядЗаказДата, 'DD/MM/YYYY'),
+      if (Основание <> '', DateToStr(ДатаОснования, 'DD/MM/YYYY'), '')))
+
+  номер
+
+  if (Дата=date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+  DoubleToStr(KolItog     , RoundGrm)
+  if (MassaBrItog = 0, '', DoubleToStr(MassaBrItog , Massa_Kg))
+  if (wFillCol10 = 0,
+    if (MassaNetItog = 0, '', DoubleToStr(MassaNetItog, Massa_Kg)), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+    Nom
+    Название
+    КодМЦ
+    УчЕд
+    CodeEd
+    if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд)
+    KolOneGrM
+    KolGrM
+    if (МассаМЦ + МассаТарыМЦ = 0, '', DoubleToStr ((МассаМЦ + МассаТарыМЦ) * КолУч, Massa_Kg))
+    if (wFillCol10 = 0,
+      if (МассаМЦ = 0, '',
+        DoubleToStr(МассаМЦ * КолУч, Massa_Kg)), DoubleToStr(КолУч, Kol_Pr)) // выводится по настройке
+
+  #ifdef _IN_VAL_DOC_
+    DoubleToStr(ЦНакБНУч, Cena_Pr0)
+  #else
+    DoubleToStr(ЦНацБНУч, Cena_Pr0)
+  #end
+    DoubleToStr(СтНацБН , Cena_Pr0)
+    DoubleToStr(ставка_первого_налога, NDS_St)
+    DoubleToStr(СтНДСНац, Cena_Pr0)
+    DoubleToStr(СтНацСН , Cena_Pr0)
+
+
+  DoubleToStr(KolItog, RoundGrm)
+  if (MassaBrItog = 0, '', DoubleToStr(MassaBrItog, Massa_Kg))
+  if (wFillCol10 = 0,
+    if (MassaNetItog = 0, '', DoubleToStr(MassaNetItog, Massa_Kg)), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItog, RoundGrm)
+  if (MassaBrItog = 0, '', DoubleToStr(MassaBrItog, Massa_Kg))
+  if (wFillCol10 = 0, if (MassaNetItog = 0, '', DoubleToStr(MassaNetItog, Massa_Kg)), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItogFull, RoundGrm)
+  if (MassaBrItogFull = 0, '', DoubleToStr(MassaBrItogFull, Massa_Kg))
+  if (wFillCol10 = 0,
+    if (MassaNetItogFull = 0, '', DoubleToStr(MassaNetItogFull, Massa_Kg)), '')
+
+  DoubleToStr(Sum1ItogFull, Cena_Pr0)
+  DoubleToStr(Sum2ItogFull, Cena_Pr0)
+  DoubleToStr(Sum3ItogFull, Cena_Pr0)
+
+  DoubleToStr(NomFull, '4\m')
+  DoubleToStr(Round(KolItogFull, KolZn), strDr)
+
+  if (MassaNetItogFull = 0, '',
+    MassaInWords (MassaNetItogFull,  if (wRoundMass2 > 3, wRoundMass2, 3))) // минимальная точность - 1кг.
+
+  if (MassaBrItogFull = 0, '',
+    MassaInWords (MassaBrItogFull,  if (wRoundMass2 > 3, wRoundMass2, 3)))
+
+  НомерДовер
+  if(LongInt(ДатаДовер) <> LongInt(0), DateToStr(ДатаДовер, 'DD mon YYYY'), '')
+
+#ifdef _IN_VAL_DOC_
+  doubleToString(Валюта_нрек, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+  doubleToString(0, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_Price')))
+#end
+
+  if ((Trim(ФИОДовер) <> '') AND (ДатаДовер <> Date(0,0,0) OR Trim(НомерДовер) <> ''),
+    if (Trim(ОргДовер) <> '', ОргДовер, Грузополучатель), '')
+
+#ifdef _TTN_PRIH_
+  strEmpty strEmpty
+#else
+  отпуск_разрешил_должность  отпуск_разрешил
+#end
+
+  ДовЛицоДолжность + if (ДовЛицоДолжность <> '', ' ', '')
+  + ФИОДовер
+
+#ifdef _TTN_PRIH_
+  отпуск_разрешил_должность  отпуск_разрешил
+  strEmpty strEmpty strEmpty
+  сдал_отправитель_должность  сдал_отправитель
+#else
+  strEmpty strEmpty
+  Главный_бухгалтер
+  сдал_отправитель_должность  сдал_отправитель
+  strEmpty strEmpty
+#end
+  Спецсимвол
+.endfields

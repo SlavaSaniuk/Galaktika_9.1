@@ -1,0 +1,42 @@
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+Функция подсчета движения по МЦ
+#end
+
+ObjInterface ObjMCmovement;
+#doc
+Функция подсчета движения по МЦ
+#end
+ function MCmovement(DateBeg, DateEnd: date; aSP, aTipOrd: word; aMC, aPodr, aMOL, aParty: comp; var aPrih, aRash, sumPrih, sumRash: double): double;
+
+ //Описание параметров функции:
+ //DateBeg, DateEnd: date - две даты задающие диапазон дат расчёта движения
+ //aSP: word  - место расчёта движения 0 - расчёт на складе, 1 - расчёт в производстве
+ //aTipOrd : word - фильтр на ТипОрдера 0 - по всем типа ордеров, 1 - внешние, 2 - производство, 3 - внутреннее перемещение и т.д. в соответствии со значением поля TipOrd складского ордера
+ //aMc : comp - ссылка на некоторую МЦ, для которой необходимо рассчитать движение
+ //aPodr, aMOL, aParty : comp - складской разрез на котором необходимо рассчитать движение
+ //           (0 - любое значение т.е. параметр не участвует в определении складского разреза, -1  - параметр принимает значение ноль, иначе - конкретное значение
+ //var aPrih, aRash : double - две переменных указывающие суммарный приход и суммарный расхода за данный интервал
+ //Функция возвращает движение за интервал, т.е. суммарный приход минус суммарный расход = aPrih - aRash
+#doc
+Функция возвращает цену последнего прихода для данной МЦ
+#end
+ function MCLastPricePrih(aSP, aTipOrd: word; aMC, aPodr, aMOL, aParty: comp): double;
+
+#doc
+Функция возвращает цену последнего расхода для данной МЦ
+#end
+ function MCLastPriceRash(aSP, aTipOrd: word; aMC, aPodr, aMOL, aParty: comp): double;
+ // две функции очень похожие... одна возвращает цену последнего прихода для данного МЦ
+ // вторая последнего расхода, для данного МЦ
+ // смысл и название параметров тот же самый что и для функции MCmovement
+end;
+
+VipInterface iMCmovement implements ObjMCmovement
+#ifdef ATL51
+ licensed (FREE)
+#end
+;

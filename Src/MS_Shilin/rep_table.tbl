@@ -1,0 +1,15 @@
+table struct sResult_MC
+(
+  nRec: comp,
+  sBarcode   : string,
+  sNameMC    : String,
+  dParty     : Date,
+  sNameParty : string,
+  isImport   : string,
+  sMessage   : string
+)
+with index
+(
+  sResult_Dog01  = nRec (surrogate, unique),
+  sResult_Dog02  = sNameMC + sBarcode
+);

@@ -1,0 +1,15 @@
+!Переменные в форме ТН-2
+.var
+  strNN, kounter, fixkol, breakPage      : word;
+
+  CheckKol, PrnOK, PrnAlc, bAutoGrM      : boolean;
+
+      СтНацБН,    СтНДСНац,     СтНацСН,
+     АСтНацБН,     АНДСНац,    АСтНацСН,
+  strАСтНацБН,  strАНДСНац, strАСтНацСН,
+      sumkolf,    strАКолФ, strАКолВес   : double;
+
+  Название_Доп, КодМЦ_Доп,
+  KolGrM, KolOneGrM                      : string
+
+.endvar

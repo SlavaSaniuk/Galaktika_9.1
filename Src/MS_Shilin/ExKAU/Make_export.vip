@@ -1,0 +1,271 @@
+#Component "L_Sklad"
+
+/*table struct sResult_MC
+(
+  nRec: comp,
+  sBarcode   : string,
+  sNameMC    : String,
+  dParty     : Date,
+  sNameParty : string,
+  isImport   : string,
+!  cOldDog    : Comp,
+  sMessage   : string
+)
+with index
+(
+  sResult_Dog01  = nRec (surrogate, unique),
+  sResult_Dog02  = sNameMC + sBarcode
+);
+*/
+Interface  MakeExtKAU_Import_fromParty 'Заполнение признака импорта для МЦ во внешнем КАУ на основании последней партии' /*DoAccept, Cyan,*/ EscClose;
+  show at (15,2,140,20);
+Var
+  wParam, wDelete : word;
+Create view
+Var
+  MC_nrec: comp;
+  dBeg, dEnd : date;
+  sPeriod, sPeriod1    : string;
+As select
+  *
+From
+    sResult_MC,
+    katmc,
+    katparty,
+    kaureff,
+    katmc kmc,
+    katparty kparty
+//N ot used
+//where
+//((
+//      MC_nrec           == katmc.nrec
+//   MC_nrec           == katparty.cmc
+//  and 0                 == katparty.kons
+//  and 0001000000000002h == katparty.cGroupParty
+//))
+//order byRes by sresult_mc.sNameMC
+//order by katmc.name, katparty.CreateDateTime
+//Bounds byDate = _DateTime(day(dBeg), month(dBeg), year(dBeg), 0, 0, 0, 0) <<= katparty.CreateDateTime (noindex)
+//            and _DateTime(day(dEnd), month(dEnd), year(dEnd), 0, 0, 0, 0) >>= katparty.CreateDateTime (noindex)
+;
+Form frmReportMakeExtKAU_ImportMC ('repExtKAUImp.OUT', 'repExtKauImp') with NoVisual;
+Procedure PrintExtKauImp;
+{
+  frmReportMakeExtKAU_ImportMC.write(dBeg);
+  frmReportMakeExtKAU_ImportMC.write(dEnd);
+    _Loop sResult_MC ordered sNameMC
+    {
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.sNameMC);
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.sBarcode);
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.dParty);
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.sNameParty);
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.isImport);
+      frmReportMakeExtKAU_ImportMC.write(sResult_MC.sMessage);
+    }
+    if (NOT frmReportMakeExtKAU_ImportMC.error)
+      frmReportMakeExtKAU_ImportMC.showFile('');
+    else
+      {
+        frmReportMakeExtKAU_ImportMC.abortForm;
+      }
+};
+
+function CreateOneExtKAUImport(cNrecMC:comp) : boolean;
+{
+  MC_NRec:=cNrecMC;
+  CreateOneExtKAUImport:=false;
+  ClearBuffer(#sResult_MC);
+!  Message(mc_nrec);
+  if(getfirst katmc where ((cNRecMC == katmc.nrec)) != tsOK)
+  {
+    sResult_mc.sMessage := 'Для nrec '+ string(MC_Nrec) + ' не найдено соответствие в каталоге ТМЦ';
+    sResult_mc.sNameMC:='!!!Отсутствует в каталоге!!!';
+    insert current sResult_MC;
+    CreateOneExtKAUImport:=false;
+    exit;
+  }
+  sResult_MC.sNameMC    := katmc.name;
+  sResult_MC.sBarcode   := katmc.barkod;
+  var latest: _datetime = _DateTime(0,0,0,0,0,0,0);
+  var last_party: comp = comp(0);
+  _loop katparty where ((cNrecMC == katparty.cmc))
+  {
+    if (latest < katparty.CreateDateTime)
+    {
+      if((dBeg=Date(0,0,0) and dBeg=Date(0,0,0))
+            or (dBeg<=StrToDate(_DateTimeToStr(katparty.CreateDateTime,'DD/MM/YYYY'),'DD/MM/YYYY')
+            and dEnd>=StrToDate(_DateTimeToStr(katparty.CreateDateTime,'DD/MM/YYYY'),'DD/MM/YYYY')))
+      {
+           latest:=katparty.CreateDateTime;
+           last_party:=katparty.nrec;
+      }
+    }
+  }
+  if(last_party = comp(0))
+  {
+//    MESSAGE('0');
+    sResult_mc.sMessage := 'нет партий';
+    insert current sResult_MC;
+    CreateOneExtKAUImport:=false;
+    exit;
+  }
+  if(getfirst katparty where ((last_party == katparty.nrec)) = tsOK) {};
+
+  sResult_MC.dParty     := StrToDate(_DateTimeToStr(katparty.CreateDateTime,'DD/MM/YYYY'),'DD/MM/YYYY');
+  sResult_MC.sNameParty := katparty.name;
+
+  if(katparty.cGroupParty = 0001000000000002h)
+  {
+//    message('1');
+    if(getfirst kaureff where ((1411              == kaureff.coTable
+                            and MC_NRec           == kaureff.cRec
+                            and 10261             == kaureff.wKAU
+                            and 0001000000002BE6h == kaureff.cKAU)) != tsOK)
+    {
+      ClearBuffer(#kaureff);
+      kaureff.coTable := 1411;
+      kaureff.cRec    := MC_NRec;
+      kaureff.wKAU    := 10261;
+      kaureff.cKAU    := 0001000000002BE6h;
+      if(insert current kaureff = tsOK)
+      {
+        sResult_MC.isImport := 'OK';
+        CreateOneExtKAUImport:=true;
+        insert current sResult_MC;
+      }
+      else
+      {
+        sResult_MC.isImport := 'Ошибка вставки внешнего КАУ';
+        CreateOneExtKAUImport:=false;
+        insert current sResult_MC;
+      }
+    }
+    else
+    {
+      sResult_MC.isImport := 'Уже есть';
+      CreateOneExtKAUImport:=false;
+      insert current sResult_MC;
+    }
+  }
+  else
+  {
+    if(((wParam AND 2) > 0) and
+        (getfirst kaureff where ((1411              == kaureff.coTable
+                            and MC_NRec           == kaureff.cRec
+                            and 10261             == kaureff.wKAU
+                            and 0001000000002BE6h == kaureff.cKAU)) = tsOK)
+      )
+    {
+      if(delete current kaureff = tsOK)
+      {
+        sResult_mc.sMessage := 'Внешнее КАУ "Импорт" удалено';
+      }
+    }
+    else
+    {
+       if (      (getfirst kaureff where ((1411              == kaureff.coTable
+                            and MC_NRec           == kaureff.cRec
+                            and 10261             == kaureff.wKAU
+                            and 0001000000002BE6h == kaureff.cKAU)) = tsOK)
+          )
+       {
+         sResult_mc.sMessage := 'КАУ не совпадает с партией';
+       }
+    }
+    sResult_MC.isImport := 'Отечественное';
+    insert current sResult_MC;
+  }
+}
+procedure CreateExtKAUImport;
+{
+  StartNewVisual( vtNumericVisual, vfTimer+vfBreak+vfConfirm, 'Формирование внешнего КАУ "Импорт" к матценности на основании партий', 1);
+  _LOOP kmc
+  {
+     CreateOneExtKAUImport(kmc.nrec);//281474976845015
+  }
+  StopVisual;
+}
+//Window wDogFromDo;
+Screen sMakeExKAUMC ('',,sci178Esc);
+//  show at(,,,4) fixed_y;
+  table katparty;
+Fields
+  sPeriod('Даты выборки партий'):Protect, Skip;
+  dBeg ('Дата начала выборки партий'):NoProtect, PickButton, {Font = {BackColor = ColorNeed}};
+  sPeriod1('Даты выборки партий'):Protect, Skip;
+  dEnd ('Конечная дата выборки партий'): NoProtect, PickButton, {Font = {BackColor = ColorNeed}};
+  wParam ('Параметры',,sci13Esc) : NoProtect;
+
+buttons
+  cmOk, default,, 'Создать';
+  cmCancel,,, 'Отмена';
+
+<<
+                  Создание внешнего КАУ по импорту для ТМЦ
+                    на основании группы последней партии
+
+     .@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@@@@@@ .@@ .@@@@@@@@@@@@
+
+      [.] По всем партиям`
+      [.] Удалять внешние КАУ "Импорт" при отсутствии группы в партии`
+
+            <.Создать.>      <.  Отмена  .>
+>>
+end; //screen
+
+HandleEvent
+cmInit :
+{
+  sPeriod := 'Даты начала выборки партий:';
+  sPeriod1 := 'по'
+  wParam := 0;
+}
+cmCheckField:
+  case Curfield of
+  #wParam:
+  {
+//    message('wParam = ' + string(wParam AND 1));
+//    message('wParam1 = '+ wParam);
+    if( ((wParam AND 1) > 0))
+    {
+      if ( message('Вы действительно хотите обработать все партии?', Confirmation + yesNo) != cmYes)
+      {
+        set wParam:=wParam xor 1;
+      }
+//      message('wParam2 = '+ wParam);
+    }
+      ToggleFieldState(#dBeg,sfVisible,((wParam AND 1) = 0));
+      ToggleFieldState(#dEnd,sfVisible,((wParam AND 1) = 0));
+      ToggleFieldState(#sPeriod,sfVisible,((wParam AND 1) = 0));
+      ToggleFieldState(#sPeriod1,sfVisible,((wParam AND 1) = 0));
+      RedrawPanel(#katparty);
+  }
+end;
+cmOK:
+{
+  if(Cur_Date>Date(31,03,2021))
+  {
+    Message('Интерфейс выпущен для использования до 31/03/2021 (денег очень  хочется)',Error);
+    CloseInterface(cmCancel);
+    Exit;
+  }
+  if((dBeg=Date(0,0,0) or dEnd=Date(0,0,0)) and ((wParam AND 1) = 0))
+  {
+    Message('Должны быть заполнены обе даты!'''#13'Либо поставьте флаг "По всем партиям"');
+    Exit;
+  }
+  if((wParam AND word(1)) > 0 )
+  {
+    dBeg:=Date(0,0,0);
+    dEnd:=Date(0,0,0);
+  }
+  CreateExtKAUImport;
+  PrintExtKauImp;
+//  CloseInterface(cmOK);
+}
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+end; //HandleEvent;
+End.

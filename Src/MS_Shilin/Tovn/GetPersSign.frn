@@ -1,0 +1,39 @@
+.begin
+  if (bRunSign)
+    Exit;
+
+  bRunSign := True;
+
+  var cPers: comp;
+  cPers := 0;
+  sFIO1 := ''; sPost1 := ''; sFIO2 := ''; sPost2 := '';
+  sFIO3 := ''; sPost3 := ''; sFIO4 := ''; sPost4 := '';
+  sFIO5 := ''; sPost5 := ''; sFIO6 := ''; sPost6 := '';
+
+  if (RunInterface('GetPersSign', wForm) <> cmCancel)
+  {
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer1', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO1, sPost1);
+
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer2', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO2, sPost2);
+
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer3', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO3, sPost3);
+
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer4', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO4, sPost4);
+
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer5', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO5, sPost5);
+
+    if (ReadMyDSK(cPers, 'GetPersSign' + String(wForm) + '_cPer6', TRUE))
+      if (cPers <> 0)
+        oPrnSoprFun.GetFIOPost(cPers, sFIO6, sPost6);
+  }
+end.

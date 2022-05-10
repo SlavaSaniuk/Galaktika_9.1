@@ -1,0 +1,501 @@
+#doc
+Факторы условий труда сотрудников(Белтелеком)
+Значения справочника хранятся в таблице DISTDOCHIERARCHY,
+((
+and constFactorPers == DISTDOCHIERARCHY.WDOCTYPE
+))
+DISTDOCHIERARCHY.CPARENT      ----- ссылка на сотрудника
+DISTDOCHIERARCHY.CANVAL1      ----- ссылка на набор значение фактор/класс/периодичность
+
+Закрытые факторы подсвечены серым
+#end
+
+#include iFactorPers.vih
+#include iCheckFactorRez.vih
+
+const
+  cmProtRefer = 30305; // код события для кнопки "Протокол упоминаний"
+end
+
+Interface iFactorPers 'Факторы условий труда сотрудников' EscClose, Cyan, DoAccept;
+  Show at (7,3,73,19);
+
+var
+wIntMode      : word;
+coPers        : comp;
+coFactorPers  : comp;
+objCheckFactorRez: iCheckFactorRez new;
+
+Create view
+as select
+*
+from
+ DISTDOCHIERARCHY
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnabor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYBound
+,SPALLSTAFF SPALLSTAFFfactor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+,SPALLSTAFF
+Where
+((
+    coPers                        == DISTDOCHIERARCHY.CPARENT
+and constFactorPers               == DISTDOCHIERARCHY.WDOCTYPE
+
+and DISTDOCHIERARCHY.CANVAL1      == DISTDOCHIERARCHYnabor.nrec
+
+and DISTDOCHIERARCHYnabor.CUSERID == DISTDOCHIERARCHYfactor.nrec
+
+and constRecFact                  == SPALLSTAFFfactor.WNOCON
+and DISTDOCHIERARCHY.nrec         == SPALLSTAFFfactor.RESCOMP[1](noindex)
+
+and DISTDOCHIERARCHY.CDOCBOUND    == DISTDOCHIERARCHYBound.nrec
+))
+;
+
+Parameters
+ wIntMode      //0(cgiNo) - обычный режим, 1(cgiPick) - режим выбора
+,coPers        // входной нрек сотрудника
+,coFactorPers  //нрек записи фактора сотрудника
+
+
+Function DISTDOCHIERARCHY_Pick: boolean; forward;
+
+Function DISTDOCHIERARCHY_DelOnProtect: boolean; forward;
+
+procedure LoadInterface;
+{
+  RereadRecord;
+}
+
+public procedure SetInfcParam (wFlMode : word; cPers:comp);
+{
+  set wIntMode   := wFlMode;
+  set coPers     := cPers;
+
+  LoadInterface;
+}
+
+Function isPick : boolean;
+{
+  isPick := ((wIntMode and cgiPick) = cgiPick);
+}
+
+Procedure DISTDOCHIERARCHY_SetDefault;
+{
+  ClearBuffer(#DISTDOCHIERARCHY);
+  RescanPanel(#DISTDOCHIERARCHY);
+
+  DISTDOCHIERARCHY.nRec       := GetNextNRec(#DISTDOCHIERARCHY, 0);;
+  DISTDOCHIERARCHY.WDOCTYPE   := constFactorPers;
+  DISTDOCHIERARCHY.CPARENT    := coPers;
+}
+
+Function DISTDOCHIERARCHY_CheckRecord:boolean;
+{
+   DISTDOCHIERARCHY_CheckRecord:=false;
+   if(DISTDOCHIERARCHY.CANVAL1=comp(0))
+     {
+         message('Выберите фактор условия труда или удалите запись!',Warning);
+         SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+         exit;
+     }
+
+   if(RecordExists DISTDOCHIERARCHYcheck where ((coPers                 == DISTDOCHIERARCHYcheck.CPARENT
+                                           and constFactorPers          == DISTDOCHIERARCHYcheck.WDOCTYPE
+                                           and DISTDOCHIERARCHY.CANVAL1 == DISTDOCHIERARCHYcheck.CANVAL1(noindex)
+                                           and (DISTDOCHIERARCHY.nrec<>DISTDOCHIERARCHYcheck.nrec)))=tsok)
+     {
+         message('Данный набор уже существует у выбранного сотрудника!'#13+
+         'Измените либо удалите запись.',Warning);
+         SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+         exit;
+     }
+
+   if(DISTDOCHIERARCHY.DTCALC=date(0,0,0))
+      {
+        message('Укажите дату открытия фактора!',Warning);
+        SelectField(#DISTDOCHIERARCHY.DTCALC);
+        exit;
+      }
+
+   if(DISTDOCHIERARCHY.RESDATE<>date(0,0,0))
+      {
+        if(DISTDOCHIERARCHY.WSORT=0)
+          {
+            message('Укажите причину закрытия фактора, либо уберите дату закрытия!',Warning);
+            SelectField(#DISTDOCHIERARCHY.WSORT);
+            exit;
+          }
+      }
+
+   if(DISTDOCHIERARCHY.WSORT<>0)
+      {
+        if(DISTDOCHIERARCHY.RESDATE=date(0,0,0))
+          {
+            message('Укажите дату закрытия фактора, либо уберите причину!',Warning);
+            SelectField(#DISTDOCHIERARCHY.RESDATE);
+            exit;
+          }
+      }
+
+   if(_GetDate(DISTDOCHIERARCHY.DTDATETIME)<>date(0,0,0))
+      {
+        if(DISTDOCHIERARCHY.CDOCBOUND=0)
+          {
+            message('Укажите вариант ограничения профпригодности либо уберите дату окончания действия ограничения!',Warning);
+            SelectField(#DISTDOCHIERARCHY.CDOCBOUND);
+            exit;
+          }
+      }
+
+   if(DISTDOCHIERARCHY.CDOCBOUND<>0)
+      {
+        if(_GetDate(DISTDOCHIERARCHY.DTDATETIME)=date(0,0,0))
+          {
+            message('Укажите дату окончания действия ограничения либо уберите вариант профпригодности!',Warning);
+            SelectField(#DISTDOCHIERARCHY.DTDATETIME);
+            exit;
+          }
+      }
+
+   DISTDOCHIERARCHY_CheckRecord:=true;
+}
+
+Function DISTDOCHIERARCHY_DeleteRecord:boolean;
+{
+  DISTDOCHIERARCHY_DeleteRecord:=false;
+  if(RecordExists SPALLSTAFFfactor = tsok)
+    {
+       message('Удалять существующую запись из документа нельзя.'#13+
+       'В документе "график прохождения медосмотра" существуют записи ссылающиеся на нее!"',Warning);
+       exit;
+    }
+  else
+    {
+        if (message('Удалить текущую запись?',YesNo)=yes)
+           {
+             delete current DISTDOCHIERARCHY;
+           }
+        else
+           {
+             exit;
+           }
+    }
+  DISTDOCHIERARCHY_DeleteRecord:=true;
+}
+
+Window wFactorPersEdit 'Редактирование факторов рабочего места сотрудника' EscClose;
+  show at (7,3,73,20);
+Panel panFactorPersEdit;
+ table DISTDOCHIERARCHY;
+  Browse brFactorPersEdit;
+   Fields
+        {Font = {Color = if (DISTDOCHIERARCHY.RESDATE<>date(0,0,0), ColorSysGray, 0) }};
+        DISTDOCHIERARCHYfactor.SNAME     #3'Наименование' ('Наименование фактора',, sci1378Esc):[28],protect;
+        DISTDOCHIERARCHYnabor.WKOLNORM   #3'Класс' ('Класс условий труда',,sci1378Esc):
+        [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, skip;
+        DISTDOCHIERARCHYnabor.WKODGRKAU1 #3'Периодичность' ('Периодичность условий труда',,sci1378Esc):
+        [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, skip;
+        objCheckFactorRez.DateLastOsmotr(DISTDOCHIERARCHY.nrec)  #3'Дата предыдущего медосмотра' ('Дата предыдущего медосмотра'):[10],Protect, Skip;
+        DISTDOCHIERARCHY.DTCALC          #3'Дата открытия' ('Дата начала действия'):[10],NoProtect;
+        DISTDOCHIERARCHY.RESDATE         #3'Дата закрытия' ('Дата окончания действия'):[10],NoProtect;
+        DISTDOCHIERARCHY.WSORT           #3'Причина закрытия' ('Причина закрытия фактора',,sci1378Esc):
+        [LIST 0 ' ', 1 'Болезнь', 2 'Смена условий работы', 3 'Другая'],Protect;
+        DISTDOCHIERARCHYBound.SName      #3'Ограничение' ('Вариант ограничения',, sci1378Esc):[28],protect;
+        DISTDOCHIERARCHY.DTDATETIME      #3'Действует по' ('Дата окончания действия ограничения'):[10,'DD/MM/YYYY'],NoProtect;
+        DISTDOCHIERARCHY.SOBOZN          #3'Примечания' ('Примечание'):[28],NoProtect;
+  end;
+
+HandleEvent
+cmSetDefault:
+{
+  DISTDOCHIERARCHY_SetDefault;
+  SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+  PutCommand(cmEdit);
+}
+cmPick:
+{
+  if (not DISTDOCHIERARCHY_Pick)
+   {
+    Abort;
+   }
+}
+
+cmDelOnProtect:
+{
+  if (not DISTDOCHIERARCHY_DelOnProtect)
+   {
+    Abort;
+   }
+}
+
+cmCheckRecord:
+{
+ if (not DISTDOCHIERARCHY_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmInsertRecord:
+{
+  insert current DISTDOCHIERARCHY;
+}
+cmUpdaterecord:
+{
+  update current DISTDOCHIERARCHY;
+}
+cmDeleteRecord:
+{
+ if (not DISTDOCHIERARCHY_DeleteRecord)
+   {
+     Abort;
+   }
+}
+end;
+end;
+
+HandleEvent
+cmDone:
+{
+  if(not UpDateTable)
+    {
+      abort;
+    }
+}
+end;
+end;
+
+Function DISTDOCHIERARCHY_Pick: boolean;
+var
+fcoNabor : comp;
+fcoBound : comp;
+{
+  DISTDOCHIERARCHY_Pick:=false;
+
+  if(CurWindow <>wFactorPersEdit)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #DISTDOCHIERARCHYfactor.SNAME:
+          {
+             if(RecordExists SPALLSTAFFfactor = tsok)
+               {
+                  message('Изменять существующую запись нельзя.'#13+
+                  'В документе "график прохождения медосмотра" существуют записи ссылающиеся на нее!"',Warning);
+                  exit;
+               }
+             else
+               {
+                 if (RunInterface(iNaborFactClasPer,1,fcoNabor)=cmDefault)
+                    {
+                     if(RecordExists DISTDOCHIERARCHYcheck where ((coPers               == DISTDOCHIERARCHYcheck.CPARENT
+                                                           and constFactorPers          == DISTDOCHIERARCHYcheck.WDOCTYPE
+                                                           and fcoNabor                 == DISTDOCHIERARCHYcheck.CANVAL1(noindex)
+                                                           and (DISTDOCHIERARCHY.nrec<>DISTDOCHIERARCHYcheck.nrec)))=tsok)
+                        {
+                          message('Данный набор уже существует у выбранного сотрудника!',Warning);
+                          SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+                          exit;
+                        }
+                     else
+                        {
+                          set DISTDOCHIERARCHY.CANVAL1    := fcoNabor;
+                        }
+                    }
+               }
+          }
+        #DISTDOCHIERARCHYBound.SNAME:
+          {
+           if (RunInterface(iCatReasonBound,1,fcoBound)=cmDefault)
+             {
+                   set DISTDOCHIERARCHY.CDOCBOUND    := fcoBound;
+             }
+          }
+    end;
+    }
+
+  DISTDOCHIERARCHY_Pick:=true;
+}
+
+Function DISTDOCHIERARCHY_DelOnProtect: boolean;
+{
+   DISTDOCHIERARCHY_DelOnProtect:=false;
+
+  if(CurWindow <>wFactorPersEdit)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #DISTDOCHIERARCHYfactor.SNAME:
+          {
+            exit;
+          }
+        #DISTDOCHIERARCHYBound.SNAME:
+          {
+            set DISTDOCHIERARCHY.CDOCBOUND    := 0;
+          }
+
+    end;
+    }
+
+  DISTDOCHIERARCHY_DelOnProtect:=true;
+}
+
+Procedure CreateProtokol;
+{
+ CloseMessageLog;
+ OpenMessageLog(GetDefaultUserPath+'ProcessingProtRefer.log',mfLog2Stream+mfNoTimeStamp);
+}
+
+Procedure CloseProtokol;
+{
+ CloseMessageLog;
+ processText(GetDefaultUserPath+'ProcessingProtRefer.log',vfEscable+vfMacroSize,'Протокол упоминания фактора');
+}
+
+Procedure RunProtRefer;
+var
+sNomerGraf:string;
+dDateGraf :date;
+ikol:word;
+{
+  ikol:=0;
+  CreateProtokol;
+  StartNewVisual (vtRotateVisual, vfBreak + vfConfirm + vfTimer, 'Формирование протокола...', 1);
+
+  writeMessageLog('Протокол упоминания фактора: '+DISTDOCHIERARCHYfactor.SNAME+'/'+DISTDOCHIERARCHYnabor.WKOLNORM+'/'+DISTDOCHIERARCHYnabor.WKODGRKAU1);
+
+  _loop SPALLSTAFFfactor
+    {
+     if (not NextVisual)
+        {
+          break;
+        }
+     if(getfirst  SPALLSTAFF where ((SPALLSTAFFfactor.CLINKT == SPALLSTAFF.nrec))=tsok)
+       {
+           if(getfirst DISTDOCHIERARCHYcheck where ((SPALLSTAFF.CLINKT == DISTDOCHIERARCHYcheck.nrec))=tsok)
+             {
+                sNomerGraf:=DISTDOCHIERARCHYcheck.SNAME;
+                dDateGraf:= DISTDOCHIERARCHYcheck.DTCALC
+                writeMessageLog('Фактор встречается в графике под номером '+sNomerGraf+' от '+dDateGraf+'!');
+                ikol:= ikol+1;
+             }
+       }
+    }
+
+  writeMessageLog(' ');
+  writeMessageLog('Всего упоминаний: '+ikol);
+  StopVisual('',0);
+  CloseProtokol;
+}
+
+Panel panFactorPers;
+  table DISTDOCHIERARCHY;
+    browse brFactorPers (,,sci147EnEsc);
+      fields
+        {Font = {Color = if (DISTDOCHIERARCHY.RESDATE<>date(0,0,0), ColorSysGray, 0) }};
+        DISTDOCHIERARCHYfactor.SNAME           #3'Наименование' ('Наименование фактора'):[28],protect;
+        DISTDOCHIERARCHYnabor.WKOLNORM         #3'Класс' ('Класс условий труда'):
+        [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, Skip;
+        DISTDOCHIERARCHYnabor.WKODGRKAU1       #3'Периодичность' ('Периодичность условий труда'):
+        [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, Skip;
+        objCheckFactorRez.DateLastOsmotr(DISTDOCHIERARCHY.nrec)  #3'Дата предыдущего медосмотра' ('Дата предыдущего медосмотра'):[10],Protect, Skip;
+        DISTDOCHIERARCHY.DTCALC                #3'Дата открытия' ('Дата начала действия'):[10],Protect, Skip;
+        DISTDOCHIERARCHY.RESDATE               #3'Дата закрытия' ('Дата окончания действия'):[10],Protect, Skip;
+        DISTDOCHIERARCHY.WSORT                 #3'Причина закрытия' ('Причина закрытия фактора'):
+        [LIST 0 ' ', 1 'Болезнь', 2 'Смена условий работы', 3 'Другая'],Protect, Skip;
+        DISTDOCHIERARCHYBound.SName            #3'Ограничение' ('Вариант ограничения'):[28],protect, Skip;
+        DISTDOCHIERARCHY.DTDATETIME            #3'Действует по' ('Дата окончания действия ограничения'):[10,'DD/MM/YYYY'],Protect, Skip;
+        DISTDOCHIERARCHY.SOBOZN                #3'Примечания' ('Примечание'):[28],protect, Skip;
+    end;
+end;
+
+Handleevent
+cmInit:
+{
+   if (isPick)
+     {
+       SetTitle('Выбор фактора рабочего места сотрудника');
+     }
+
+   if ( not isValid(#DISTDOCHIERARCHY))
+     {
+      if (message('Для рабочего места сотрудника не указаны факторы.' +
+                 ''#13'Хотите указать их?',YesNo) <> cmYes)
+         {
+           abort;
+           exit;
+         }
+      else
+         {
+           PutCommand(cmInsert);
+         }
+     }
+
+}
+
+cmAddNewRec:
+{
+ PutCommand(cmInsert);
+ PutCommand(cmEdit);
+}
+
+cmDefault:
+{
+ if (isPick)
+  {
+    coFactorPers := DISTDOCHIERARCHY.nrec;
+  }
+ else
+  {
+    PutCommand(cmEdit);
+    Abort;
+  }
+}
+
+cmEdit:
+{
+ if (CurWindow <> wFactorPersEdit)
+   {
+     RunWindow(wFactorPersEdit);
+   }
+}
+cmHotKeys:
+{
+ var iTmpMnu : LongInt;
+
+ if (CurTable <> #DISTDOCHIERARCHY or isPick)
+   {
+    abort;
+    exit;
+   }
+
+ iTmpMnu := RunMenu('MenFactorPersSub');
+
+ if ((iTmpMnu <> cmCancel) and (iTmpMnu <> cmClose))
+   {
+    PutHotCommand(iTmpMnu);
+   }
+ else
+   {
+    abort;
+    exit;
+   }
+}
+cmProtRefer:
+{
+  RunProtRefer;
+}
+end;
+End.
+
+MenFactorPersSub Menu
+{
+  - 'Протокол упоминаний...',cmProtRefer,'Сформировать протокол упоминаний', ,'',,sci1Esc;
+}

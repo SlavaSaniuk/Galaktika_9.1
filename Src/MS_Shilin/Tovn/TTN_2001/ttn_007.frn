@@ -1,0 +1,34 @@
+!…ƒ“‹“…€ ‘’€‚€ „‘ ‚ ’—…’€•
+.begin
+  IF (not DocTuneNDS)
+    Exit;
+
+  IF FASTREPORTMEM.getfirst SpSoprMemTTN where  ((α―¥ζ¨δ¨ª ζ¨ο–_­ΰ¥ª == SpSoprMemTTN.nREC)) <> tsOk
+    Exit;
+
+  IF FASTREPORTMEM.getfirst KatMC where ((FASTREPORTMEM.SpSoprMemTTN.cMCUSL == KatMC.Nrec)) <> tsOK
+    Exit;
+
+   var piExAttr  : iExtAttr;
+   var δ¨ªα¨ΰ®Ά ­­ ο_αβ Άª :double;
+   δ¨ªα¨ΰ®Ά ­­ ο_αβ Άª  := piExAttr.doGetAttr(coKatMC,FASTREPORTMEM.KatMc.NRec,'…ƒ“‹“…€ ‘’€‚€ „‘ ‚ ’—…’€•');
+   if δ¨ªα¨ΰ®Ά ­­ ο_αβ Άª <>0
+   {
+     αβ Άª _―¥ΰΆ®£®_­ «®£  := δ¨ªα¨ΰ®Ά ­­ ο_αβ Άª ;
+
+     If KatSoprVhodNal = 1//­ «®£¨ Άε®¤οβ
+     {
+        ‘β ζ0 := ‘β ζ‘0
+       #ifdef _IN_VAL_DOC_
+        ‘β ª  := ‘β ª‘
+       #end
+     }
+     else
+     {
+        ‘β ζ‘0 := ‘β ζ0;
+       #ifdef _IN_VAL_DOC_
+        ‘β ª‘  := ‘β ª;
+       #end
+     }
+   }
+end.

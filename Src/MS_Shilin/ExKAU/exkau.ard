@@ -1,0 +1,12 @@
+.Form 'ImpExKAUFromParty'
+.ard
+.Group 'Внешние КАУ'
+.NameInList 'Создание внешнего КАУ "Импорт" на основании группы партий'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('L_SKLAD::MAKEEXTKAU_IMPORT_FROMPARTY');
+end.
+.endform

@@ -1,0 +1,1274 @@
+#Component "Z_Zarpl"
+
+table struct ruz
+(
+  nrec       : comp,
+  tidk       : word,
+  podr       : string,
+  tabn       : longint,
+  fio        : string[60],
+  nach_sch   : string[20],
+  vidopl     : longint,
+  vidper     : word,
+  sum        : double,
+  kp         : string,
+  os         : string,
+  sch        : string,
+  sp         : string
+)
+with index
+(
+  ruz01  = nRec (surrogate, unique),
+  ruz02  = tidk + tabn + vidopl
+);
+const
+  cg_ru_kp = 'КР_9.00.00.0.00.0.0';
+end;
+
+Interface  RU_Zar 'Формирование данных по РУ (Зарплата)' /*DoAccept, Cyan,*/ EscClose;
+  show at (0,0,170,32);
+Var
+  kr_param, zatr_sch1, zatr_sch2, zatr_sch3, zatr_sch4, zatr_sch5, zatr_sch6, zatr_sch7, zatr_sch8  : string;
+  _Filial : word;
+  myVidDog     : string[2];
+  sNameNach, sNamePer2, sNamePer3, sNamePer4, sNamePer6, sNamePer7, sNamePer8     : string[50];
+  sFilePath : string;
+  vid_rep1, vid_rep2, is98xLoad : word;
+  b : boolean;
+  sum_nach : double;
+  kol_nach : integer;
+  Marker         : longint;
+  MarkerCount, i : longint;
+  _vidPer2, _vidPer3, _vidper4, _vidper6, _vidper7, _vidper8 : word;
+
+const
+  REP_NONE      = 0;
+  REP_NACH      = 1;
+  REP_STRAH     = 2;
+  REP_FSZ       = 4;
+  REP_OTP       = 8;
+  REP_OTP_STRAH = 16;
+  REP_OTP_FSZ   = 32;
+end;
+
+
+Create view
+Var
+  _vidPer       : word;
+  _yearn        : word;
+  _mesn         : word;
+  _nom98x       : string[20];
+As select
+  *
+From
+  sumvidop            (readonly)
+ ,sumvidop sumvidop_bud (readonly)
+ ,lschet              (readonly)
+ ,lschet lschet_bud   (readonly)
+ ,attrval             (readonly)
+ ,attrval attrval_bud (readonly)
+ ,katpodr             (readonly)
+ ,katpodr katpodr_bud (readonly)
+ ,persons             (readonly)
+ ,persons persons_bud (readonly)
+ ,klvidopl            (readonly)
+ ,klvidopl klvidopl_bud (readonly)
+ ,spkau spkaunach1    (readonly)
+ ,spkau spkaunach2    (readonly)
+ ,spkau spkaunach1_bud    (readonly)
+ ,spkau spkaunach2_bud    (readonly)
+ //////////
+ ,perevod             (readonly)
+ ,perech perech2      (readonly)
+ ,lschet lsch_strah   (readonly)
+ ,persons pers_strah  (readonly)
+ ,katpodr podr_strah  (readonly)
+ ,spkau spkaustrah1   (readonly)
+ ,spkau spkaustrah2   (readonly)
+ ///////// налоги будущего периода
+
+ ,perevod perevod_bud     (readonly)
+ ,lschet lsch_strah_bud   (readonly)
+ ,persons pers_strah_bud  (readonly)
+ ,katpodr podr_strah_bud  (readonly)
+ ,spkau spkaustrah1_bud   (readonly)
+ ,spkau spkaustrah2_bud   (readonly)
+
+ /////////Справки 89x
+ ,plpor                   (readonly)
+ ,soprhoz                 (readonly)
+ ,oborot                  (readonly)
+ ,katkau katkau98x_1      (readonly)
+ ,spkau spkau98x_1        (readonly)
+ ,katkau katkau98x_2      (readonly)
+ ,spkau spkau98x_2        (readonly)
+ ,katkau katkau98x_3      (readonly)
+ ,spkau spkau98x_3        (readonly)
+ ,katkau katkau98x_4      (readonly)
+ ,spkau spkau98x_4        (readonly)
+
+ /////////
+ ,ruz ruz_nach
+ ,ruz ruz_strah
+ ,ruz ruz_fsz
+ ,ruz ruz_nach_bud
+ ,ruz ruz_strah_bud
+ ,ruz ruz_fsz_bud
+ ,ruz ruz_98x
+where
+((
+
+      15010            == attrnam.wtable
+  and 'РУ будущий период' == attrnam.name
+  And attrnam.nrec     == attrval.cattrnam
+  And 0                == attrval.vlongint
+  And Attrval.crec     == klvidopl.nrec
+
+  And attrnam.nrec     == attrval_bud.cattrnam
+  And 1                == attrval_bud.vlongint
+  And Attrval_bud.crec == klvidopl_bud.nrec
+//////////Начисления
+  and _yearn           == sumvidop.yearn
+  and _mesn            == sumvidop.mesn
+  and klvidopl.vidoplp == sumvidop.vidoplp
+
+  and sumvidop.clsch   == lschet.nrec
+  and lschet.cex       == katpodr.nrec
+  and lschet.tperson   == persons.nrec
+
+  and lschet.kauextr[1]== spkaunach1.nrec
+  and lschet.kauextr[2]== spkaunach2.nrec
+
+//////////Начисления будущего периода
+  and _yearn           == sumvidop_bud.yearn
+  and _mesn            == sumvidop_bud.mesn
+  and klvidopl_bud.vidoplp == sumvidop_bud.vidoplp
+
+  and sumvidop_bud.clsch == lschet_bud.nrec
+  and lschet_bud.cex     == katpodr_bud.nrec
+  and lschet_bud.tperson == persons_bud.nrec
+
+  and lschet_bud.kauextr[1]== spkaunach1_bud.nrec
+  and lschet_bud.kauextr[2]== spkaunach2_bud.nrec
+
+///////////Обязательное страхование
+  and _vidper         == perech2.vidper
+
+  and _vidPer         == perevod.vidper
+  and _yearn           == perevod.yearn
+  and _mesn            == perevod.mesn
+
+  and klvidopl.vidopl  == perevod.vidopl  (noindex)
+
+  and perevod.clsch    == lsch_strah.nrec
+  and lsch_strah.tperson== pers_strah.nrec
+  and lsch_strah.cex   == podr_strah.nrec
+
+  and lsch_strah.kauextr[1]== spkaustrah1.nrec
+  and lsch_strah.kauextr[2]== spkaustrah2.nrec
+///////////ФСЗ будущего периода
+  and _vidPer               == perevod_bud.vidper
+  and _yearn                == perevod_bud.yearn
+  and _mesn                 == perevod_bud.mesn
+
+  and klvidopl_bud.vidopl   == perevod_bud.vidopl  (noindex)
+
+  and perevod_bud.clsch     == lsch_strah_bud.nrec
+  and lsch_strah_bud.tperson== pers_strah_bud.nrec
+  and lsch_strah_bud.cex    == podr_strah_bud.nrec
+
+  and lsch_strah_bud.kauextr[1]== spkaustrah1_bud.nrec
+  and lsch_strah_bud.kauextr[2]== spkaustrah2_bud.nrec
+////////////Бухсправки 98х
+  and 10                   == plpor.tidk
+  and Date(Last_Day(Date(1,_mesn,_yearn)), _mesn, _yearn) == plpor.datvip
+  and _nom98x              ==  plpor.nodok
+
+  and plpor.tidk           == soprhoz.tipdoc
+  and plpor.nrec           == soprhoz.csoprdoc
+  and plpor.datvip         == soprhoz.datob
+
+  and soprhoz.nrec         == oborot.csoprhoz
+  and coGetTune('KONSOLID.CPLANSSCH') == oborot.cPlansSch
+  and soprhoz.datob        == oborot.datob
+
+  and oborot.kauos[1]      == spkau98x_1.nrec
+  and oborot.kauos[2]      == spkau98x_2.nrec
+  and oborot.kauos[3]      == spkau98x_3.nrec
+  and oborot.kauos[4]      == spkau98x_4.nrec
+
+  and 1                    == ruz_nach.tidk
+
+  and 2                    == ruz_strah.tidk
+
+  and 3                    == ruz_fsz.tidk
+
+  and 4                    == ruz_nach_bud.tidk
+
+  and 5                    == ruz_strah_bud.tidk
+
+  and 6                    == ruz_fsz_bud.tidk
+
+  and 7                    == ruz_98x.tidk
+))
+order by ruz.tabn
+;
+file f1, f2;
+Form frmReportRUZar ('repRUZar.OUT', 'repRUZar') with NoVisual;
+
+procedure FillNach;
+{
+  delete all ruz_nach;
+  if (getfirst attrnam != tsOK) Message('Нет атрибута "РУ будущий период"');
+  StartNewVisual(vtNumericVisual, vfTimer, ''#3'Начисления'#13#3, 0);
+  //StartNewVisual(vtNumericVisual, vfTimer, 'Начисления', 0);
+  _loop attrval
+  {
+    if (getfirst klvidopl !=0) message('Ошибка позиционирования на классификатор видов оплат');
+     _loop sumvidop
+     {
+       if (trim(sumvidop.cschetd) = '20' or trim(sumvidop.cschetd) = '23' or trim(sumvidop.cschetd) = '26')
+       {
+         ruz.tidk := 1;
+         if (GetFirst lschet = tsOK)
+         {
+          ruz.tabn := lschet.tabn;
+          if (getfirst persons = tsOK)
+          {
+            ruz.fio := persons.fio;
+          }
+          if (getfirst katpodr = tsOK)
+          {
+            ruz.podr := katpodr.name;
+          }
+         }
+         ruz.nach_sch := sumvidop.cschetd;
+         ruz.vidopl := sumvidop.vidoplp;
+         ruz.sum := sumvidop.summa;
+         ruz.kp := kr_param;
+         if(GetFirst spkaunach1 = tsOK and spkaunach1.kodgrkau = '502')
+         {
+           ruz.os := spkaunach1.code;
+         }
+         ruz.sch := zatr_sch1;
+         if(GetFirst spkaunach2 = tsOK and spkaunach2.kodgrkau = '504')
+         {
+           ruz.sp := spkaunach2.code;
+         }
+         insert current ruz;
+         NextVisual;
+       }
+     }
+  }
+   StopVisual;
+}
+
+procedure FillNachBud;
+{
+  delete all ruz_nach_bud;
+  if (getfirst attrnam != tsOK) Message('Нет атрибута "РУ будущий период"');
+  StartNewVisual(vtNumericVisual, vfTimer, ''#3'Начисления будущего периода'#13#3, 0);
+  _loop attrval_bud
+  {
+    if (getfirst klvidopl_bud !=0) message('Ошибка позиционирования на классификатор видов оплат');
+     _loop sumvidop_bud
+     {
+       if (trim(sumvidop_bud.cschetd) = '97')
+       {
+         ruz.tidk := 4;
+         if (GetFirst lschet_bud = tsOK)
+         {
+          ruz.tabn := lschet_bud.tabn;
+          if (getfirst persons_bud = tsOK)
+          {
+            ruz.fio := persons_bud.fio;
+          }
+          if (getfirst katpodr_bud = tsOK)
+          {
+            ruz.podr := katpodr_bud.name;
+          }
+         }
+         ruz.nach_sch := sumvidop_bud.cschetd;
+         ruz.vidopl := sumvidop_bud.vidoplp;
+         ruz.sum := sumvidop_bud.summa;
+         ruz.kp := kr_param;
+         if(GetFirst spkaunach1_bud = tsOK and spkaunach1_bud.kodgrkau = '502')
+         {
+           ruz.os := spkaunach1_bud.code;
+         }
+         ruz.sch := zatr_sch5;
+         if(GetFirst spkaunach2_bud = tsOK and spkaunach2_bud.kodgrkau = '504')
+         {
+           ruz.sp := spkaunach2_bud.code;
+         }
+         insert current ruz;
+         NextVisual;
+       }
+     }
+  }
+   StopVisual;
+}
+
+
+procedure FillNachStrah(vid : word; sMessage : string ; isDelete: boolean = true);
+{
+  var _tidk : word;
+  if (vid = _vidPer2)
+  {
+    _tidk:=2;
+  }
+  else
+  {
+    if (vid = _vidPer3 or vid = _vidPer4)
+    {
+      _tidk:=3;
+    }
+  }
+  if (isDelete) delete all ruz where ((_tidk == tidk));
+  _vidPer := vid;
+  if (getfirst attrnam != tsOK) Message('Нет атрибута начислений "РУ будущий период"');
+  StartNewVisual(vtNumericVisual, vfTimer, sMessage, 0);
+  _loop attrval
+  {
+    if (getfirst klvidopl !=0) message('Ошибка позиционирования на классификатор видов оплат');
+     _loop perevod
+     {
+         ruz.tidk := _tidk;
+         ruz.vidper := vid;
+         if (GetFirst lsch_strah = tsOK)
+         {
+          ruz.tabn := lsch_strah.tabn;
+          if (getfirst pers_strah = tsOK)
+          {
+            ruz.fio := pers_strah.fio;
+          }
+          if (getfirst podr_strah = tsOK)
+          {
+            ruz.podr := podr_strah.name;
+          }
+         }
+         ruz.nach_sch := perevod.cschetd;
+         ruz.vidopl := perevod.vidopl;
+         ruz.sum := perevod.sumper;
+         ruz.kp := kr_param;
+         if(GetFirst spkaustrah1 = tsOK and spkaustrah1.kodgrkau = '502')
+         {
+           ruz.os := spkaustrah1.code;
+         }
+          if( vid = _vidPer2)   ruz.sch := zatr_sch2;
+          if( vid = _vidPer3)   ruz.sch := zatr_sch3;
+          if( vid = _vidPer4)   ruz.sch := zatr_sch4;
+         ///'69.1.1.0';
+         if(GetFirst spkaustrah2 = tsOK and spkaustrah2.kodgrkau = '504')
+         {
+           ruz.sp := spkaustrah2.code;
+         }
+         insert current ruz;
+         NextVisual;
+     }
+  }
+   StopVisual;
+}
+
+procedure FillNachStrah_Bud(vid : word; sMessage : string ; isDelete: boolean = true);
+{
+  var _tidk : word;
+  if (vid = _vidPer6)
+  {
+    _tidk:=5;
+  }
+  else
+  {
+    if (vid = _vidPer7 or vid = _vidPer8)
+    {
+      _tidk:=6;
+    }
+  }
+  if (isDelete) delete all ruz where ((_tidk == tidk));
+  _vidPer := vid;
+  if (getfirst attrnam != tsOK) Message('Нет атрибута начислений "РУ будущий период"');
+  StartNewVisual(vtNumericVisual, vfTimer, 'Будущий период: ' + sMessage, 0);
+  _loop attrval_bud
+  {
+    if (getfirst klvidopl_bud !=0) message('Ошибка позиционирования на классификатор видов оплат');
+     _loop perevod_bud
+     {
+         ruz.tidk := _tidk;
+         ruz.vidper := vid;
+         if (GetFirst lsch_strah_bud = tsOK)
+         {
+          ruz.tabn := lsch_strah_bud.tabn;
+          if (getfirst pers_strah_bud = tsOK)
+          {
+            ruz.fio := pers_strah_bud.fio;
+          }
+          if (getfirst podr_strah_bud = tsOK)
+          {
+            ruz.podr := podr_strah_bud.name;
+          }
+         }
+         ruz.nach_sch := perevod_bud.cschetd;
+         ruz.vidopl := perevod_bud.vidopl;
+         ruz.sum := perevod_bud.sumper;
+         ruz.kp := kr_param;
+         if(GetFirst spkaustrah1_bud = tsOK and spkaustrah1_bud.kodgrkau = '502')
+         {
+           ruz.os := spkaustrah1_bud.code;
+         }
+          if( vid = _vidPer6)   ruz.sch := zatr_sch6;
+          if( vid = _vidPer7)   ruz.sch := zatr_sch7;
+          if( vid = _vidPer8)   ruz.sch := zatr_sch8;
+         ///'69.1.1.0';
+         if(GetFirst spkaustrah2_bud = tsOK and spkaustrah2_bud.kodgrkau = '504')
+         {
+           ruz.sp := spkaustrah2_bud.code;
+         }
+         insert current ruz;
+         NextVisual;
+     }
+  }
+   StopVisual;
+}
+
+procedure Fill98xData(_nomer : string; isDelete: boolean = true);
+{
+  _nom98x := '^^' + _nomer;
+  StartNewVisual(vtNumericVisual, vfTimer, ''#3'Справки 98х'#13#3, 0);
+  if (isDelete) delete all ruz where ((7 == tidk));
+  if (getfirst plpor != tsOK)
+  {
+    message('Нет справки ' + _nomer);
+    exit;
+  }
+  do //_loop plpor
+  {
+    if (getfirst soprhoz = tsOK)
+    {
+      _loop oborot
+      {
+        if (oborot.dbscheto = 'RUZAR')
+        {
+          ClearBuffer(#ruz);
+          ruz.tidk := 7;
+          ruz.podr := plpor.nodok;
+          ruz.fio  := plpor.namepl1;
+          ruz.sum := oborot.sumob;
+          if (getfirst spkau98x_1 = tsOK)
+          {
+            ruz.kp := spkau98x_1.code;
+          }
+          if (getfirst spkau98x_2 = tsOK)
+          {
+            ruz.os := spkau98x_2.code;
+          }
+          if (getfirst spkau98x_3 = tsOK)
+          {
+            ruz.sch := spkau98x_3.code;
+          }
+          if (getfirst spkau98x_4 = tsOK)
+          {
+            ruz.sp := spkau98x_4.code;
+          }
+          insert current ruz;
+          NextVisual;
+        }
+      }
+    }
+  } while (getnext plpor = tsOK);
+  StopVisual;
+}
+
+procedure FillAll98xData;
+{
+  Fill98xData('984');
+  Fill98xData('988', false);
+}
+
+Procedure PrintReportRUZar;
+{
+    var fname1, fname2, st, st1 : string;
+    var sum : double;
+    var str_kol : integer;
+    fname1:= sFilePath + '\' + 'PE' + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt';
+    fname2:= sFilePath + '\' + 'PE' + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.r';
+    sum := 0;
+    if (getfirst ruz != tsOK)
+    {
+      message('Нет данных.'#13'Выберите параметры и нажмите кнопку <Сформировать>');
+      Exit;
+    }
+    if (f1.OpenFile( fname1, stCreate) = true and f2.OpenFile( fname2, stCreate) = true)
+    {
+      StartNewVisual(vtNumericVisual, vfTimer, 'Формирование файла для РУ из ' + RecordsInTable(#ruz) + ' записей:', 0);
+      _loop ruz
+      {
+        st := string(ruz.sum) + ';' + kr_param + ';' + ruz.os + ';' + ruz.sch + ';' + ruz.sp;
+        f1.WriteLn(DocBasFn866To1251(st));
+        sum += ruz.sum;
+        str_kol++;
+        NextVisual;
+      }
+    }
+    st1 := 'PE' + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt' + ';' + Trim(DoubleToStr(str_kol,'77777'))+ ';'+Trim(DoubleToStr(sum,'666666666666.88'));
+    f2.WriteLn(DocBasFn866To1251(st1));
+    StopVisual;
+    f1.close;
+    f2.close;
+    Message('Файлы экспортированы в директорию ' + chr(13) + sFilePath + chr(13) + 'с именем ' + '<PE' + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn)  + '>');
+};
+
+//panel pRU_Options;
+//window wRU_Options;
+TabbedSheet Top tshRU_Options;
+   Show at (,,,);
+
+Screen sRUZarMain 'Параметры' ('',,sci178Esc);
+  show at(,,,);
+  //table perech2;
+ bevel b01 {1, 4,   53, 10, bsRaised, bsFrame};
+ bevel b01 {52, 4,  63, 10, bsRaised, bsFrame};
+ bevel b01 {62, 4, 118, 10, bsRaised, bsFrame};
+
+ bevel b01 {1,  9,  53, 15, bsRaised, bsFrame};
+ bevel b01 {52, 9,  63, 15, bsRaised, bsFrame};
+ bevel b01 {62, 9, 118, 15, bsRaised, bsFrame};
+
+ bevel b01 {1, 14, 118, 17, bsRaised, bsFrame};
+
+Fields
+  _Filial ('Номер филиала') :
+                    [LIST
+                      1000 '1000 - Междугородняя связь',
+                      900  '900  - Головной офис',
+                      700  '700  - Филиал МГТС',
+                      600  '600  - Могилевский филиал',
+                      500  '500  - Минский филиал',
+                      400  '400  - Гродненский филиал',
+                      300  '300  - Гомельский филиал',
+                      200  '200  - Витебский филиал',
+                      100  '100  - Брестский филиал'
+                      ], protect;
+  _mesn ('Месяц'):
+                    [LIST
+                      1 'Январь',
+                      2 'Февраль',
+                      3 'Март',
+                      4 'Апрель',
+                      5 'Май',
+                      6 'Июнь',
+                      7 'Июль',
+                      8 'Август',
+                      9 'Сентябрь',
+                      10 'Октябрь',
+                      11 'Ноябрь',
+                      12 'Декабрь'
+                      ], protect;
+  _yearn ('Год'):NoProtect, SpinButton [1,2000,2100];
+  kr_param ('Параметр КР') : NoProtect, PickButton, {Font = {BackColor = if(kr_param = '', ColorNeed, 0)}};
+  vid_rep1 : NoProtect;
+  zatr_sch1 ('Счет по начислениям') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch1 = '', ColorNeed, 0)}};
+  zatr_sch2 ('Счет по обязательному страхованию') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch2 = '', ColorNeed, 0)}};
+  sNamePer2 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer2 = '', ColorNeed, 0)}};
+  zatr_sch3 ('Счет ФСЗ') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch3 = '', ColorNeed, 0)}};
+  sNamePer3 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer3 = '', ColorNeed, 0)}};
+  zatr_sch4 ('Счет ФСЗ') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch4 = '', ColorNeed, 0)}};
+  sNamePer4 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer4 = '', ColorNeed, 0)}};
+
+  vid_rep2 : NoProtect;
+  zatr_sch5 ('Счет по будущим начислениям начислениям') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch5 = '', ColorNeed, 0)}};
+  zatr_sch6 ('Счет по страхованию будущего периода') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch6 = '', ColorNeed, 0)}};
+  sNamePer6 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer6 = '', ColorNeed, 0)}};
+  zatr_sch7 ('Счет по ФСЗ будущего периода') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch7 = '', ColorNeed, 0)}};
+  sNamePer7 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer7 = '', ColorNeed, 0)}};
+  zatr_sch8 ('Счет по ФСЗ будущего периода') : NoProtect, PickButton, {Font = {BackColor = if(zatr_sch8 = '', ColorNeed, 0)}};
+  sNamePer8 ('Вид перечисления'):Protect, PickButton
+                            , {Font = {BackColor = if(sNamePer8 = '', ColorNeed, 0)}};
+
+  is98xLoad : NoProtect;
+
+  sFilePath ('Файл'): Protect, PickButton
+            , {Font = {BackColor = if(sFilePath = '', ColorNeed, 0)}};
+buttons
+  cmOk, default,, 'Формирование';
+  cmDelResults,,, 'Очистить данные';
+  cmExport,,, 'Создать файл';
+  cmCancel,,, 'Отмена';
+
+<<
+
+  Филиал .@@@@@@@@@@@@@@@@@@@@@@@@@@  Месяц .@@@@@@@@@@ Год .@@@@@@
+  Параметр КР: .@@@@@@@@@@@@@@@@@@@@
+
+   Текущий период                                     Затраты   Вид налога
+    [.] Суммы оплат`                                 .@@@@@@@@
+    [.] Обязательное страхование`                    .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    [.] ФСЗ 28%+6%`                                  .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                     .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Будущий период
+    [.] Суммы оплат`                                 .@@@@@@@@
+    [.] Обязательное страхование`                    .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    [.] ФСЗ 28%+6%`                                  .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                     .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    [.] Загружать справки 98x`
+
+
+  Путь на папку обмена .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  Пояснения:
+  1. Суммы за текущий период выбираются по оплатам с внешним атрибутом "РУ будущий период" = нет (параметр "РУ будущего периода"
+     в закладке "Отчеты" для этого вида оплат пуст)
+  2. Если параметр п.1 не установлен, но вид оплаты все равно не попадает в текущий период, необходимо выбрать и заново снять этот параметр.
+  3. Проводки из справок 984 и 988 загружаются за последний день месяца из плана счетов, установленного в настройке
+     "Настройки Галактики \ Бухгалтерский контур \ План счетов по умолчанию" по дебету счета RUZAR
+
+  <.~С~формировать.>       <.~У~далить.>         <.~E~xport.>              <.  ~О~тмена  .>
+>>
+end; //screen
+
+Browse sRUZarNach 'Начисления' ('',,sci178Esc);
+  show at(,,,260)
+  Table ruz_nach;
+Fields
+  ruz_nach.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_nach.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_nach.podr      #3'Подразделение л/с' ('Подразделение из лицевого счета',,) : [60], Protect;
+  ruz_nach.nach_sch  #3'Сч.нач.' ('Счет начисления',,) : [8], Protect;
+  ruz_nach.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_nach.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+//  ruz_nach.kp        #3'КР' ('КР',,) : [8], Protect;
+  ruz_nach.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+//  ruz_nach.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_nach.sp        #3'Подр.РУ' ('Затр.сч.',,) : [8], Protect;
+end; ////browse
+
+Browse sRUZarNachStrah 'Обяз.страхование' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_strah;
+Fields
+  ruz_strah.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_strah.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_strah.podr      #3'Подразделение налога' ('Подразделение из налога',,) : [60], Protect;
+  ruz_strah.nach_sch  #3'Сч.нач.' ('Счет налога',,) : [8], Protect;
+  ruz_strah.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_strah.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+//  ruz_strah.kp        #3'КР' ('КР',,) : [8], Protect;
+  ruz_strah.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+  ruz_strah.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_strah.sp        #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; ////browse
+
+Browse sRUZarNachFSZ 'ФСЗ' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_fsz;
+Fields
+  ruz_fsz.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_fsz.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_fsz.podr      #3'Подразделение налога' ('Подразделение из налога',,) : [60], Protect;
+  ruz_fsz.nach_sch  #3'Сч.нач.' ('Счет налога',,) : [8], Protect;
+  ruz_fsz.vidper    #3'Налог' ('Налог на ФСЗ',,) : [3], Protect;
+  ruz_fsz.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_fsz.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+  ruz_fsz.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+  ruz_fsz.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_fsz.sp        #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; //screen
+
+Browse sRUZarOtpBud 'Нач.буд.пер.' ('',,sci178Esc);
+  show at(,,,260)
+  Table ruz_nach_bud;
+Fields
+  ruz_nach_bud.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_nach_bud.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_nach_bud.podr      #3'Подразделение л/с' ('Подразделение из лицевого счета',,) : [60], Protect;
+  ruz_nach_bud.nach_sch  #3'Сч.нач.' ('Счет начисления',,) : [8], Protect;
+  ruz_nach_bud.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_nach_bud.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+//  ruz_nach.kp        #3'КР' ('КР',,) : [8], Protect;
+  ruz_nach_bud.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+//  ruz_nach.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_nach_bud.sp        #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; ////browse
+
+Browse sRUZarOtpBudStrah 'Страхование буд.пер.' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_strah_bud;
+Fields
+  ruz_strah_bud.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_strah_bud.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_strah_bud.podr      #3'Подразделение налога' ('Подразделение из налога',,) : [60], Protect;
+  ruz_strah_bud.nach_sch  #3'Сч.нач.' ('Счет налога',,) : [8], Protect;
+  ruz_strah_bud.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_strah_bud.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+//  ruz_strah.kp        #3'КР' ('КР',,) : [8], Protect;
+  ruz_strah_bud.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+  ruz_strah_bud.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_strah_bud.sp        #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; ////browse
+
+Browse sRUZarOtpBudFSZ 'ФСЗ буд.пер.' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_fsz_bud;
+Fields
+  ruz_fsz_bud.tabn      #3'Таб.номер' ('Табельный номер',,) : [10], Protect;
+  ruz_fsz_bud.fio       #3'Сотрудник' ('Сотрудник',,) : [40], Protect;
+  ruz_fsz_bud.podr      #3'Подразделение налога' ('Подразделение из налога',,) : [60], Protect;
+  ruz_fsz_bud.nach_sch  #3'Сч.нач.' ('Счет налога',,) : [8], Protect;
+  ruz_fsz_bud.vidper    #3'Налог' ('Налог на ФСЗ',,) : [3], Protect;
+  ruz_fsz_bud.vidopl    #3'Вид' ('Вид оплаты',,) : [6], Protect;
+  ruz_fsz_bud.sum       #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+  ruz_fsz_bud.os        #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+  ruz_fsz_bud.sch       #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_fsz_bud.sp        #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; //browse
+
+Browse sRUZar98x 'Справки 98x' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_98x;
+Fields
+  ruz_98x.podr          #3'Номер' ('Номер справки',,) : [10], Protect;
+  ruz_98x.fio           #3'Содержание' ('Содержание проводки',,) : [70], Protect;
+  ruz_98x.sum           #3'Сумма' ('Сумма',,) : [20, '\2p[|-]3666`666`666`666`666.88'], Protect;
+  ruz_98x.kp            #3'Код ресурса' ('Классификатор ресурса',,) : [20], Protect;
+  ruz_98x.os            #3'Код структуры' ('Организационная структура',,) : [20], Protect;
+  ruz_98x.sch           #3'Затр.сч.' ('Затр.сч.',,) : [8], Protect;
+  ruz_98x.sp            #3'Подр.РУ' ('Подразделение РУ',,) : [8], Protect;
+end; //screen
+
+end; //Tabbed sheet
+
+Procedure SaveDsk;
+{
+  SaveMyDsk(kr_param,    'kr_param_RU_Zar');
+
+  SaveMyDsk(_Filial,     '_Filial_RU_Zar');
+  SaveMyDsk(vid_rep1,     'VidRep1_RU_Zar');
+  SaveMyDsk(vid_rep2,     'VidRep2_RU_Zar');
+  SaveMyDsk(is98xLoad,     'is98xLoad_RU_Zar');
+
+  SaveMyDsk(_vidPer2,    'VidPer2_RU_Zar');
+  SaveMyDsk(_vidPer3,    'VidPer3_RU_Zar');
+  SaveMyDsk(_vidPer4,    'VidPer4_RU_Zar');
+  SaveMyDsk(_vidPer6,    'VidPer6_RU_Zar');
+  SaveMyDsk(_vidPer7,    'VidPer7_RU_Zar');
+  SaveMyDsk(_vidPer8,    'VidPer8_RU_Zar');
+
+  SaveMyDsk(zatr_sch1,   'zatr_sch1_RU_Zar');
+  SaveMyDsk(zatr_sch2,   'zatr_sch2_RU_Zar');
+  SaveMyDsk(zatr_sch3,   'zatr_sch3_RU_Zar');
+  SaveMyDsk(zatr_sch4,   'zatr_sch4_RU_Zar');
+  SaveMyDsk(zatr_sch5,   'zatr_sch5_RU_Zar');
+  SaveMyDsk(zatr_sch6,   'zatr_sch6_RU_Zar');
+  SaveMyDsk(zatr_sch7,   'zatr_sch7_RU_Zar');
+  SaveMyDsk(zatr_sch8,   'zatr_sch8_RU_Zar');
+
+  SaveMyDsk(sFilePath,   'sFilePath_RU_Zar');
+}
+
+Procedure ShowHideFields;
+{
+  ToggleFieldState(#zatr_sch1,sfVisible,(vid_rep1 AND REP_NACH) > 0);
+
+  ToggleFieldState(#sNamePer2,sfVisible,(vid_rep1 AND REP_STRAH) > 0);
+  ToggleFieldState(#zatr_sch2,sfVisible,(vid_rep1 AND REP_STRAH) > 0);
+
+  ToggleFieldState(#sNamePer3,sfVisible,(vid_rep1 AND REP_FSZ) > 0);
+  ToggleFieldState(#zatr_sch3,sfVisible,(vid_rep1 AND REP_FSZ) > 0);
+
+  ToggleFieldState(#sNamePer4,sfVisible,(vid_rep1 AND REP_FSZ) > 0);
+  ToggleFieldState(#zatr_sch4,sfVisible,(vid_rep1 AND REP_FSZ) > 0);
+
+  ToggleFieldState(#zatr_sch5,sfVisible,(vid_rep2 AND 1) > 0);
+
+  ToggleFieldState(#sNamePer6,sfVisible,(vid_rep2 AND 2) > 0);
+  ToggleFieldState(#zatr_sch6,sfVisible,(vid_rep2 AND 2) > 0);
+
+  ToggleFieldState(#sNamePer7,sfVisible,(vid_rep2 AND 4) > 0);
+  ToggleFieldState(#zatr_sch7,sfVisible,(vid_rep2 AND 4) > 0);
+
+  ToggleFieldState(#sNamePer8,sfVisible,(vid_rep2 AND 4) > 0);
+  ToggleFieldState(#zatr_sch8,sfVisible,(vid_rep2 AND 4) > 0);
+
+}
+
+function CheckFOTDiff : boolean;
+{
+  if(((_vidPer2 = _vidPer3 or _vidPer2 = _vidPer4) and ((vid_rep1 and 3) > 0)) or (_vidPer3 = _vidPer4))
+  {
+    Message('Совпадают настройки выгрузки по налогам на ФОТ в рамках текущего периода.');
+    CheckFOTDiff := false;
+  }
+  else
+  {
+    CheckFOTDiff  := true;
+  }
+
+  if(((_vidPer6 = _vidPer7 or _vidPer6 = _vidPer8) and ((vid_rep2 and 3) > 0)) or (_vidPer7 = _vidPer8))
+  {
+    Message('Совпадают настройки выгрузки по налогам на ФОТ в рамках будущего периода.');
+    CheckFOTDiff := false;
+  }
+  else
+  {
+    CheckFOTDiff  := true;
+  }
+}
+
+Procedure ShowHideTabs;
+{
+    if ( (vid_rep1 AND REP_NACH) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarNach, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarNach, false);
+    }
+
+    if ( (vid_rep1 AND REP_STRAH) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarNachStrah, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarNachStrah, false);
+    }
+
+    if ( (vid_rep1 AND REP_FSZ) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarNachFSZ, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarNachFSZ, false);
+    }
+
+    if ( (vid_rep2 AND 1) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarOtpBud, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarOtpBud, false);
+    }
+
+    if ( (vid_rep2 AND 2) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarOtpBudStrah, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarOtpBudStrah, false);
+    }
+
+    if ( (vid_rep2 AND 4) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZarOtpBudFSZ, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZarOtpBudFSZ, false);
+    }
+
+    if ( (is98xLoad AND 1) > 0 )
+    {
+      SetTabbedSheetVisible(sRUZar98x, true);
+    }
+    else
+    {
+      SetTabbedSheetVisible(sRUZar98x, false);
+    }
+/*
+  REP_NACH      = 1;
+  REP_STRAH     = 2;
+  REP_FSZ       = 4;
+  REP_OTP       = 8;
+  REP_OTP_STRAH = 16;
+  REP_OTP_FSZ   = 32;
+
+*/
+}
+
+procedure SetTabTitle;
+{
+  if(getfirst ruz_nach = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarNach, '* Начисления')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarNach, 'Начисления')
+  }
+  if(getfirst ruz_strah = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarNachStrah, '* Обяз.страхование')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarNachStrah, 'Обяз.страхование')
+  }
+
+  if(getfirst ruz_fsz = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarNachFSZ, '* ФСЗ')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarNachFSZ, 'ФСЗ')
+  }
+
+  if(getfirst ruz_nach_bud = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarOtpBud, '* Нач.буд.пер.')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarOtpBud, 'Нач.буд.пер.')
+  }
+
+  if(getfirst ruz_fsz_bud = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarOtpBudStrah, '* Страхование буд.пер.')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarOtpBudStrah, 'Страхование буд.пер.')
+  }
+
+  if(getfirst ruz_fsz_bud = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZarOtpBudFSZ, '* ФСЗ буд.пер.')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZarOtpBudFSZ, 'ФСЗ буд.пер.')
+  }
+
+  if(getfirst ruz_98x = tsOK)
+  {
+    SetTabbedSheetTitle(sRUZar98x, '* Справки 98x')
+  }
+  else
+  {
+    SetTabbedSheetTitle(sRUZar98x, 'Справки 98x')
+  }
+
+}
+
+HandleEvent
+cmInit :
+{
+  //////////Screen 1
+  _yearn := Year(Add_Months(dGetTune('UP.DATOTCH'), -1));
+  _mesn  := Month(Add_Months(dGetTune('UP.DATOTCH'), -1));
+  if not ReadMyDsk(vid_rep1,'VidRep1_RU_Zar', b)       vid_rep1 := REP_NONE;
+  if not ReadMyDsk(vid_rep2,'VidRep2_RU_Zar', b)       vid_rep2 := REP_NONE;
+  if not ReadMyDsk(is98xLoad,'is98xLoad_RU_Zar', b)   is98xLoad := REP_NONE;
+
+  ShowHideTabs;
+  ShowHideFields;
+  if not ReadMyDsk(kr_param,'kr_param_RU_Zar', b)    kr_param := 'КР_9.00.00.0.00.0.0';
+
+  if not ReadMyDsk(zatr_sch1,'zatr_sch1_RU_Zar', b)  zatr_sch1 := '70.1.0.0';
+  if not ReadMyDsk(zatr_sch2,'zatr_sch2_RU_Zar', b)  zatr_sch2 := '69.1.1.0';
+  if not ReadMyDsk(zatr_sch3,'zatr_sch3_RU_Zar', b)  zatr_sch3 := '69.1.0.0';
+  if not ReadMyDsk(zatr_sch4,'zatr_sch4_RU_Zar', b)  zatr_sch4 := '69.1.0.0';
+  if not ReadMyDsk(zatr_sch5,'zatr_sch5_RU_Zar', b)  zatr_sch5 := '70.1.0.0';
+  if not ReadMyDsk(zatr_sch6,'zatr_sch6_RU_Zar', b)  zatr_sch6 := '69.1.1.0';
+  if not ReadMyDsk(zatr_sch7,'zatr_sch7_RU_Zar', b)  zatr_sch7 := '69.1.0.0';
+  if not ReadMyDsk(zatr_sch8,'zatr_sch8_RU_Zar', b)  zatr_sch8 := '69.1.0.0';
+
+  if not ReadMyDsk(_Filial,'_Filial_RU_Zar', b)      _Filial := 1000;
+
+  if not ReadMyDsk(sFilePath,'sFilePath_RU_Zar', b)  sFilePath := 'D:\';
+
+  if (not ReadMyDsk(_vidPer2,'VidPer2_RU_Zar', b))   _vidPer2 := 3;
+  if (not ReadMyDsk(_vidPer3,'VidPer3_RU_Zar', b))   _vidPer3 := 5;
+  if (not ReadMyDsk(_vidPer4,'VidPer4_RU_Zar', b))   _vidPer4 := 6;
+
+  if (not ReadMyDsk(_vidPer6,'VidPer6_RU_Zar', b))   _vidPer2 := 3;
+  if (not ReadMyDsk(_vidPer7,'VidPer7_RU_Zar', b))   _vidPer3 := 5;
+  if (not ReadMyDsk(_vidPer8,'VidPer8_RU_Zar', b))   _vidPer4 := 6;
+
+//  if (not ReadMyDsk(sNamePer2,'sNamePer2_RU_Zar', b)) sNamePer2 := '';
+!  Message('_vidPer2=' + _vidPer2);
+  _vidPer := _vidPer2;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer2:= _vidPer2 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+  _vidPer := _vidPer3;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer3:= _vidPer3 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+  _vidPer := _vidPer4;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer4:= _vidPer4 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+
+  _vidPer := _vidPer6;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer6:= _vidPer6 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+
+  _vidPer := _vidPer7;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer7:= _vidPer7 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+
+  _vidPer := _vidPer8;
+  if (getfirst perech2 = tsOK)
+  {
+    set sNamePer8:= _vidPer8 + ',' + perech2.nameper;
+   // Message('sNamePer2=' + sNamePer2);
+  }
+}
+cmPick :
+case Curfield of
+  #kr_param:
+  {
+    set kr_param := 'КР_9.00.00.0.00.0.0';
+  }
+
+  #zatr_sch1:
+  {
+    set zatr_sch1 := '70.1.0.0';
+  }
+
+  #zatr_sch2:
+  {
+    set zatr_sch2 := '69.1.1.0';
+  }
+
+  #zatr_sch3:
+  {
+    set zatr_sch3 := '69.1.0.0';
+  }
+
+  #zatr_sch4:
+  {
+    set zatr_sch4 := '69.1.0.0';
+  }
+
+  #zatr_sch5:
+  {
+    set zatr_sch5 := '70.1.0.0';
+  }
+
+  #zatr_sch6:
+  {
+    set zatr_sch6 := '69.1.1.0';
+  }
+
+  #sNamePer2:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer2, sNamePer2,0,false) <> cmDefault)
+    {
+      sNamePer2 := 'не задан вид налога';
+    }
+    sNamePer2 := string(_vidPer2) + ',' + sNamePer2;
+//    CheckFOTDiff;
+  }
+
+  #sNamePer3:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer3, sNamePer3,0,false) <> cmDefault)
+    {
+      sNamePer3 := 'не задан вид налога';
+    }
+    sNamePer3 := string(_vidPer3) + ',' + sNamePer3;
+//    CheckFOTDiff;
+  }
+
+  #sNamePer4:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer4, sNamePer4,0,false) <> cmDefault)
+    {
+      sNamePer4 := 'не задан вид налога';
+    }
+    sNamePer4 := string(_vidPer4) + ',' + sNamePer4;
+//    CheckFOTDiff;
+  }
+
+  #sNamePer6:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer6, sNamePer6,0,false) <> cmDefault)
+    {
+      sNamePer6 := 'не задан вид налога';
+    }
+    sNamePer6 := string(_vidPer6) + ',' + sNamePer6;
+//    CheckFOTDiff;
+  }
+
+  #sNamePer7:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer7, sNamePer7,0,false) <> cmDefault)
+    {
+      sNamePer7 := 'не задан вид налога';
+    }
+    sNamePer7 := string(_vidPer7) + ',' + sNamePer7;
+//    CheckFOTDiff;
+  }
+
+  #sNamePer8:
+  {
+    //_vidPer2 := 0;
+    if (runinterface('PicKPer', _vidPer8, sNamePer8,0,false) <> cmDefault)
+    {
+      sNamePer8 := 'не задан вид налога';
+    }
+    sNamePer8 := string(_vidPer8) + ',' + sNamePer8;
+//    CheckFOTDiff;
+  }
+  #sFilePath:
+  {
+     set sFilePath:=GetDirName('Выберете путь для сохранения файлов');
+  }
+
+end;
+
+cmCheckField:
+{
+  ShowHideTabs;
+  ShowHideFields;
+  SetTabTitle;
+//  CheckFOTDiff;
+
+/* if (getfirst perech1 = tsOK)
+  {
+    set sNamePer2:= _vidPer2 + ',' + perech1.nameper;
+      Message('sNamePer2=' + sNamePer2);
+  }*/
+}
+
+cmDone:
+{
+  SaveDsk;
+}
+cmOK:
+{
+  CheckFOTDiff;
+  if ((vid_rep1 and 1) > 0) FillNach;
+  if ((vid_rep1 and 2) > 0) FillNachStrah(_vidPer2, sNamePer2);
+  if ((vid_rep1 and REP_FSZ) > 0)
+  {
+    FillNachStrah(_vidPer3, sNamePer3);
+    FillNachStrah(_vidPer4, sNamePer4, false);
+  }
+
+  if ((vid_rep2 and 1) > 0) FillNachBud;
+  if ((vid_rep2 and 2) > 0) FillNachStrah_Bud(_vidPer6, sNamePer6);
+  if ((vid_rep2 and REP_FSZ) > 0)
+  {
+    FillNachStrah_Bud(_vidPer7, sNamePer7);
+    FillNachStrah_Bud(_vidPer8, sNamePer8, false);
+  }
+  if (is98xLoad = 1) FillAll98xData;
+  SetTabTitle;
+  SaveDsk;
+  //CloseInterface(cmOK);
+}
+cmDefault:
+{
+
+   // Message('cmDefault');
+}
+
+cmDelResults:
+{
+  if (message('Удалить данные с помеченных вкладок?', Warning + okCancel) = cmOK)
+  {
+    if ( (vid_rep1 AND REP_NACH) > 0 )
+    {
+      delete all ruz_nach;
+    }
+
+    if ( (vid_rep1 AND REP_STRAH) > 0 )
+    {
+      delete all ruz_strah;
+    }
+
+    if ( (vid_rep1 AND REP_FSZ) > 0 )
+    {
+      delete all ruz_fsz;
+    }
+
+    if ( (vid_rep2 AND 1) > 0 )
+    {
+      delete all ruz_nach_bud;
+    }
+
+    if ( (vid_rep2 AND 2) > 0 )
+    {
+      delete all ruz_strah_bud;
+    }
+
+    if ( (vid_rep2 AND 4) > 0 )
+    {
+      delete all ruz_fsz_bud;
+    }
+
+    if (is98xLoad = 1)
+    {
+      delete all ruz_98x;
+    }
+    SetTabTitle;
+  }
+}
+
+cmExport:
+{
+  SaveDsk;
+  if (getfirst ruz_nach  = tsOK
+   and getfirst ruz_strah = tsOK
+   and getfirst ruz_fsz   = tsOK
+   and getfirst ruz_nach_bud  = tsOK
+   and getfirst ruz_strah_bud = tsOK
+   and getfirst ruz_fsz_bud   = tsOK
+   and getfirst ruz_98x   = tsOK  )
+   {
+      PrintReportRUZar;
+   }
+   else
+   {
+     if (message('Не во всех вкладках есть данные. Продолжить?', Warning + okCancel) = cmOK)
+     {
+       PrintReportRUZar;
+     }
+   }
+}
+
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+
+/*cmValue1:
+{
+
+  RunWindowModal(winGetIerar);
+  RescanPanel(#BankDocf);
+
+}
+*/
+end; //HandleEvent;
+End.

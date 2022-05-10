@@ -1,0 +1,409 @@
+#doc
+Интерфейс для автоматического формирования графика(Белтелеком)
+#end
+
+#include iCheckFactorRez.vih
+#include ComFiltr.VIH                     // Фильтр по персонам
+
+Interface iAvtoCreateGraf 'Создать график прохождения медосмотра автоматически' Gray, DoAccept, EscClose;
+  Show at (, , 80, 21);
+
+var
+sNomer  : string;
+wYear, wVidProf, wtipcalc : word;
+objCheckFactorRez: iCheckFactorRez new;
+coOtvPodr: comp;
+VInter   : CommonFiltr;             // Для встраивания фильтра по подразделениям / сотрудникам
+
+table struct tmpMain
+(
+ coPers        : comp
+,coFactorPers  : comp
+)
+with index
+(
+ tmpMain01 = coPers+coFactorPers
+);
+
+Function sOtvPodr(coNrecPodr:comp):string;  forward;
+
+Create view
+as select
+sOtvPodr(coOtvPodr)
+(FieldName = fOtvPodr)
+,*
+from
+CATALOGS CATALOGSValue  (ReadOnly)
+
+,Persons (ReadOnly)
+
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers  (ReadOnly)
+
+,DISTDOCHIERARCHY DDHfactorPersAll            (ReadOnly)
+
+,tmpMain
+,tmpMain tmpMainAll
+
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnewRec
+,SPALLSTAFF SPALLSTAFFNewRec
+,SPALLSTAFF SPALLSTAFFfactorNewRec
+,DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+Where
+((
+    'С'             == Persons.IsEmployee
+and Date(0,0,0)     == Persons.DisDate
+and Persons.nrec    == DISTDOCHIERARCHYfactorPers.CPARENT
+and constFactorPers == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and (DISTDOCHIERARCHYfactorPers.RESDATE=date(0,0,0) and DISTDOCHIERARCHYfactorPers.WSORT=word(0))  //обрабатываем все не закрытые
+))
+;
+
+Screen scrAvtoCreateGraf ('Автоматическое формирование графика', ,)
+  show at (,,,10)
+Fields
+  wYear             ('Год',,sci13EnEsc) : nostatic, noprotect, SpinButton [1,1,4000];
+  sNomer            ('Номер',,) : noProtect;
+  wVidProf          ('Вид медосмотра',,sci13EnEsc):
+  [LIST 0 ' ', 1 'Предварительный', 2 'Периодический', 3 'Внеочередной'],Protect;
+  fOtvPodr          ('Ответственное подразделение', , sci13EnEsc) : protect;
+  wtipcalc          ('В случае если обнаружен фактор требующий медосмотра, включать только его или и все остальные факторы сотрудника...'):noprotect;
+<<
+
+   `Год:  `    .@@@@@     `Номер:   `   .@@@@@@@@@@@
+
+   `Вид медосмотра: `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   `Ответственное подразделение  :`.@@@@@@@@@@@@@@@@
+
+   `Вариант обработки факторов`
+    (.) Каждый фактор отдельно`
+    (.) Все факторы вместе`
+>>
+end;
+
+embedded ComFiltrEmbedded interface VInter;
+    show (,11,,17);
+  end
+
+Screen scrAvtoCreateGrafBut ('Запуск автоматического формирования графика', ,)
+  show at (,18,,)
+Buttons
+  cmOk, Default,, 'Сформировать график',, sci1Esc;
+  cmCancel,,,'Отказаться от создания графика',, sci1Esc;
+<<
+
+          <. Сформировать .>  <.   ~О~тмена   .>
+
+>>
+end;
+
+Function sOtvPodr(coNrecPodr:comp):string;
+{
+   sOtvPodr:='';
+
+  if(getfirst CATALOGSValue Where ((coNrecPodr==CATALOGSValue.nrec))=tsok)
+    {
+       sOtvPodr:=CATALOGSValue.name;
+    }
+}
+
+Procedure CreateProtokol;
+{
+ CloseMessageLog;
+ OpenMessageLog(GetDefaultUserPath+'AvtoCreateGraf.log',mfLog2Stream+mfNoTimeStamp);
+}
+
+Procedure CloseProtokol;
+{
+ CloseMessageLog;
+ processText(GetDefaultUserPath+'AvtoCreateGraf.log',vfEscable+vfMacroSize,'Лог процесса автоматического создания графика');
+}
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(wYear=word(0))
+    {
+      message('Для продолжения необходимо заполнить дату прохождения медосмотра!');
+      Exit;
+    }
+  if(sNomer='')
+    {
+      message('Для продолжения необходимо заполнить номер документа!');
+      Exit;
+    }
+  if(wVidProf=0)
+    {
+      message('Для продолжения необходимо указать вид медосмотра!');
+      Exit;
+    }
+  if(fOtvPodr='')
+    {
+      message('Для продолжения необходимо выбрать ответственное подразделение!');
+      Exit;
+    }
+  if(VInter.GetPsnCount = 0)
+    {
+      message('Для продолжения необходимо выбрать хотя бы одного сотрудника!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Function CheckGrafNew: boolean;
+{
+  CheckGrafNew:=false;
+  If(getfirst DISTDOCHIERARCHYcheck where ((constVidGraf == DISTDOCHIERARCHYcheck.wDocType
+                                      and   wYear        == DISTDOCHIERARCHYcheck.WTYPEHIER
+                                      and   sNomer       == DISTDOCHIERARCHYcheck.SNAME
+                                      and   cur_date     == DISTDOCHIERARCHYcheck.DTCALC(noindex)
+                                      and   wVidProf     == DISTDOCHIERARCHYcheck.WDOCNORM(noindex)
+                                      and   coOtvPodr    == DISTDOCHIERARCHYcheck.COBJECT(noindex)))=tsok)
+    {
+      message('В БД уже есть график с идентичными реквизитами(год: '+wYear+', номер: '+sNomer+', дата: '+cur_date+', '#13+
+      'вид профосмотра: '+GetEnumString(scrAvtoCreateGraf,#wVidProf)+', отв. подразделение: '+fOtvPodr+')!'#13+
+       'Для формирования нового графика необходимо один из реквизитов изменить!');
+      Exit;
+    }
+  CheckGrafNew:=true;
+}
+
+Procedure InsertTmpMain;
+var
+numMark: longInt;
+{
+ _loop Persons
+   {
+   if ((SearchMarker(VInter.GetPersonsMarker, Persons.Nrec, numMark) <> TRUE))
+     { // Если не помечен, пропускаем
+      continue;
+     }
+      _loop DISTDOCHIERARCHYfactorPers
+       {
+        if(objCheckFactorRez.FactorInclude(DISTDOCHIERARCHYfactorPers.nrec,wYear))
+          {
+             if(getfirst tmpMain where ((Persons.nrec                    == tmpMain.coPers
+                                   and   DISTDOCHIERARCHYfactorPers.nrec == tmpMain.coFactorPers))<>tsok)
+               {
+                ClearBuffer(#tmpMain);
+                tmpMain.coPers        :=  Persons.nrec;
+                tmpMain.coFactorPers  :=  DISTDOCHIERARCHYfactorPers.nrec;
+                if(insert current tmpMain=tsok and wtipcalc=1) //если все факторы вместе, то добавим те которых не хватает
+                  {
+                    _loop DDHfactorPersAll where ((Persons.nrec  == DDHfactorPersAll.CPARENT
+                                             and constFactorPers == DDHfactorPersAll.WDOCTYPE
+                                             and (DDHfactorPersAll.RESDATE=date(0,0,0) and DISTDOCHIERARCHYfactorPers.WSORT=word(0))))  //обрабатываем все без даты закрытия
+                     {
+                        if(getfirst tmpMainAll where ((Persons.nrec          == tmpMainAll.coPers
+                                                 and   DDHfactorPersAll.nrec == tmpMainAll.coFactorPers))<>tsok)
+                          {
+                            ClearBuffer(#tmpMainAll);
+                            tmpMainAll.coPers        :=  Persons.nrec;
+                            tmpMainAll.coFactorPers  :=  DDHfactorPersAll.nrec;
+                            insert current tmpMainAll;
+                          }
+                     }
+                  }
+               }
+          }
+       }
+   }
+}
+
+Function CheckEmptyTable:boolean;
+{
+  CheckEmptyTable:=false;
+  if(not isValid(#tmpMain))
+    {
+      message('Нет данных для формирования графика!');
+      Exit;
+    }
+  CheckEmptyTable:=true;
+}
+
+Procedure InsertNewGraf;
+var
+ipers, ifactor:double;
+oldNrecPers:comp;
+firstRec:boolean;
+{
+  ipers:=1;
+  firstRec:=true;
+  oldNrecPers:=0;
+  ClearBuffer(#DISTDOCHIERARCHYnewRec);
+  DISTDOCHIERARCHYnewRec.nrec      :=0;
+  DISTDOCHIERARCHYnewRec.wDocType  := constVidGraf;
+  DISTDOCHIERARCHYnewRec.WTYPEHIER := wYear;
+  DISTDOCHIERARCHYnewRec.DTCALC    := cur_date;
+  DISTDOCHIERARCHYnewRec.SNAME     := sNomer;
+  DISTDOCHIERARCHYnewRec.WDOCNORM  := wVidProf;
+  DISTDOCHIERARCHYnewRec.COBJECT   := coOtvPodr;
+  if(insert current DISTDOCHIERARCHYnewRec=tsok)
+    {
+      _loop tmpMain
+       {
+         if(tmpMain.coPers=oldNrecPers and (not firstRec))     //пропускаем, если тот же сотрудник
+           {
+             continue;
+           }
+         firstRec:=false;
+
+         ClearBuffer(#SPALLSTAFFNewRec);
+         SPALLSTAFFNewRec.nrec       :=0;
+         SPALLSTAFFNewRec.CLINKT     :=DISTDOCHIERARCHYnewRec.nrec;
+         SPALLSTAFFNewRec.WNOCON     := constRecPers;
+         SPALLSTAFFNewRec.RESCOMP[10]:= DISTDOCHIERARCHYnewRec.nrec;    //резерв. Для нижней панели в этом поле ссылка на шапку. Для средней тоже продублируем...
+         SPALLSTAFFNewRec.INUM       := ipers;
+         SPALLSTAFFNewRec.CBASET     := tmpMain.coPers;
+         if(insert current SPALLSTAFFNewRec=tsok)
+           {
+             ipers+=1;
+             ifactor:=1;
+             _loop tmpMainAll where ((tmpMain.coPers == tmpMainAll.coPers))      //выводим все факторы сотрудника
+               {
+                   ClearBuffer(#SPALLSTAFFfactorNewRec);
+                   SPALLSTAFFfactorNewRec.nrec:=0;
+                   SPALLSTAFFfactorNewRec.CLINKT     := SPALLSTAFFNewRec.nRec;
+                   SPALLSTAFFfactorNewRec.WNOCON     := constRecFact;
+                   SPALLSTAFFfactorNewRec.INUM       := ifactor;
+                   SPALLSTAFFfactorNewRec.CBASET     := SPALLSTAFFNewRec.CBASET;        //ссылка на сотрудника в нижней панели тоже нужна. Чтобы выбирать результаты по индексу...
+                   SPALLSTAFFfactorNewRec.RESCOMP[10]:= DISTDOCHIERARCHYnewRec.nrec;    //на всякий случай для записей нижней панели будем хранить ссылку на заголовок документа(шапку), таблица DISTDOCHIERARCHY
+                   SPALLSTAFFfactorNewRec.RESCOMP[1] := tmpMainAll.coFactorPers;
+                   if(insert current SPALLSTAFFfactorNewRec=tsok)
+                     {
+                       ifactor+=1;
+                     }
+               }
+           }
+         oldNrecPers:= tmpMain.coPers;
+       }
+      writeMessageLog('Формирование графика на '+DISTDOCHIERARCHYnewRec.WTYPEHIER+' год завершено успешно. Номер графика: '+DISTDOCHIERARCHYnewRec.SNAME+'. Дата графика: '+DISTDOCHIERARCHYnewRec.DTCALC+'. В график было включено:');
+      writeMessageLog('');
+      writeMessageLog('Сотрудников: '+doubletostr((ipers-1),'666666'));
+    }
+}
+
+Procedure RunAvtoCreate;
+{
+  InsertTmpMain;
+
+  if(checkEmptyTable)
+    {
+      CreateProtokol;
+
+      InsertNewGraf;
+
+      CloseProtokol;
+    }
+}
+
+Procedure CheckFieldAvtoGraf;
+{
+  case Curfield of
+
+    #wYear:
+    {
+      if (wYear>2100 or wYear<2000)
+      {
+        message('Год должен быть в пределах от 2000 до 2100!'#13#13+
+                'Внесите исправление!', Information);
+        SelectField(#wYear);
+        abort;
+      }
+    }
+  end;
+}
+
+Function AvtoGraf_Pick: boolean;
+var CurCat : comp;
+{
+   AvtoGraf_Pick:=false;
+
+   case CurField of
+      #fOtvPodr:
+        {
+           CurCat:=coOtvPodr;
+           if (RunInterface(PickCatalog2,Integer(-11),CurCat,Comp(0))=cmDefault)
+             {
+                set coOtvPodr:= CurCat;
+             }
+        }
+   end;
+   ReReadRecord;
+
+   AvtoGraf_Pick:=true;
+}
+
+Function AvtoGraf_DelOnProtect: boolean;
+{
+  AvtoGraf_DelOnProtect:=false;
+
+  CASE (CurField) OF
+    #fOtvPodr:
+      {
+          coOtvPodr   :=0;
+      }
+   end;
+
+  ReReadRecord;
+
+  AvtoGraf_DelOnProtect:=true;
+}
+
+Handleevent
+cmInit:
+{
+  wYear   := Year(cur_date);
+  sNomer  :='000000';
+  wVidProf:=0;
+  coOtvPodr:=0;
+  VInter.ClearDepartmentsFilter;
+  VInter.ClearPersonsFilter;
+}
+cmOK:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+ if(not CheckEmptyField)
+   {
+     Abort;
+   }
+ else
+   {
+     if(not CheckGrafNew)
+       {
+         Abort;
+       }
+     else
+       {
+         RunAvtoCreate;
+       }
+   }
+}
+cmCheckField:
+{
+ CheckFieldAvtoGraf;
+}
+cmPick:
+{
+   if (not AvtoGraf_Pick)
+    {
+     Abort;
+    }
+}
+cmDelOnProtect:
+{
+   if (not AvtoGraf_DelOnProtect)
+    {
+     Abort;
+    }
+}
+cmDone:
+{
+  VInter.ClearDepartmentsFilter;
+  VInter.ClearPersonsFilter;
+}
+end;
+End.

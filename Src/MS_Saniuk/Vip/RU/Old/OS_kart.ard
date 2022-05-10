@@ -1,0 +1,12 @@
+.Form 'os_kart'
+.ard
+.Group '“ "¥«β¥«ª®¬"/ §¤¥«μ­λ© γη¥β'
+.NameInList 'OC  € ¤«ο ΰ §¤¥«μ­®£® γη¥β  (€’’…€)'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('os_kart');
+end.
+.endform

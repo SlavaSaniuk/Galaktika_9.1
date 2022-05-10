@@ -1,0 +1,20 @@
+!подсчет количества которое надлежит отпустить
+.Create view SpecM15
+from
+  KatSoprMemTTN
+Where
+((
+  comp(накладная_нрек) ==  KatSoprMemTTN.nRec
+))
+;
+.begin
+  isReklNakl := FALSE;
+
+  If (SpecM15.GetFirst KatSoprMemTTN = tsOk)
+  {
+    if ((SpecM15.KatSoprMemTTN.VidSopr = 106) OR (SpecM15.KatSoprMemTTN.VidSopr = 206))
+    {
+      isReklNakl := TRUE;
+    }
+  }
+end.

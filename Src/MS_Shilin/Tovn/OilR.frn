@@ -1,0 +1,25 @@
+#ifdef DEI_CAPACITY
+.var
+  pOilSpSopr: comp;
+.endvar
+.create view Oil
+from
+   SpSoprMemTTN (ReadOnly),
+   KatOtpEd (ReadOnly)
+  ,KATSOPR
+where
+ ((
+    pOilSpSopr           == SpSoprMemTTN.Nrec    and
+    SpSoprMemTTN.cOtpEd  == KatOtpEd.NRec
+ ))
+;
+.function GetCapacity (_pNrec: comp ) : double ; // возвращает Обем
+begin
+  pOilSpSopr  := _pNrec;
+  GetCapacity := 0;
+
+ if (Oil.GetFirst SpSoprMemTTN = tsOk)
+    if (Oil.SpSoprMemTTN.OilPlot <> 0)
+       GetCapacity := (Oil.SpSoprMemTTN.KolFact / Oil.SpSoprMemTTN.OilPlot) * Oil.KatOtpEd.Koef;
+end.
+#end

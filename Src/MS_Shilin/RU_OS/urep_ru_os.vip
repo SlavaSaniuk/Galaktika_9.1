@@ -1,0 +1,39 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_RU_OS Implements IUserReport;
+Interface UserReport_RU_OS;
+create view;
+
+procedure Run;
+begin
+  RunInterface(F_OS::RU_OS);
+end;
+
+function GetReportName: String;
+begin
+GetReportName := 'Раздельный учет. Формирование и выгрузка данных из проводок (ОС и НМА)';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Раздельный учет';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 2;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := 'B_OSN';
+  2 : VisibleInModule := 'B_ACT';
+ end;
+end;
+end.

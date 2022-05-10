@@ -1,0 +1,75 @@
+#doc
+Главный интерфейс для работы с медосмотром(Белтелеком).
+Вызывается через отчеты пользователя.
+#end
+
+Interface iMainProfosmotr 'Медицинский осмотр' Gray, EscClose;
+  Show at (, , 78, 14);
+
+const
+ cmButCatFactor      = 30101;   // код события для кнопки "Справочник факторов"
+ cmButFactorPers     = 30102;   // код события для кнопки "Факторы условий труда сотрудника"
+ cmButNabor          = 30103;   // код события для кнопки "Набор соответствий(Фактор/класс/периодичность)"
+ cmButGraf           = 30104;   // код события для кнопки "Графики прохождения профосмотра"
+ cmButRezult         = 30105;   // код события для кнопки "Результаты профосмотра"
+ cmButPrint          = 30106;   // код события для кнопки "Печать документов"
+ cmButCatReasonBound = 30107;   // код события для кнопки "Справочник ограничений"
+end
+
+Screen scrMainProfosmotr ('Медицинский осмотр', ,);
+  Buttons
+  cmButCatFactor,,,'Справочник факторов',,;
+  cmButCatReasonBound,,,'Справочник ограничений профпригодности',,;
+  cmButNabor,,,'Набор соответствий(Фактор/класс/периодичность)',,;
+  cmButFactorPers,,,'Факторы условий труда сотрудника',,;
+  cmButGraf,,,'Графики прохождения и разнесение результатов медосмотра',,;
+  cmButRezult,,,'Просмотр результатов медосмотров',,;
+  cmButPrint,,,'Формирование отчетов',,;
+<<
+
+     <.                     Справочник факторов                        .>
+
+     <.             Справочник ограничений профпригодности             .>
+
+     <.         Набор соответствий (фактор/класс/периодичность)        .>
+
+     <.               Факторы условий труда сотрудника                 .>
+
+     <.    Графики прохождения и разнесение результатов медосмотра     .>
+
+     <. Просмотр результатов медосмотров .>  <.  Формирование отчетов  .>
+
+>>
+end;
+
+Handleevent
+cmButCatFactor:
+{
+  RunInterface('iCatFactor',word(0),comp(0));
+}
+cmButNabor:
+{
+  RunInterface('iNaborFactClasPer', word(0),comp(0));
+}
+cmButFactorPers:
+{
+  RunInterface('iAllFactrorPers');
+}
+cmButGraf:
+{
+  RunInterface('iGrafProfosmotr');
+}
+cmButRezult:
+{
+  RunInterface('iAllRezultPers');
+}
+cmButPrint:
+{
+  RunInterface('iPrintRep');
+}
+cmButCatReasonBound:
+{
+  RunInterface('iCatReasonBound',word(0),comp(0));
+}
+end;
+End.

@@ -1,0 +1,616 @@
+#include epSystem.vih
+
+////////////////////////////////////////////////////////////////////////////////
+
+handler with replace RegisterGlobTestFnc4 on extensionPoint epAppInit
+action
+{
+  RegisterGlobalIfc('NIK_GetOS_atr');
+  result := true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+vipInterface NIK_GetOS_atr;
+  static: function Get4OS_zdan       ( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+  static: function Get4OS_zdan_debug ( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+
+!  static: function Get4OS_kk        ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+!  static: function Get4OS_kk_debug  ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+
+  static: function Get4OS_izn       ( _cKatOS : comp ) : double;
+  static: function Get4OS_izn_debug ( _cKatOS : comp ) : double;
+
+  static: function Get4OS_Nal       ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+  static: function Get4OS_Nal_debug ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+interface NIK_GetOS_atr;
+
+var
+  newFile  : string;
+  last     : comp;
+  osalg    : double;
+  zn       : double;
+  s1,s2,s3 : double;
+
+  nRecOS   : comp;
+  cNastr   : comp;
+  sVidDog  : string;
+  sNalog   : string;
+  Dat1     : date;
+  Dat2     : date;
+  cUsl1    : comp;
+  cUsl2    : comp;
+  cUsl3    : comp;
+  cUsl4    : comp;
+  cUsl5    : comp;
+
+  bError   : boolean;
+
+create view
+as select  *
+
+from
+  AttrNam
+, AttrVal
+, AttrNam AttrNam2
+, AttrVal AttrVal2
+, Dogovor
+, KatVidD
+, KatUsl KatUsl1
+, KatUsl KatUsl2
+, KatUsl KatUsl3
+, KatUsl KatUsl4
+, KatUsl KatUsl5
+, KatOS
+, SpKatOS
+, SpMoveOS
+, MoveOS
+, Sposob
+, NezemNal
+
+where
+((
+        coSpDocs         ==  AttrNam.wTable
+   and  'ОС'             ==  AttrNam.name
+
+   and  '000261'         ==  KatUsl1.kod
+   and  '000264'         ==  KatUsl2.kod
+   and  '000265'         ==  KatUsl3.kod
+   and  '000266'         ==  KatUsl4.kod
+   and  '000263'         ==  KatUsl5.kod
+
+   and  sVidDog          ==  KatVidD.sName     (NoIndex)
+
+   and  AttrNam.nRec     ==  AttrVal.cAttrNam
+!   and  coSpDocs         ==  AttrVal.wTable    (NoIndex)
+   and  nRecOS           ==  AttrVal.vComp     (NoIndex)
+
+   and  AttrVal.cRec     ==  SpDocs.nRec
+   and  word(400)        ==  SpDocs.tidk       (NoIndex)
+
+   and  SpDocs.cDoc      ==  Dogovor.nRec
+   and  KatVidD.nRec     ==  Dogovor.cVidDog   (NoIndex)
+   and ( dat2 >= Dogovor.dBeg and dat1 <= Dogovor.dEnd )
+
+
+   and  nRecOS           ==  KatOS.nRec
+
+   and  nRecOS           ==  SpKatOS.cKatOS
+   and  cNastr           ==  SpKatOS.cNastrOS
+   and (    comp(281474976710673) <> SpKatOS.cMetod
+         or comp(281474976710669) <> SpKatOS.cMetod )
+
+   and  word(3)          ==  SpMoveOS.SysOper
+   and  nRecOS           ==  SpMoveOS.cKatOS
+   and  cNastr           ==  SpMoveOS.cNastrOS
+
+   and  SpMoveOS.cMoveOS ==  MoveOS.nRec
+
+   and  sNalog           ==  NezemNal.param
+   and  nRecOS           ==  NezemNal.cOS
+   and  dat1             ==  NezemNal.DataN
+
+   and  coKatOS                 ==  AttrNam2.wTable
+   and  'Общая площадь здания'  ==  AttrNam2.name
+
+   and  coKatOS          ==  AttrVal2.wTable
+   and  nRecOS           ==  AttrVal2.cRec
+   and  AttrNam2.nRec    ==  AttrVal2.cAttrNam
+
+))
+;
+
+File f_log;
+
+////////////////////////////////////////////////////////////////////////////////
+/*function Get4OS_kk ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  var p1,p2,p3,p4,p5 : double;
+
+  Get4OS_kk := p1 := p2 := p3 := p4 := p5 := 0;
+
+  cUsl1 := cUsl2 := cUsl3 := cUsl4 := cUsl5 := comp(0);
+
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst KatUsl1 = tsOk )
+   cUsl1 := KatUsl1.nRec;
+
+  if ( GetFirst KatUsl2 = tsOk )
+   cUsl2 := KatUsl2.nRec;
+
+  if ( GetFirst KatUsl3 = tsOk )
+   cUsl3 := KatUsl3.nRec;
+
+  if ( GetFirst KatUsl4 = tsOk )
+   cUsl4 := KatUsl4.nRec;
+
+  if ( GetFirst KatUsl5 = tsOk )
+   cUsl5 := KatUsl5.nRec;
+
+  if ( GetFirst KatVidD <> tsOk )
+   message('Не найден вид договора');
+  else
+  {
+    _loop Dogovor
+    {
+      _loop SpDocs
+      {
+         if ( SpDocs.cMcUsl = cUsl1 )
+          p1 := p1 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl2 )
+          p2 := p2 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl3 )
+          p3 := p3 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl4 )
+          p4 := p4 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl5 )
+          p5 := p5 + SpDocs.kol;
+      }
+    }
+  }
+
+  Get4OS_kk  := p1*GetBTN('110001',1)/GetBT('110002',longint(dat1))
+              + p2*GetBTN('110001',2)/GetBT('110002',longint(dat1))
+              + p3*GetBTN('110001',3)/GetBT('110002',longint(dat1))
+              + p4*GetBTN('110001',4)/GetBT('110002',longint(dat1))
+              + p5*GetBTN('110001',5)/GetBT('110002',longint(dat1));
+
+  Get4OS_kk := Get4OS_kk / GetBT('110003',longint(dat1)); // харош уже %)
+!   Get4OS_kk := p1;
+
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_kk_debug ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  var p1,p2,p3,p4,p5 : double;
+!  Get4OS_kk := 0;
+
+  p1 := p2 := p3 := p4 := p5 := 0;
+
+  cUsl1 := cUsl2 := cUsl3 := cUsl4 := cUsl5 := comp(0);
+
+  newFile := 'd:\out\Get4OS_kk_debug.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_kk_debug');
+  f_log.WriteLn('');
+
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst KatUsl1 = tsOk )
+  {
+   cUsl1 := KatUsl1.nRec;
+   f_log.WriteLn(KatUsl1.name);
+  }
+
+  if ( GetFirst KatUsl2 = tsOk )
+  {
+   cUsl2 := KatUsl2.nRec;
+   f_log.WriteLn(KatUsl2.name);
+  }
+
+  if ( GetFirst KatUsl3 = tsOk )
+  {
+   cUsl3 := KatUsl3.nRec;
+   f_log.WriteLn(KatUsl3.name);
+  }
+
+  if ( GetFirst KatUsl4 = tsOk )
+  {
+   cUsl4 := KatUsl4.nRec;
+   f_log.WriteLn(KatUsl4.name);
+  }
+
+  if ( GetFirst KatUsl5 = tsOk )
+  {
+   cUsl5 := KatUsl5.nRec;
+   f_log.WriteLn(KatUsl5.name);
+  }
+
+  f_log.WriteLn('');
+
+  if ( GetFirst KatVidD <> tsOk )
+   f_log.WriteLn('Не найден вид договора');
+  else
+  {
+    _loop Dogovor
+    {
+      f_log.WriteLn('Dogovor: '+Dogovor.nRec);
+
+      _loop SpDocs
+      {
+        if ( SpDocs.cMcUsl = cUsl1 )
+        {
+         p1 := p1 + SpDocs.kol;
+         f_log.WriteLn('мц1: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl2 )
+        {
+         p2 := p2 + SpDocs.kol;
+         f_log.WriteLn('мц2: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl3 )
+        {
+         p3 := p3 + SpDocs.kol;
+         f_log.WriteLn('мц3: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl4 )
+        {
+         p4 := p4 + SpDocs.kol;
+         f_log.WriteLn('мц4: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl5 )
+        {
+         p5 := p5 + SpDocs.kol;
+         f_log.WriteLn('мц5: '+SpDocs.kol);
+        }
+      }
+    }
+  }
+
+!   Get4OS_kk  := p1*GetBTN('110001',1)/GetBT('110002',longint(dat1))
+!               + p2*GetBTN('110001',2)/GetBT('110002',longint(dat1))
+!               + p3*GetBTN('110001',3)/GetBT('110002',longint(dat1))
+!               + p4*GetBTN('110001',4)/GetBT('110002',longint(dat1))
+!               + p5*GetBTN('110001',5)/GetBT('110002',longint(dat1));
+
+!   Get4OS_kk := Get4OS_kk / GetBT('110003',longint(dat1)); // харош уже %)
+
+
+  f_log.WriteLn('');
+  f_log.WriteLn('p1:'+p1);
+  f_log.WriteLn('p2:'+p2);
+  f_log.WriteLn('p3:'+p3);
+  f_log.WriteLn('p4:'+p4);
+  f_log.WriteLn('p5:'+p5);
+
+  f_log.WriteLn('GetBTN(110001,1):'+GetBTN('110001',1));
+  f_log.WriteLn('GetBTN(110001,2):'+GetBTN('110001',2));
+  f_log.WriteLn('GetBTN(110001,3):'+GetBTN('110001',3));
+  f_log.WriteLn('GetBTN(110001,4):'+GetBTN('110001',4));
+  f_log.WriteLn('GetBTN(110001,5):'+GetBTN('110001',5));
+
+  f_log.WriteLn('GetBT(110002,longint(dat1)):'+GetBT('110002',longint(dat1)) );
+  f_log.WriteLn('GetBT(110003,longint(dat1)):'+GetBT('110003',longint(dat1)) );
+
+!  Get4OS_kk := p1;
+
+
+  f_log.close;
+
+  Get4OS_kk_debug := Get4OS_kk_debug;
+}*/
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_zdan ( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_zdan := 0;
+
+  nRecOS  := _cKatOS;
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst AttrNam <> tsOk )
+   message('Не найден внешний атрибут "ОС" для SpStep');
+  else
+   if ( GetFirst KatVidD <> tsOk )
+    message('Не найден вид договора');
+   else
+   {
+     _loop AttrVal
+      if ( GetFirst SpDocs = tsOk )
+       if ( GetFirst Dogovor = tsOk )
+       {
+          Get4OS_zdan := Get4OS_zdan + SpDocs.kol;
+       }
+   }
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_zdan_debug ( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_zdan_debug := 0;
+
+  nRecOS  := _cKatOS;
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  newFile := 'd:\out\Get4OS_zdan_debug.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_zdan_debug');
+  f_log.WriteLn('');
+
+  if ( GetFirst AttrNam <> tsOk )
+   f_log.WriteLn('Не найден внешний атрибут "ОС" для SpStep');
+  else
+   if ( GetFirst KatVidD <> tsOk )
+    f_log.WriteLn('Не найден вид договора');
+   else
+   {
+
+     _loop AttrVal
+      if ( GetFirst SpDocs = tsOk )
+       if ( GetFirst Dogovor = tsOk )
+       {
+          Get4OS_zdan_debug := Get4OS_zdan_debug + SpDocs.kol;
+
+          f_log.WriteLn(Dogovor.nRec);
+          f_log.WriteLn(SpDocs.kol);
+       }
+
+/*     _loop Dogovor
+     {
+       f_log.WriteLn(Dogovor.nRec);
+
+       _loop SpDocs
+        if ( GetFirst AttrVal = tsOk )
+        {
+          Get4OS_zdan_debug := Get4OS_zdan_debug + SpDocs.kol;
+          f_log.WriteLn(SpDocs.kol);
+        }
+     }
+*/
+   }
+
+  f_log.WriteLn('');
+  f_log.WriteLn('итог: '+Get4OS_zdan_debug );
+  f_log.close;
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_izn ( _cKatOS : comp ) : double;
+{
+  Get4OS_izn := 0;
+
+  nRecOS  := _cKatOS;
+
+  cNastr  := comp(281474976710658); // МГТС
+
+  if ( GetFirst SpKatOS = tsOk and GetFirst KatOS = tsOk )
+  {
+    ZN := SpKatOS.stoim;
+    osalg := SpKatOS.cMetod;
+     if ((osalg = 281474976710673) or (osalg = 281474976710669) )
+    {
+    Get4OS_izn :=0;
+    }
+    else
+    {
+    Get4OS_izn := (GetBT('02',longint(KatOS.DatEk))/100-1);
+    }
+!    _loop SpMoveOS
+!     if ( GetFirst MoveOS = tsOk )
+!     Get4OS_izn := Get4OS_izn + (SpMoveOS.NewStoim-SpMoveOS.OldStoim)*(GetBT('02',longint(MoveOS.DatOb))/100-1)/ZN;
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_izn_debug ( _cKatOS : comp ) : double;
+{
+  Get4OS_izn_debug := 0;
+
+  nRecOS  := _cKatOS;
+
+  cNastr  := comp(281474976710658); // МГТС
+
+  newFile := 'd:\out\Get4OS_izn_debug.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_izn_debug');
+  f_log.WriteLn('');
+
+  if ( GetFirst SpKatOS = tsOk and GetFirst KatOS = tsOk )
+  {
+    ZN := SpKatOS.stoim;
+
+    Get4OS_izn_debug := (GetBT('02',longint(KatOS.DatEk))/100-1);
+
+!    f_log.WriteLn('ZN: '+ZN);
+!    f_log.WriteLn('ст. при пост.: '+SpKatOS.StoimPS);
+!    f_log.WriteLn('GetBT: '+GetBT('02',longint(KatOS.DatEk)));
+!    f_log.WriteLn('GetBT: '+(GetBT('02',longint(KatOS.DatEk))/100));
+!    f_log.WriteLn('GetBT: '+(GetBT('02',longint(KatOS.DatEk))/100-1));
+!    f_log.WriteLn('');
+
+!    f_log.WriteLn('операции изменения стоимости:');
+
+!    _loop SpMoveOS
+!     if ( GetFirst MoveOS = tsOk )
+!     {
+!      f_log.WriteLn('сумма до    : '+SpMoveOS.OldStoim);
+!      f_log.WriteLn('сумма после : '+SpMoveOS.NewStoim);
+!      f_log.WriteLn('GetBT: '+GetBT('02',longint(MoveOS.DatOb)));
+!      Get4OS_izn_debug := Get4OS_izn_debug + (SpMoveOS.NewStoim-SpMoveOS.OldStoim)*(GetBT('02',longint(MoveOS.DatOb))/100-1)/ZN;
+!     }
+  }
+
+  f_log.WriteLn('');
+  f_log.WriteLn('итог: '+Get4OS_izn_debug );
+  f_log.close;
+}
+////////////////////////////////////////////////////////////////////////////////
+//  коэффициент по налогу на недвижимость
+function Get4OS_Nal ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_Nal := 0; // в случае ошибки будем возвращать нуль
+
+  if ( GetFirst AttrNam <> tsOk )
+  {
+    message('Не найден внешний атрибут "ОС" для SpStep');
+    exit;
+  }
+
+  if ( GetFirst KatVidD <> tsOk )
+  {
+    message('Не найден вид договора');
+    exit;
+  }
+
+  if ( GetFirst AttrNam2 <> tsOk )
+  {
+    message('Не найден внешний атрибут "Общая площадь здания" для KatOS');
+    exit;
+  }
+
+
+  sVidDog := _sVidDog;
+  sNalog  := _sNalog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  bError  := FALSE;
+
+  if ( GetFirst Sposob where (( 'Сдаваемый в аренду' == Sposob.NameSB )) = tsOk )
+   _loop KatOS where (( word(15) == KatOS.tidk and Sposob.nRec == KatOS.cSposob )) ordered by index KatSO22
+   {
+     nRecOS := KatOS.nRec;
+
+     s1 := s2 := s3 := 0;
+
+     _loop AttrVal
+      if ( GetFirst SpDocs = tsOk )
+       if ( GetFirst Dogovor = tsOk )
+       {
+          s1 := s1 + SpDocs.kol;
+       }
+
+!     s2 := DoTxoGetExtAttr( 'katos', 'общая площадь здания', KatOS.nRec );
+     if ( GetFirst AttrVal2 = tsOk )
+      s2 := AttrVal2.vDouble;
+
+     if ( GetFirst NezemNal = tsOk )
+      s3 := NezemNal.SumNal;
+
+     if ( s1 = 0 or s2 = 0 or s3 = 0 )
+      bError := TRUE;
+
+     Get4OS_Nal := Get4OS_Nal + (s1/s2)*s3;
+   }
+
+   if bError
+    Get4OS_Nal := -1;
+
+}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//  коэффициент по налогу на недвижимость
+function Get4OS_Nal_debug ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_Nal_debug := 0; // в случае ошибки будем возвращать нуль
+
+  if ( GetFirst AttrNam <> tsOk )
+  {
+    message('Не найден внешний атрибут "ОС" для SpStep');
+    exit;
+  }
+
+  if ( GetFirst KatVidD <> tsOk )
+  {
+    message('Не найден вид договора');
+    exit;
+  }
+
+  if ( GetFirst AttrNam2 <> tsOk )
+  {
+    message('Не найден внешний атрибут "Общая площадь здания" для KatOS');
+    exit;
+  }
+
+
+  sVidDog := _sVidDog;
+  sNalog  := _sNalog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  bError  := FALSE;
+
+  newFile := 'd:\out\Get4OS_nal.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_nal_debug');
+
+
+  if ( GetFirst Sposob where (( 'Сдаваемый в аренду' == Sposob.NameSB )) = tsOk )
+   _loop KatOS where (( word(15) == KatOS.tidk and Sposob.nRec == KatOS.cSposob )) ordered by index KatSO22
+   {
+     nRecOS := KatOS.nRec;
+
+     s1 := s2 := s3 := 0;
+
+     _loop AttrVal
+      if ( GetFirst SpDocs = tsOk )
+       if ( GetFirst Dogovor = tsOk )
+       {
+          s1 := s1 + SpDocs.kol;
+       }
+
+     if ( GetFirst AttrVal2 = tsOk )
+      s2 := AttrVal2.vDouble;
+
+     if ( GetFirst NezemNal = tsOk )
+      s3 := NezemNal.SumNal;
+
+     if ( s2 = 0 )
+     {
+       bError := TRUE;
+       f_log.WriteLn('bError: '+ bError);
+     }
+
+     Get4OS_Nal_debug := Get4OS_Nal_debug + (s1/s2)*s3;
+
+     f_log.WriteLn('KatOS                : '+KatOS.InNum+' '+KatOS.nameOS );
+     f_log.WriteLn('сдано в аренду м2    : '+ s1 );
+     f_log.WriteLn('общая площадь здания : '+ s2 );
+     f_log.WriteLn('сумма налога         : '+ s3 );
+
+   }
+
+  f_log.WriteLn('Get4OS_nal_debug'+Get4OS_Nal_debug);
+
+  if bError
+   Get4OS_Nal_debug := -1;
+
+  f_log.WriteLn('bError: '+bError);
+  f_log.close;
+
+  Get4OS_Nal_debug := Get4OS_Nal_debug;
+
+}
+////////////////////////////////////////////////////////////////////////////////
+end.

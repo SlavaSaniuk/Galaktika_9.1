@@ -1,0 +1,43 @@
+.var
+  StrNN,
+  Nom,
+  NomFull,
+  kolAdd,            // кол-во недопечатанных строк на текущей странице
+  MainKol,           // фиксированное кол-во строк на первой странице
+  KolPage,           // счетчик обработанных строк на текущей странице
+  FixKol,            // фиксированное кол-во строк на страницах, начиная со второй
+  KolSpSopr,
+  FixKolPage,        // допустимое кол-во строк на текущей странице
+  breakPage
+             : word;
+
+  Sum1ItogFull,
+  Sum2ItogFull,
+  Sum3ItogFull,
+  Sum4ItogFull,
+  Sum5ItogFull,
+  Sum6ItogFull
+             : double;
+
+  NextPage,
+  bAutoGrM          // автоматический расчет кол-ва грузовых мест
+             : boolean;
+
+  СпСимвол,
+  strEmpty,
+  Cena_Pr0,
+  KolGrM,
+  KolOneGrM
+             : string;
+
+.endvar
+.begin
+
+  // инициализация переменных
+  oPrnSoprFun.Init(0, 0, wRoundMass2, false, false,
+                   false, Massa_Tn, Massa_Kg, Massa_Gr, Cena_Pr, Cena_PrR, NDS_St, RoundGrm);
+
+#ifdef _TTN_SKL_ORG_
+  #undef _TTN_SKL_ORG_
+#end
+end.

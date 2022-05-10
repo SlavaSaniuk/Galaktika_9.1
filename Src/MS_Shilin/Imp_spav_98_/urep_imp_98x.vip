@@ -1,0 +1,38 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_RU_98x_Import_FRO Implements IUserReport;
+Interface UserReport_RU_98x_Import_FRO;
+create view;
+
+procedure Run;
+begin
+  RunInterface(F_PlPor::FRO_984_spravka_ms);
+end;
+
+function GetReportName: String;
+begin
+GetReportName := 'РУ - загрузка справок 98х из Excell';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Раздельный учет';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 1;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := 'B_FINANS';
+ end;
+end;
+end.

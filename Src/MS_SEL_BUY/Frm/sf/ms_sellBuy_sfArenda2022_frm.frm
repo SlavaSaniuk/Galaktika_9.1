@@ -191,24 +191,22 @@ if(boRunReport)
                      }
 
                    // **** Столбец 8 (Тариф) ****
-                   // *** Код тарифа по услуге ***
-                   rate_code_by_service := oAiExt.sGetAttr(coSpStep,SpStep.nrec,'Код тарифа');
-                   ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_8');
-                   if(length(rate_code_by_service)<>0){
-                       writeMessageLog('Код тарифа по услуге: ' +rate_code_by_service);
-                          if(AppArenda.getfirst KatTar where ((rate_code_by_service == Kattar.ID))=tsok){
-                              writeMessageLog('Код тарифа из KatTer: ' +KatTar.nrec);
-                                   if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
-                                        xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
-                   // *** Код тарифа по подразделению ***
-                   }}}else if(substr(ColumnRecordUsl_8,1,5)='Тариф'){
-                       if(AppArenda.getfirst Dogovor=tsok){
-                           if(AppArenda.getfirst Katpodr =tsok){
-                              writeMessageLog('Код тарифа по подразделению: ' +ColumnRecordUsl_8);
-                              KodTarif:=oAiExt.sGetAttr(coKatpodr,Katpodr.nrec,ColumnRecordUsl_8);
-                              if(AppArenda.getfirst KatTar where ((KodTarif == Kattar.ID))=tsok){
-                                   if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
-                                        xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
+                   ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_8'); // Код тарифа по услуге;
+                   if(substr(ColumnRecordUsl_8,1,5)='Тариф'){
+                     rate_code_by_service := oAiExt.sGetAttr(coSpStep,SpStep.nrec,'Код тарифа'); // Код тарифа по услуге из СФ
+                     if(length(rate_code_by_service)<>0){
+                        writeMessageLog('Код тарифа по услуге: ' +rate_code_by_service);
+                        if(AppArenda.getfirst KatTar where ((rate_code_by_service == Kattar.ID))=tsok){
+                            writeMessageLog('Код тарифа из KatTer: ' +KatTar.nrec);
+                                if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
+                                          xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
+                     }}} else if(AppArenda.getfirst Dogovor=tsok){ // Код тарифа по подразделению;
+                        if(AppArenda.getfirst Katpodr =tsok){
+                            writeMessageLog('Код тарифа по подразделению: ' +ColumnRecordUsl_8);
+                            KodTarif:=oAiExt.sGetAttr(coKatpodr,Katpodr.nrec,ColumnRecordUsl_8);
+                            if(AppArenda.getfirst KatTar where ((KodTarif == Kattar.ID))=tsok){
+                                if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
+                                    xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
                    // *** Код тарифа из данных арендатора ***
                    }}}}}else {
                       if(length(ColumnRecordUsl_8)<>0) {

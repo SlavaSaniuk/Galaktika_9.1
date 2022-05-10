@@ -1,0 +1,1119 @@
+#doc
+Графики профосмотра(Белтелеком)
+Использованы две таблицы:
+ - DISTDOCHIERARCHY для хранения шапки документа
+ - SPALLSTAFF для хранения спецификаций. Причем в ней хранятся записи двух панелей: средней(сотрудники) и нижней(факторы).
+ Ссылки:
+
+     constVidGraf              == DISTDOCHIERARCHY.wDocType
+
+ and constRecPers              == SPALLSTAFF.WNOCON    //средняя панель
+ and DISTDOCHIERARCHY.nrec     == SPALLSTAFF.CLINKT
+
+ and constRecFact              == SPALLSTAFFfactor.WNOCON    //нижняя панель
+ and SPALLSTAFF.nrec           == SPALLSTAFFfactor.CLINKT
+
+ Ссылка на заголовок для нижней панели дополнительно хранится в поле SPALLSTAFFfactor.RESCOMP[10] == DISTDOCHIERARCHY.nrec
+ Ссылка на сотрудника в записях средней панели хранится в поле SPALLSTAFF.CBASET, в записях нижней в SPALLSTAFFfactor.CBASET
+#end
+
+#include AdrFunc.vih         // Функции работы с адресами
+#include ChoiseYourPersons.vih
+#include iCheckFactorRez.vih
+
+const
+ cmEditGraf      = 30301;     // код события для запуска графика на редактирование
+ cmCreateAvto    = 30302;     // код события для кнопки автоматического запуска
+ cmCreareRezProf = 30303;     // код события для кнопки разноски результатов
+end
+
+Interface iGrafProfosmotr 'Список графиков прохождения медосмотра' Cyan, EscClose;
+  show at (, ,160, 31);
+
+var
+objAdrFunc   : AddressFunc;           // Переменная типа интерфейс AddressFunc
+objChoiseYourPersons: ChoiseYourPersons;
+objCheckFactorRez: iCheckFactorRez new;
+
+Function AdressAll(nrec_adress:comp): string;  forward;
+
+Create view
+as select
+if(IsValid(tnPickSPALLSTAFF), 'V', '')
+    (FieldName = fPickSPALLSTAFF)
+,AdressAll(ADDRESSN.nrec)
+    (FieldName = fAdressAll)
+,*
+from
+ DISTDOCHIERARCHY
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnabor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactor
+,SPALLSTAFF
+,SPALLSTAFF SPALLSTAFFfactor
+,Pick PickSPALLSTAFF
+,Persons  (ReadOnly)
+,ADDRESSN (ReadOnly)
+,APPOINTMENTS (ReadOnly)
+,CATALOGS CATALOGSpost (ReadOnly)         //должность
+,CATALOGS CATALOGSStrEd (ReadOnly)
+,CATALOGS CATALOGSStrEdMain (ReadOnly)
+,SPALLSTAFF SPALLSTAFFAll
+,SPALLSTAFF SPALLSTAFFAll2
+,Pick PickAll
+,DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+,SPALLSTAFF SPALLSTAFFfactorRED
+where
+((
+    constVidGraf              == DISTDOCHIERARCHY.wDocType        //список графиков
+
+and DISTDOCHIERARCHY.COBJECT  == CATALOGSStrEdMain.nrec           //подразделение заголовка
+
+and constRecPers              == SPALLSTAFF.WNOCON
+and DISTDOCHIERARCHY.nrec     == SPALLSTAFF.CLINKT                //средняя панель(сотрудники)
+
+and SPALLSTAFF.CBASET         == Persons.nrec                     //сотрудник
+
+and Persons.APPOINTCUR        == APPOINTMENTS.nrec                //назначение
+
+and APPOINTMENTS.post         == CATALOGSpost.nrec                //должность
+
+and APPOINTMENTS.DEPARTMENT   == CATALOGSStrEd.nrec              //СЕ сотрудника
+
+and Persons.LIVEADDR          == ADDRESSN.nrec               //адрес проживания
+
+and constRecFact              == SPALLSTAFFfactor.WNOCON
+and SPALLSTAFF.nrec           == SPALLSTAFFfactor.CLINKT     //нижняя панель(факторы)
+
+and SPALLSTAFFfactor.RESCOMP[1]        == DISTDOCHIERARCHYfactorPers.nrec        //факторы сотрудника
+
+and DISTDOCHIERARCHYfactorPers.CANVAL1 == DISTDOCHIERARCHYnabor.nrec  //набор
+
+and DISTDOCHIERARCHYnabor.CUSERID      == DISTDOCHIERARCHYfactor.nrec  //справочник факторов
+
+and constRecPers                  == PickSPALLSTAFF.wlist      //помеченные сотрудники
+and SPALLSTAFF.nRec               == PickSPALLSTAFF.cRec
+
+and constRecFact              == SPALLSTAFFfactorRED.WNOCON     //таблица для определения необходимости подсветки красным(сотрудники с проблемами)
+and SPALLSTAFF.nrec           == SPALLSTAFFfactorRED.CLINKT
+and (SPALLSTAFFfactorRED.RESWORD[1]=2)
+))
+;
+
+Function DISTDOCHIERARCHY_Pick: boolean;  forward;
+
+Function SPALLSTAFF_Pick: boolean;   forward;
+
+Function SPALLSTAFFfactor_Pick: boolean;   forward;
+
+Function SPALLSTAFFfactor_DelOnProtect: boolean; forward;
+
+Function SPALLSTAFF_DelOnProtect: boolean; forward;
+
+Function SPALLSTAFFfactor_CheckField:boolean; forward;
+
+Function DISTDOCHIERARCHY_CheckRecord: boolean; forward;
+
+Function AdressAll(nrec_adress:comp):string;
+{
+  AdressAll:='';
+  AdressAll:=objAdrFunc.GetFullAddressInd(nrec_adress);
+}
+
+Function GetNextRecLink(tip:word) : word;
+{
+ GetNextRecLink:=1;
+
+  case tip of
+      0:
+        {
+          if(getlast SPALLSTAFFAll where((constRecPers              == SPALLSTAFFALL.WNOCON
+                                      and DISTDOCHIERARCHY.nrec     == SPALLSTAFFALL.CLINKT))=tsok)
+                {
+                  GetNextRecLink:=SPALLSTAFFALL.INUM+1;
+                }
+        }
+      1:
+        {
+          if(getlast SPALLSTAFFAll where((constRecFact              == SPALLSTAFFALL.WNOCON
+                                      and SPALLSTAFF.nrec           == SPALLSTAFFALL.CLINKT))=tsok)
+                {
+                  GetNextRecLink:=SPALLSTAFFALL.INUM+1;
+                }
+        }
+  end;
+}
+
+Procedure DISTDOCHIERARCHY_SetDefault;
+{
+  ClearBuffer(#DISTDOCHIERARCHY);
+
+  RescanPanel(#DISTDOCHIERARCHY);
+  RescanPanel(#SPALLSTAFF);
+  RescanPanel(#SPALLSTAFFfactor);
+
+  DISTDOCHIERARCHY.nRec          := GetNextNRec(#DISTDOCHIERARCHY, 0);;
+  DISTDOCHIERARCHY.wDocType      := constVidGraf;
+  DISTDOCHIERARCHY.WTYPEHIER     := Year(cur_date);
+  DISTDOCHIERARCHY.DTCALC        := cur_date;
+  DISTDOCHIERARCHY.SNAME         := '000000';
+}
+
+Procedure DISTDOCHIERARCHY_CheckField;
+{
+   case Curfield of
+
+    #DISTDOCHIERARCHY.WTYPEHIER:
+    {
+      if (DISTDOCHIERARCHY.WTYPEHIER>2100 or DISTDOCHIERARCHY.WTYPEHIER<2000)
+      {
+        message('Год должен быть в пределах от 2000 до 2100!'#13#13+
+                'Внесите исправление!', Information);
+        SelectField(#DISTDOCHIERARCHY.WTYPEHIER);
+        abort;
+      }
+    }
+
+  end;
+}
+
+Function DISTDOCHIERARCHY_DeleteRecord: boolean;
+{
+  Result := False;
+ if(DISTDOCHIERARCHY.nrec<>0)
+  {
+  if ( Message('Удалить график на '+DISTDOCHIERARCHY.WTYPEHIER+' год под номером '+DISTDOCHIERARCHY.SNAME + '?', YesNo+Confirmation+mfSwapButtons) <> cmYes )
+     {
+        Exit;
+     }
+  else
+     {
+       _loop SPALLSTAFFAll where ((constRecPers              == SPALLSTAFFAll.WNOCON
+                               and DISTDOCHIERARCHY.nrec     == SPALLSTAFFAll.CLINKT))
+          {
+             delete SPALLSTAFFAll2 where ((constRecFact              == SPALLSTAFFAll2.WNOCON
+                                    and SPALLSTAFFAll.nrec           == SPALLSTAFFAll2.CLINKT ));
+
+             delete PickAll   where ((constRecPers          == PickAll.wlist
+                                  and SPALLSTAFFAll.nRec    == PickAll.cRec));
+          }
+
+       delete SPALLSTAFFAll     where ((constRecPers              == SPALLSTAFFAll.WNOCON
+                                and     DISTDOCHIERARCHY.nrec     == SPALLSTAFFAll.CLINKT));
+
+       delete current DISTDOCHIERARCHY;
+
+       RereadRecord(#DISTDOCHIERARCHY);
+       RereadRecord(#SPALLSTAFF);
+       RereadRecord(#SPALLSTAFFfactor);
+     }
+  }
+  Result := True;
+}
+
+Procedure SPALLSTAFFDefault;
+{
+  ClearBuffer(#SPALLSTAFF);
+  RescanPanel(#SPALLSTAFFfactor);
+
+  SPALLSTAFF.CLINKT     := DISTDOCHIERARCHY.nRec;
+  SPALLSTAFF.nRec       := GetNextNRec(#SPALLSTAFF, 0);
+  SPALLSTAFF.WNOCON     := constRecPers;
+  SPALLSTAFF.INUM       := GetNextRecLink(0);
+  SPALLSTAFF.RESCOMP[10]:= DISTDOCHIERARCHY.nRec;      //резерв. Для нижней панели в этом поле ссылка на шапку. Для средней тоже продублируем...
+}
+
+Function SPALLSTAFF_DeleteRecord: boolean;
+var sfio:string;
+InumOld:integer;
+{
+ Result := False;
+ if(SPALLSTAFF.nrec<>0)
+  {
+    sfio:=Persons.fio;
+    InumOld:=SPALLSTAFF.INUM;
+
+      if(isValid(#SPALLSTAFFfactor))
+        {
+           Message('ВНИМАНИЕ! По сотруднику '+sfio +' в нижней панели есть подчиненный записи, они будут также удалены!');
+        }
+
+      if ( Message('Удалить сотрудника '+sfio + ' из графика?', YesNo+Confirmation+mfSwapButtons) <> cmYes )
+         {
+           Exit;
+         }
+      else
+         {
+
+           delete SPALLSTAFFAll2    where ((constRecFact              == SPALLSTAFFAll2.WNOCON
+                                    and     SPALLSTAFF.nrec           == SPALLSTAFFAll2.CLINKT));
+
+           delete PickAll      where ((constRecPers              == PickAll.wlist
+                                and     SPALLSTAFF.nRec          == PickAll.cRec));
+
+           delete current SPALLSTAFF;
+
+           _Loop SPALLSTAFFAll where ((constRecPers              == SPALLSTAFFAll.WNOCON
+                               and     DISTDOCHIERARCHY.nrec     == SPALLSTAFFAll.CLINKT
+                                and    InumOld                   << SPALLSTAFFAll.INUM))
+                {
+                  SPALLSTAFFAll.INUM:=SPALLSTAFFAll.INUM-1;
+                  update current SPALLSTAFFAll;
+                }
+
+           RereadRecord(#SPALLSTAFF);
+           RereadRecord(#SPALLSTAFFfactor);
+         }
+  }
+  Result := True;
+}
+
+Procedure SPALLSTAFFfactorDefault;
+{
+  ClearBuffer(#SPALLSTAFFfactor);
+
+  SPALLSTAFFfactor.CLINKT     := SPALLSTAFF.nRec;
+  SPALLSTAFFfactor.nRec       := GetNextNRec(#SPALLSTAFFfactor, 0);
+  SPALLSTAFFfactor.WNOCON     := constRecFact;
+  SPALLSTAFFfactor.INUM       := GetNextRecLink(1);
+  SPALLSTAFFfactor.CBASET     := SPALLSTAFF.CBASET;       //ссылка на сотрудника в нижней панели тоже нужна. Чтобы выбирать результаты по индексу...
+  SPALLSTAFFfactor.RESCOMP[10]:= DISTDOCHIERARCHY.nRec;   //на всякий случай для записей нижней панели будем хранить ссылку на заголовок документа(шапку), таблица DISTDOCHIERARCHY
+}
+
+Function SPALLSTAFFfactor_DeleteRecord: boolean;
+{
+var catName, sfio: string;
+Result := False;
+ if(SPALLSTAFFfactor.nrec<>0)
+  {
+    catName:=DISTDOCHIERARCHYfactor.SNAME;
+    sfio:=Persons.fio;
+
+      if ( Message('Удалить фактор '+catName + ' сотрудника '+sfio+'?', YesNo+Confirmation+mfSwapButtons) <> cmYes )
+         {
+           Exit;
+         }
+      else
+         {
+           delete current SPALLSTAFFfactor;
+
+           RereadRecord(#SPALLSTAFFfactor);
+         }
+  }
+  Result := True;
+}
+
+Procedure RunHotKeysMain;         //привязка меню
+{
+  case CurTable of
+      #DISTDOCHIERARCHY:
+        {
+        PutHotCommand(RunMenu('GrafProfosmotr_menu_HotKeys'));
+        }
+    end;
+}
+
+Procedure RunHotKeysPers;         //привязка меню
+{
+  case CurTable of
+      #DISTDOCHIERARCHY:
+        {
+        PutHotCommand(RunMenu('MainWindowGraf_menu_HotKeys'));
+        }
+      #SPALLSTAFF:
+        {
+        PutHotCommand(RunMenu('PersGraf_menu_HotKeys'));
+        }
+    end;
+}
+
+Function SPALLSTAFFfactor_CheckRecord: boolean;
+{
+   SPALLSTAFFfactor_CheckRecord:=false;
+   if(SPALLSTAFFfactor.RESCOMP[1]=comp(0))
+     {
+         message('Выберите фактор условия труда или удалите запись!',Warning);
+         SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+         exit;
+     }
+   if(RecordExists SPALLSTAFFAll2 where ((constRecFact              == SPALLSTAFFAll2.WNOCON
+                                     and  SPALLSTAFF.nrec           == SPALLSTAFFAll2.CLINKT
+                                     and SPALLSTAFFfactor.RESCOMP[1]== SPALLSTAFFAll2.RESCOMP[1](noindex)
+                                       and (SPALLSTAFFfactor.nrec   <> SPALLSTAFFAll2.nrec)))=tsok)
+      {
+        message('Для данного сотрудника указанный фактор уже выбран в этом графике!'#13+
+                'Измените либо удалите запись.',Warning);
+        SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+        exit;
+      }
+   if(SPALLSTAFFfactor.RESDATE[2]<>date(0,0,0))
+      {
+        if(SPALLSTAFFfactor.RESWORD[1]=0)
+          {
+            message('Укажите результат медосмотра, либо уберите дату медосмотра!',Warning);
+            SelectField(#SPALLSTAFFfactor.RESWORD[1]);
+            exit;
+          }
+      }
+   if(SPALLSTAFFfactor.RESWORD[1]<>0)
+      {
+        if(SPALLSTAFFfactor.RESDATE[2]=date(0,0,0))
+          {
+            message('Укажите дату медосмотра, либо уберите результат!',Warning);
+            SelectField(#SPALLSTAFFfactor.RESDATE[2]);
+            exit;
+          }
+      }
+   SPALLSTAFFfactor_CheckRecord:=true;
+}
+
+Function SPALLSTAFF_CheckRecord : boolean;
+{
+  SPALLSTAFF_CheckRecord:=false;
+
+     if(SPALLSTAFF.CBASET=comp(0))
+     {
+         message('Выберите сотрудника или удалите запись!',Warning);
+         SelectField(#PERSONS.Fio);
+         exit;
+     }
+
+     if(RecordExists SPALLSTAFFAll where ((constRecPers              == SPALLSTAFFAll.WNOCON
+                                      and SPALLSTAFF.CBASET          == SPALLSTAFFAll.CBASET
+                                       and DISTDOCHIERARCHY.nrec     == SPALLSTAFFAll.CLINKT
+                                       and (SPALLSTAFF.nrec          <> SPALLSTAFFAll.nrec)))=tsok)
+      {
+        message('В график уже включен выбранный сотрудник!'#13+
+                'Измените либо удалите запись.',Warning);
+        SelectField(#PERSONS.Fio);
+        exit;
+      }
+
+  SPALLSTAFF_CheckRecord:=true;
+}
+
+Function ModifRezult:boolean;
+var
+RezDatProf, RezDatDoc : date;
+RezNomDoc : string;
+wRezRezult : word;
+iPers, irec : longint;
+{
+ ModifRezult:=false;
+ irec:=0;
+ iPers:=0;
+   if(RecordExists PickAll where ((constRecPers==PickAll.wlist)) = tsNotFound)
+    {
+      message('Для запуска функции необходимо пометить хотя бы одну запись!', Warning);
+      Exit;
+    }
+
+   if (RunInterface('iGetRezult', RezDatProf, RezDatDoc, RezNomDoc, wRezRezult) = cmCancel)
+     {
+       Exit;
+     }
+   else
+     {
+        if(Message('Будут обновлены результаты по всем помеченным сотрудникам. Продолжить?', YesNo+Confirmation+mfSwapButtons) <> cmYes)
+          {
+            Exit;
+          }
+        else
+          {
+            _loop PickAll where ((constRecPers==PickAll.wlist))
+              {
+                 if(getfirst SPALLSTAFFAll where ((PickAll.crec == SPALLSTAFFAll.nrec))=tsok)
+                   {
+                     _loop SPALLSTAFFAll2  where ((constRecFact              == SPALLSTAFFAll2.WNOCON
+                                             and   SPALLSTAFFAll.nrec        == SPALLSTAFFAll2.CLINKT))
+                       {
+                          SPALLSTAFFAll2.RESDATE[1]   := RezDatDoc;
+                          SPALLSTAFFAll2.RESDATE[2]   := RezDatProf;
+                          SPALLSTAFFAll2.RESSTRING[1] := RezNomDoc;
+                          SPALLSTAFFAll2.RESWORD[1]   := wRezRezult;
+                          if(update current SPALLSTAFFAll2=tsok)
+                            {
+                              irec +=1;
+                            }
+                       }
+                   }
+                iPers +=1;
+              }
+          }
+
+       delete PickAll where ((constRecPers == PickAll.wList));
+
+       message('Всего было обработано '+iPers+ ' сотрудников! Количество обновленных записей: '+irec);
+     }
+ ModifRezult:=true;
+}
+
+Function  AvtoCreateGraf :boolean;
+{
+
+  AvtoCreateGraf:=false;
+
+    if (RunInterface('iAvtoCreateGraf') = cmCancel)
+     {
+       Exit;
+     }
+  AvtoCreateGraf:=true;
+}
+
+Procedure PrintDocument;
+{
+ if(DISTDOCHIERARCHY.nrec<>0)
+  {
+    if( not isValid(#SPALLSTAFF))
+      {
+        message('Нет данных для формирования отчета!');
+        Exit;
+      }
+    else
+      {
+        RunInterface('iPrintGrafMain', DISTDOCHIERARCHY.nrec);
+      }
+  }
+ else
+  {
+     message('Нет данных для формирования отчета!');
+     Exit;
+  }
+}
+
+Procedure DISTDOCHIERARCHY_PrintDoc;
+{
+  if (CurTable = #DISTDOCHIERARCHY)
+  {
+   if(UpdateTable)
+     {
+       PrintDocument;
+     }
+  }
+}
+
+Window wEditGraf 'Редактирование графика прохождения медосмотра' EscClose;    //главное окно, редактирования
+  Show at (, , 120, 32);
+    Panel panDISTDOCHIERARCHY      //панель, после панели сразу Table должно идти
+    Table DISTDOCHIERARCHY;
+  Screen scrGrafProfosmotr (,, sci178Esc);    // sci178Esc определяет обрабатываемые события
+  Show at (, , , 7) fixed_Y;
+Fields
+  //------------------------------------------------------------------------------
+  DISTDOCHIERARCHY.WTYPEHIER     ('Год',,) : nostatic, noprotect, SpinButton [1,1,4000];
+  DISTDOCHIERARCHY.DTCALC        ('Дата',,): NoProtect;
+  DISTDOCHIERARCHY.SNAME         ('Номер',,);
+  DISTDOCHIERARCHY.WDOCNORM      ('Вид медосмотра',,sci1378Esc):
+  [LIST 0 ' ', 1 'Предварительный', 2 'Периодический', 3 'Внеочередной'],Protect;
+  CATALOGSStrEdMain.name         ('Ответственное подразделение',,sci1378Esc): [40], protect;
+  DISTDOCHIERARCHY.SOBOZN        ('Примечание', ,);
+<<
+
+  `Год:` .@@@@@    `Дата:` .@@@@@@@@@@@     `Номер:` .@@@@@@@@        `Вид медосмотра:` .@@@@@@@@@@@@@@@@@@@
+
+  `Ответственное подразделение:` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  `Примечание:`    .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+>>
+end; //Screen
+
+HandleEvent    //события панели pDISTDOCHIERARCHY
+cmPick:
+{
+  if (not DISTDOCHIERARCHY_Pick)
+   {
+    Abort;
+   }
+}
+cmSetDefault:
+{
+DISTDOCHIERARCHY_SetDefault;
+PutCommand(cmEditGraf)
+}
+cmCheckField:
+{
+DISTDOCHIERARCHY_CheckField;
+}
+cmCheckRecord:
+{
+ if (not DISTDOCHIERARCHY_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmDeleteRecord:    //событие удаления записей
+{
+ if (not DISTDOCHIERARCHY_DeleteRecord)
+   {
+    Abort;
+   }
+}
+cmInsertRecord:
+{
+  insert current DISTDOCHIERARCHY;
+}
+cmUpdateRecord:
+{
+  update current DISTDOCHIERARCHY;
+}
+end;
+end;
+
+Panel panSPALLSTAFF
+  Table SPALLSTAFF;
+Browse brSPALLSTAFF ('Сотрудники',, sci178EscIns);
+  Show at (,8,,25);
+
+Fields
+    {Font = {Color = if (IsValid(#PickSPALLSTAFF), ColorMark, if (IsValid(#SPALLSTAFFfactorRED), ColorSysRed, 0)) }};
+    fPickSPALLSTAFF                #3'V'            : [ 2], skip, Centered, NoAutoSize;         //для пометки
+    SPALLSTAFF.INUM                #3'№ п/п': [5], skip;
+    PERSONS.Fio                    #3'ФИО'  (, , sci1378EscIns)  : [40], protect;
+    PERSONS.TABNMB                 #3'Табельный номер'  : [10], skip;
+    CATALOGSpost.name              #3'Должность'    : [35], skip;
+    CATALOGSStrEd.name             #3'СЕ сотрудника'    : [35], skip;
+    PERSONS.SEX                    #3'Пол'    : [4], skip;
+    fAdressAll                     #3'Адрес проживания'    : [20], skip;
+    PERSONS.BORNDATE               #3'Дата рождения' : [12], skip;
+end; //Browse
+
+HandleEvent    //события панели   pEditSmeta
+cmPick:
+{
+ if (not SPALLSTAFF_Pick)
+    {
+     Abort;
+    }
+}
+cmSetDefault:
+{
+  SPALLSTAFFDefault;
+  SelectField(#PERSONS.Fio);
+  PutCommand(cmPick);
+}
+cmDelOnProtect:
+{
+  if (not SPALLSTAFF_DelOnProtect)
+   {
+    Abort;
+   }
+}
+cmCheckRecord:
+{
+ if (not SPALLSTAFF_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmUpdateRecord:
+{
+  update current SPALLSTAFF;
+}
+cmInsertRecord :
+{
+  insert current SPALLSTAFF;
+}
+cmDeleteRecord:
+{
+ if (not SPALLSTAFF_DeleteRecord)
+   {
+    Abort;
+   }
+}
+end;
+end;
+
+Panel panSPALLSTAFFfactor
+  Table SPALLSTAFFfactor;
+Browse brSPALLSTAFFSfactor ('Факторы',, sci178Esc);
+  Show at (,26,,);
+
+Fields
+    SPALLSTAFFfactor.INUM                #3'№ п/п': [5], skip;
+    DISTDOCHIERARCHYfactor.SNAME         #3'Наименование' (, , sci1378Esc):[28],protect;
+    DISTDOCHIERARCHYnabor.WKOLNORM       #3'Класс' ('Класс условий труда'):
+    [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, Skip;
+    DISTDOCHIERARCHYnabor.WKODGRKAU1     #3'Периодичность' ('Периодичность условий труда'):
+    [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, Skip;
+    objCheckFactorRez.DateLastOsmotr(SPALLSTAFFfactor.RESCOMP[1])  #3'Дата предыдущего медосмотра' ('Дата предыдущего медосмотра'):[10],Protect, Skip;
+    SPALLSTAFFfactor.RESDATE[3]          #3'Плановая дата медосмотра' : [12], NoProtect;
+    SPALLSTAFFfactor.RESSTRING[1]        #3'Номер документа' : [10];
+    SPALLSTAFFfactor.RESDATE[1]          #3'Дата документа' : [10, 'DD/MM/YYYY'], NoProtect;
+    SPALLSTAFFfactor.RESWORD[1]          #3'Результат' ('Результат медосмотра',,sci1378Esc):
+    [LIST 0 ' ', 1 'Годен', 2 'Негоден', 3 'Годен с ограничениями'],Protect;
+    SPALLSTAFFfactor.RESDATE[2]          #3'Дата медосмотра' : [10, 'DD/MM/YYYY'], NoProtect;
+end; //Browse
+
+HandleEvent    //события панели   pEditSmeta
+cmPick:
+{
+ if (not SPALLSTAFFfactor_Pick)
+    {
+     Abort;
+    }
+}
+cmSetDefault:
+{
+  SPALLSTAFFfactorDefault;
+  SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+  PutCommand(cmPick);
+}
+cmCheckRecord:
+{
+ if (not SPALLSTAFFfactor_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmCheckField:
+{
+  if (not SPALLSTAFFfactor_CheckField)
+   {
+    Abort;
+   }
+}
+cmDelOnProtect:
+{
+  if (not SPALLSTAFFfactor_DelOnProtect)
+   {
+    Abort;
+   }
+}
+cmUpdateRecord:
+{
+  update current SPALLSTAFFfactor;
+}
+cmInsertRecord :
+{
+  insert current SPALLSTAFFfactor;
+}
+cmDeleteRecord:
+{
+   if (not SPALLSTAFFfactor_DeleteRecord)
+   {
+    Abort;
+   }
+}
+end;
+end;
+
+HandleEvent     //события основного окна
+cmDone:
+{
+delete PickAll where ((constRecPers == PickAll.wList));
+
+if(not UpDateTable)
+  {
+    abort;
+  }
+}
+cmCreareRezProf:
+{
+  if (not ModifRezult)
+    {
+      Abort;
+    }
+  else
+    {
+     RereadRecord(#SPALLSTAFF);
+     RereadRecord(#SPALLSTAFFfactor);
+    }
+}
+cmMarkUnMark:    //пометка/снятие пометки одной записи
+{
+if (isValid(#PickSPALLSTAFF))
+  {
+    delete current PickSPALLSTAFF;
+  }
+  else
+  {
+    ClearBuffer(#PickAll);
+    PickAll.nRec  := 0;
+    PickAll.wList := constRecPers;
+    PickAll.cRec  := SPALLSTAFF.nRec;
+    insert current PickAll;
+  }
+  RedrawCurrentAndGo(GetCurrentFormat, true);
+  ReScanPanel(#SPALLSTAFF);
+}
+cmSelectAll:  //[+]Все
+{
+  delete PickAll where ((constRecPers == PickAll.wList));
+  PushPos(#SPALLSTAFF);
+  StartNewVisual(vtRotateVisual, vfTimer, 'Пометка записей...', 1);
+  _LOOP SPALLSTAFF
+  {
+    NextVisual;
+    ClearBuffer(#PickAll);
+    PickAll.nRec  := 0;
+    PickAll.wList := constRecPers;
+    PickAll.cRec  := SPALLSTAFF.nRec;
+    insert current PickAll;
+  }
+  StopVisual('',0);
+  PopPos(#SPALLSTAFF);
+  RereadRecord(#SPALLSTAFF);
+}
+cmUnSelectAll:  //[-]Снять
+{
+  delete PickAll where ((constRecPers == PickAll.wList));
+
+  ReScanPanel(#SPALLSTAFF);
+}
+cmHotKeys:               //события для правой кнопки мыши(меню)
+{
+  RunHotKeysPers;
+}
+cmPrintDoc:
+{
+ DISTDOCHIERARCHY_PrintDoc;
+}
+end;
+end;
+
+Function DISTDOCHIERARCHY_Pick: boolean;
+var
+CurCat:comp;
+{
+  DISTDOCHIERARCHY_Pick:=false;
+
+  if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+      case CurField of
+      #CATALOGSStrEdMain.name:
+                        {
+                            CurCat:=DISTDOCHIERARCHY.COBJECT;
+                            if (RunInterface(PickCatalog2,Integer(-11),CurCat,Comp(0))=cmDefault)
+                              {
+                                 set DISTDOCHIERARCHY.COBJECT:= CurCat;
+                              }
+                        }
+       end;
+    }
+
+  DISTDOCHIERARCHY_Pick:=true;
+}
+
+Function DISTDOCHIERARCHY_CheckRecord: boolean;
+var
+wYear:word;
+sNomer, sVidProf, sotvPodr:string;
+{
+  DISTDOCHIERARCHY_CheckRecord:=false;
+
+     If(getfirst DISTDOCHIERARCHYcheck where ((constVidGraf               == DISTDOCHIERARCHYcheck.wDocType
+                                         and   DISTDOCHIERARCHY.WTYPEHIER == DISTDOCHIERARCHYcheck.WTYPEHIER
+                                         and   DISTDOCHIERARCHY.SNAME     == DISTDOCHIERARCHYcheck.SNAME
+                                         and   DISTDOCHIERARCHY.DTCALC    == DISTDOCHIERARCHYcheck.DTCALC(noindex)
+                                         and   DISTDOCHIERARCHY.WDOCNORM  == DISTDOCHIERARCHYcheck.WDOCNORM(noindex)
+                                         and   DISTDOCHIERARCHY.COBJECT   == DISTDOCHIERARCHYcheck.COBJECT(noindex)
+                                         and   (DISTDOCHIERARCHY.nrec     <> DISTDOCHIERARCHYcheck.nrec)))=tsok)
+    {
+      wYear:=DISTDOCHIERARCHY.WTYPEHIER;
+      sNomer:=DISTDOCHIERARCHY.SNAME;
+      sVidProf:=GetEnumString(scrGrafProfosmotr,#DISTDOCHIERARCHY.WDOCNORM);
+      sotvPodr:=CATALOGSStrEdMain.name;
+      message('В БД уже есть график с идентичными реквизитами(год: '+wYear+', номер: '+sNomer+', дата: '+cur_date+', '#13+
+      'вид профосмотра: '+sVidProf+', отв. подразделение: '+sotvPodr+')!'#13+
+       'Для продолжения измените один из реквизитов!');
+      Exit;
+    }
+
+  DISTDOCHIERARCHY_CheckRecord:=true;
+}
+
+Function SPALLSTAFF_Pick: boolean;
+{
+var DummyMarker1, DummyMarker2: TPtr;
+var curPers:comp;
+
+  result:=false;
+
+if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+  {
+    exit;
+  }
+else
+  {
+
+  DummyMarker1 := InitMarker('', 8, 10, 10);
+  DummyMarker2 := InitMarker('', 8, 1, 1);
+
+  case CurField of
+    #PERSONS.Fio:
+    {
+      if(RecordExists SPALLSTAFFfactor = tsok)
+        {
+          message('Изменять существующую запись нельзя.'#13+
+                  'В нижней панели есть записи ссылающиеся на нее!"',Warning);
+          exit;
+        }
+      else
+        {
+         if(objChoiseYourPersons.Choice(DummyMarker1,0,vfCanSelect,0,curPers,DummyMarker2))
+           {
+            if(RecordExists SPALLSTAFFAll where ((constRecPers              == SPALLSTAFFAll.WNOCON
+                                             and  curPers                   == SPALLSTAFFAll.CBASET
+                                              and DISTDOCHIERARCHY.nrec     == SPALLSTAFFAll.CLINKT
+                                              and (SPALLSTAFF.nrec          <> SPALLSTAFFAll.nrec)))=tsok)
+              {
+                message('В график уже включен выбранный сотрудник!',Warning);
+                SelectField(#PERSONS.Fio);
+                exit;
+              }
+            else
+              {
+                 set SPALLSTAFF.CBASET:= curPers;
+              }
+           }
+        }
+    }
+  end;
+
+  DoneMarker(DummyMarker1, '');
+  DoneMarker(DummyMarker2, '');
+  }
+  result:=true;
+}
+
+Function SPALLSTAFFfactor_Pick: boolean;
+var fcoFactorPers : comp;
+{
+  result:=false;
+
+if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+  {
+    exit;
+  }
+else
+  {
+  case CurField of
+      #DISTDOCHIERARCHYfactor.SNAME:
+        {
+          if(RecordExists DISTDOCHIERARCHYcheck where ((SPALLSTAFF.CBASET == DISTDOCHIERARCHYcheck.CPARENT
+                                                  and     constFactorPers == DISTDOCHIERARCHYcheck.WDOCTYPE))= tsNotFound)
+            {
+              message('Нет вариантов для выбора!'#13+
+                      'Для рабочего места сотрудника факторы не разнесены!',Warning);
+              exit;
+            }
+          else
+            {
+             if(SPALLSTAFFfactor.RESWORD[1]=1 or SPALLSTAFFfactor.RESWORD[1]=2 or SPALLSTAFFfactor.RESWORD[1]=3)
+               {
+                message('Для фактора указан результат, изменение невозможно!',Warning);
+                exit;
+               }
+             else
+               {
+                 if (RunInterface(iFactorPers,1,SPALLSTAFF.CBASET,fcoFactorPers)=cmDefault)
+                  {
+
+                   if(getfirst DISTDOCHIERARCHYcheck where ((fcoFactorPers == DISTDOCHIERARCHYcheck.nrec))=tsok)
+                     {
+                       if(DISTDOCHIERARCHYcheck.RESDATE<>date(0,0,0) or DISTDOCHIERARCHYcheck.WSORT<>0)
+                         {
+                          message('Закрытые факторы выбирать нельзя! Повторите выбор',Warning);
+                          SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+                          exit;
+                         }
+                     }
+                   if(RecordExists SPALLSTAFFAll2 where ((constRecFact              == SPALLSTAFFAll2.WNOCON
+                                                     and  SPALLSTAFF.nrec           == SPALLSTAFFAll2.CLINKT
+                                                     and fcoFactorPers              == SPALLSTAFFAll2.RESCOMP[1](noindex)
+                                                       and (SPALLSTAFFfactor.nrec   <> SPALLSTAFFAll2.nrec)))=tsok)
+                     {
+                       message('Для данного сотрудника указанный фактор уже выбран в этом графике!',Warning);
+                       SelectField(#DISTDOCHIERARCHYfactor.SNAME);
+                       exit;
+                     }
+                   else
+                     {
+                       set SPALLSTAFFfactor.RESCOMP[1] := fcoFactorPers;
+                     }
+                  }
+               }
+            }
+        }
+  end;
+ }
+  result:=true;
+}
+
+Function SPALLSTAFFfactor_DelOnProtect: boolean;
+{
+   SPALLSTAFFfactor_DelOnProtect:=false;
+
+  if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #DISTDOCHIERARCHYfactor.SNAME:
+          {
+            exit;
+          }
+    end;
+    }
+
+  SPALLSTAFFfactor_DelOnProtect:=true;
+}
+
+Function SPALLSTAFF_DelOnProtect: boolean;
+{
+  SPALLSTAFF_DelOnProtect:=false;
+
+  if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+    case CurField of
+        #PERSONS.Fio:
+          {
+            exit;
+          }
+    end;
+    }
+  SPALLSTAFF_DelOnProtect:=true;
+}
+Function SPALLSTAFFfactor_CheckField:boolean;
+var
+DatStartBound:date;
+coNrecBound:comp;
+DatCloseFactor:date;
+wTipClose:word;
+{
+  SPALLSTAFFfactor_CheckField:=false;
+
+  if(CurWindow <>wEditGraf)      //если не находимся в окне, то пики не обрабатываем
+    {
+      exit;
+    }
+  else
+    {
+      case CurField of
+        #SPALLSTAFFfactor.RESWORD[1]:
+               {
+                 if(SPALLSTAFFfactor.RESWORD[1]=2)
+                   {
+                   if(getfirst DISTDOCHIERARCHYcheck where ((SPALLSTAFFfactor.RESCOMP[1] == DISTDOCHIERARCHYcheck.nrec))=tsok)
+                     {
+                         if(message('Задать параметры закрытия фактора рабочего места сотрудника?',YesNo)=yes)
+                           {
+                            if(RunInterface('iGetClose', DatCloseFactor, wTipClose) = cmCancel)
+                              {
+                                Exit;
+                              }
+                             else
+                              {
+                                DISTDOCHIERARCHYcheck.RESDATE:=DatCloseFactor;
+                                DISTDOCHIERARCHYcheck.WSORT  :=wTipClose;
+                                update current DISTDOCHIERARCHYcheck;
+                              }
+                           }
+                     }
+                   }
+                 if(SPALLSTAFFfactor.RESWORD[1]=3)
+                   {
+                   if(getfirst DISTDOCHIERARCHYcheck where ((SPALLSTAFFfactor.RESCOMP[1] == DISTDOCHIERARCHYcheck.nrec))=tsok)
+                     {
+
+                       DatStartBound := _GetDate(DISTDOCHIERARCHYcheck.DTDATETIME);
+                       coNrecBound   := DISTDOCHIERARCHYcheck.CDOCBOUND;
+
+                     if(message('Задать параметры ограничения?',YesNo)=yes)
+                       {
+                        if (RunInterface('iGetBound', DatStartBound, coNrecBound) = cmCancel)
+                           {
+                             Exit;
+                           }
+                        else
+                           {
+                             DISTDOCHIERARCHYcheck.CDOCBOUND:=coNrecBound;
+                             DISTDOCHIERARCHYcheck.DTDATETIME:=_DateTime1(DatStartBound,Cur_Time);;
+                             update current DISTDOCHIERARCHYcheck;
+                           }
+                       }
+                     }
+                   }
+                }
+      end;
+    }
+
+  SPALLSTAFFfactor_CheckField:=true;
+}
+
+#include panGrafProfosmotr.vpp
+HandleEvent
+cmInit:
+{
+  delete PickAll where ((constRecPers == PickAll.wList));
+}
+cmDefault:
+{
+  if (isValid(#DISTDOCHIERARCHY))
+     {
+    PutCommand(cmEditGraf);
+     }
+  else
+     {
+    PutCommand(cmInsert);
+     }
+}
+cmEditGraf:
+{
+ if (CurWindow <> wEditGraf)
+    {
+      RunWindow(wEditGraf);
+    }
+}
+cmHotKeys:               //события для правой кнопки мыши(меню)
+{
+  RunHotKeysMain;
+}
+cmCreateAvto:           //событие из меню. Пользовательское
+{
+ if (not AvtoCreateGraf)
+    {
+      Abort;
+    }
+  else
+    {
+      RereadRecord(#DISTDOCHIERARCHY);
+      RereadRecord(#SPALLSTAFF);
+      RereadRecord(#SPALLSTAFFfactor);
+    }
+}
+cmPrintDoc:
+{
+ DISTDOCHIERARCHY_PrintDoc;
+}
+end;
+end.
+#doc
+Локальное меню
+#end
+GrafProfosmotr_menu_HotKeys Menu      //меню
+{
+- 'Создать график в автоматическом режиме'  , cmCreateAvto   ,
+'Создать график в автоматическом режиме'  ,, 'Alt+A', kbAltA, sci1Esc;
+-'Печать документа', cmPrintDoc, 'Печать отчета "Список работающих подлежащих периодическому осмотру"', hcctxSoprPrintDoc, 'Ctrl+P', kbCtrlP, sci1Esc,,,,bmpPrintDoc;
+}
+PersGraf_menu_HotKeys Menu      //меню
+{
+- 'Разнести результаты медосмотра'  , cmCreareRezProf   ,
+  'Разнести результаты медосмотра по помеченным записям'  ,, 'Alt+B', kbAltB, sci1Esc;
+}
+MainWindowGraf_menu_HotKeys Menu      //меню
+{
+-'Печать документа', cmPrintDoc, 'Печать отчета "Список работающих подлежащих периодическому осмотру"', hcctxSoprPrintDoc, 'Ctrl+P', kbCtrlP, sci1Esc,,,,bmpPrintDoc;
+}

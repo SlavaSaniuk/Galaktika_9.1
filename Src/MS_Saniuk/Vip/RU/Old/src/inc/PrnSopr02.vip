@@ -1,0 +1,308 @@
+!╔══════════════════════════════════════════════════════════════════════════════╗
+!║ Назначение    : Использование вариантов наименования МЦ/Услуг                ║
+!║ Параметры     : 1-й  pKatSopr  - ссылка на сопроводительный документ         ║
+!║               : 2-й  wParam    - дополнительный параметр - битовый           ║
+!╚══════════════════════════════════════════════════════════════════════════════╝
+
+#include ExtAttrClass.vih
+#include VarNameMCU.vih
+
+#doc
+Назначение:
+  Использование вариантов наименования МЦ/Услуг
+
+Параметры:
+  pKatSopr  - ссылка на сопроводительный документ
+  wParam    - дополнительный параметр - битовый
+#end
+Interface PrnVariatMcUsl 'Укажите варианты наименований для МЦ/услуг' ('', hci_nakl_Variant_Naimenov, ) doAccept, EscClose, Cyan;
+  Show At (10,,70,22)
+
+Table STRUCT TmpVarSpSopr
+(
+  cRec     : tNrec      "SpSopr.NRec",
+  NPP      : word       "SpSopr.NPP (для сортировки)"
+)
+with index
+(
+  TmpVarSpSopr01 = NPP
+);
+
+
+Const
+  strVariantName = 'ВАРИАНТ НАИМЕНОВАНИЯ';
+end;
+
+Create View
+Var
+  pKatSopr    : comp;   // ссылка на накладную
+  wParam      : word;   // дополнительные параметры
+//  sVariantName: string; // вариант наименования МЦ/услуги
+  wNastr      : word;   // настройка формирования
+  sVarDef     : string; // наименование варианта по умолчанию
+
+  piExAttr    : iExtAttr;
+
+As select
+//------------------------------------------------------------------------------
+  if (SpSopr.PrMC = 1, 'Т', 'У')
+    ( FieldName = PrMcUsl )
+//------------------------------------------------------------------------------
+, if (SpSopr.PrMC = 1, KatMc.Name, KatUsl.Name)
+    ( FieldName = NameMcUsl )
+//------------------------------------------------------------------------------
+, piExAttr.sGetAttr (coSpSopr, TmpVarSpSopr.cRec, strVariantName)
+    ( FieldName = VariantName )
+//------------------------------------------------------------------------------
+, *
+
+from
+  SpSopr
+, KatOrg
+, KatMC
+, KatUsl
+, KatSopr
+, KatDoc
+, CatalPSD
+, TmpVarSpSopr
+
+where
+((
+       SpSopr.cMcUsl    ==  KatMC.NRec
+  AND  SpSopr.cMcUsl    ==  KatUsl.NRec
+
+  AND  SpSopr.cSopr     ==  KatSopr.NRec
+  AND  KatSopr.cOrgBase ==  KatOrg.NRec
+  AND  KatSopr.VidSopr  ==  KatDoc.TiDkGal
+
+))
+
+Bounds ForAllSpSopr  =  pKatSopr          == SpSopr.cSopr
+Bounds ForVarSpSopr  =  TmpVarSpSopr.cRec == SpSopr.NRec
+;
+
+Parameters
+  pKatSopr
+, wParam
+;
+
+#include soprc16.vpp
+
+// выбор записей по которым имеются варианты наименования
+Function FillTmpSpSopr: boolean;
+var
+  isNeedInsert: boolean;
+{
+  FillTmpSpSopr := FALSE;
+
+  Delete All TmpVarSpSopr;
+
+  PushBounds(tbForAllSpSopr);
+
+  // визуализация не нужна - она есть в prnsopr.vpp
+  _Loop SpSopr
+  {
+    isNeedInsert := FALSE;
+
+    if (SpSopr.PrMC = 1)
+    {
+      // поиск хотя бы одного значения варианта для МЦ
+      if GetFirst FastFirstRow CatalPSD where (( cgi_VarNameKat_KatMC == CatalPSD.vidCatal  AND
+                                                 SpSopr.cMcUsl        == CatalPSD.cRec )) = tsOk
+        isNeedInsert := TRUE;
+
+    }
+    else
+    {
+      // поиск хотя бы одного значения варианта для услуги
+      if GetFirst FastFirstRow CatalPSD where (( cgi_VarNameKat_KatUsl == CatalPSD.vidCatal  AND
+                                                 SpSopr.cMcUsl         == CatalPSD.cRec )) = tsOk
+        isNeedInsert := TRUE;
+    }
+
+    // вставка записи
+    if (isNeedInsert)
+    {
+      ClearBuffer(#TmpVarSpSopr);
+      TmpVarSpSopr.cRec := SpSopr.NRec;
+      TmpVarSpSopr.NPP  := SpSopr.NPP;
+      Insert Current TmpVarSpSopr;
+
+      FillTmpSpSopr := TRUE;
+    }
+  }
+
+  PopBounds(tbForAllSpSopr);
+
+  PushBounds(tbForVarSpSopr);
+}
+
+// заполнение значением варианта по умолчанию
+Procedure SetVarDef;
+var
+  isNeedInsert: boolean;
+{
+  if (sVarDef = '')
+    Exit;
+
+  if ((wNastr AND 1) <> 1)
+    Exit;
+
+  _LOOP TmpVarSpSopr
+  {
+    if (GetFirst SpSopr <> tsOk)
+      Continue;
+
+    if (VariantName <> '')
+      Continue;
+
+    if (SpSopr.PrMC = 1)
+    {
+      if GetFirst FastFirstRow CatalPSD where (( cgi_VarNameKat_KatMC == CatalPSD.vidCatal  AND
+                                                 SpSopr.cMcUsl        == CatalPSD.cRec      AND
+                                                 sVarDef              == CatalPSD.Name )) = tsOk
+        isNeedInsert := TRUE;
+    }
+    else
+    {
+      if GetFirst FastFirstRow CatalPSD where (( cgi_VarNameKat_KatUsl == CatalPSD.vidCatal  AND
+                                                 SpSopr.cMcUsl         == CatalPSD.cRec      AND
+                                                 sVarDef               == CatalPSD.Name )) = tsOk
+        isNeedInsert := TRUE;
+    }
+
+    if (isNeedInsert)
+      piExAttr.sSetAttr(coSpSopr, SpSopr.NRec, strVariantName, CatalPSD.Prim);
+  }
+}
+
+//******************************************************************************
+Panel pnKatSopr;
+  Table KatSopr;
+
+Screen scrPrnVariatMcUsl
+  Show At (,,,6);
+Fields
+  KatDoc.Name   : Skip, {Font = {Bold = true}};
+  KatSopr.NSopr : Skip, {Font = {Bold = true}};
+  KatSopr.dSopr : ['DD/MM/YYYY'], Skip, {Font = {Bold = true}};
+  KatSopr.Descr : Skip, {Font = {Bold = true}};
+  KatOrg.Name   : Skip, {Font = {Bold = true}};
+  sVarDef       : Skip, {Font = {Bold = true}};
+  wNastr        : NoProtect;
+<<
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  № .@@@@@@@@@@@@ от .@@@@@@@@@  создал .@@@@@@@@@@@@@
+  Контрагент.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  Вариант по умолчанию.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  [.] заполнить вариантом по умолчанию`
+>>
+end;
+end; // panel
+//******************************************************************************
+Panel pnPrnVariatMcUsl
+  Table TmpVarSpSopr
+
+Browse brPrnVariatMcUsl
+  Show At (,7,,)
+Fields
+  SpSopr.NPP  '№' ('Номер по порядку'  ,,sci1Esc):  [3], Protect, NoDel;
+  PrMcUsl     'Т/У' ('Признак МЦ/услуги' ,,sci1Esc):  [3], Protect, NoDel;
+  NameMcUsl   'Наименование' ('Название МЦ/Услуги',,sci1Esc): [25], Protect, NoDel;
+  VariantName 'Вариант наименования' ('Вариант наименования МЦ/Услуги',,sci13Esc): [25], Protect;
+end;
+
+Handleevent
+cmPick:
+{
+  case CurField of
+    #VariantName:
+    {
+      var tRec: comp;
+      tRec := comp(0);
+
+      if (SpSopr.PrMc = 1)
+        RunInterface(GetVariatMcUsl, SpSopr.cMcUsl, cgi_VarNameKat_MC, cgi_VarNameKat_KatMC, tRec);
+      else
+        RunInterface(GetVariatMcUsl, SpSopr.cMcUsl, cgi_VarNameKat_Usl, cgi_VarNameKat_KatUsl, tRec);
+
+      // запись выбранного значения варианта во внешний атрибут к спецификации
+      if GetFirst CatalPSD where (( tRec == CatalPSD.NRec )) = tsOk
+        piExAttr.sSetAttr(coSpSopr, SpSopr.NRec, strVariantName, CatalPSD.Prim);
+
+      ReReadRecord(#TmpVarSpSopr);
+    }
+  end;
+}
+
+cmDelOnProtect:
+{
+  case CurField of
+    #VariantName:
+    {
+      piExAttr.DeleteValue(coSpSopr, SpSopr.NRec, strVariantName);
+      ReReadRecord(#TmpVarSpSopr);
+    }
+  end;
+}
+
+end;
+end; // panel
+
+//******************************************************************************
+Handleevent
+cmInit:
+{
+  // внешний атрибут для варианта наименования
+  MakeAttr(coSpSopr, strVariantName, word(0));
+
+  sVarDef := sGetTune('MCUsl.VarNameMC');
+
+  if (NOT ReadMyDsk(wNastr, 'PrnVariatMcUsl_wNastr', FALSE))
+    wNastr := 0;
+
+  if (FillTmpSpSopr)
+    SetVarDef
+  else
+    Abort;
+}
+
+cmDone:
+{
+  SaveMyDsk(wNastr, 'PrnVariatMcUsl_wNastr');
+}
+
+cmCheckField:
+{
+  case CurField of
+    #wNastr:
+    {
+      SetVarDef;
+      ReReadRecord(#TmpVarSpSopr);
+    }
+  end;
+}
+
+cmHotKeys:
+  PutHotCommand(RunMenu('mnuPrnVariatMcUsl'));
+
+
+cmValue1:
+{
+  PushPos(#TmpVarSpSopr);
+
+  _LOOP TmpVarSpSopr
+    piExAttr.DeleteValue (coSpSopr, TmpVarSpSopr.cRec, strVariantName);
+
+  PopPos(#TmpVarSpSopr);
+
+  ReReadRecord(#TmpVarSpSopr);
+}
+
+end;
+end.
+
+mnuPrnVariatMcUsl Menu
+{
+-'Очистить все варианты наименований', cmValue1, 'Очистить все варианты наименований', hci_nakl_Variant_Naimenov,,, sci1Esc;
+}

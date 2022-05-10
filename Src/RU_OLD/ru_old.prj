@@ -1,0 +1,21 @@
+#define ComponentVersion
+#param /linc:""
+#statusline "statgal"
+#include galnet.inc end;
+#include glovars.inc
+#include glotypes.inc
+
+#include ExtAttr.Vih
+#include ExtClass.Vih
+#include PrnSoprFun.vih
+
+#make "mydlg_podr.vip"
+#make "mydlg_koef.vip"
+#make "oborot_os_koef.ard"
+#make "oborot_os_koef.vip"
+#make "oborot_zatr.ard"
+#make "oborot_zatr.vip"
+#make "os_kart.ard"
+#make "os_kart_balst_nov.vip"
+#make "oborot_zar.ard"
+#make "oborot_zar.vip"

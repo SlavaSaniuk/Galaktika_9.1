@@ -1,0 +1,288 @@
+#include epSystem.vih
+
+////////////////////////////////////////////////////////////////////////////////
+
+handler with replace RegisterGlobTestFnc6 on extensionPoint epAppInit
+action
+{
+  RegisterGlobalIfc('NIK_GetOS_atr6');
+  result := true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+vipInterface NIK_GetOS_atr6;
+  static: function Get4OS_kk        ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+  static: function Get4OS_kk_debug  ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+interface NIK_GetOS_atr6;
+
+var
+  newFile : string;
+  last    : comp;
+
+  zn      : double;
+  nRecOS  : comp;
+  cNastr  : comp;
+  sVidDog : string;
+  Dat1    : date;
+  Dat2    : date;
+  cUsl1   : comp;
+  cUsl2   : comp;
+  cUsl3   : comp;
+  cUsl4   : comp;
+  cUsl5   : comp;
+
+create view
+as select  *
+
+from
+  AttrNam
+, AttrVal
+, Dogovor
+, KatVidD
+, KatUsl KatUsl1
+, KatUsl KatUsl2
+, KatUsl KatUsl3
+, KatUsl KatUsl4
+, KatUsl KatUsl5
+, KatOS
+, SpKatOS
+, SpMoveOS
+
+where
+((
+        coSpDocs         ==  AttrNam.wTable
+   and  'ОС'             ==  AttrNam.name
+
+   and  '000261'         ==  KatUsl1.kod
+   and  '000264'         ==  KatUsl2.kod
+   and  '000265'         ==  KatUsl3.kod
+   and  '000266'         ==  KatUsl4.kod
+   and  '000263'         ==  KatUsl5.kod
+
+   and  sVidDog          ==  KatVidD.sName   (NoIndex)
+
+   and  KatVidD.nRec     ==  Dogovor.cVidDog (NoIndex)
+   and ( dat2 >= Dogovor.dBeg and dat1 <= Dogovor.dEnd )
+
+   and  word(400)        ==  SpDocs.tidk
+   and  Dogovor.nRec     ==  SpDocs.cDoc
+   and ( dat2 >= SpDocs.dFrom and dat2 <= SpDocs.dTo )
+
+   and  coSpDocs         ==  AttrVal.wTable
+   and  SpDocs.nRec      ==  AttrVal.cRec
+   and  AttrNam.nRec     ==  AttrVal.cAttrNam
+   and  nRecOS           ==  AttrVal.vComp(noindex)
+
+   and  nRecOS           ==  KatOS.nRec
+
+   and  nRecOS           ==  SpKatOS.cKatOS
+   and  cNastr           ==  SpKatOS.cNastrOS
+   and (    comp(281474976710673) <> SpKatOS.cMetod
+         or comp(281474976710669) <> SpKatOS.cMetod )
+
+   and  word(3)          ==  SpMoveOS.SysOper
+   and  nRecOS           ==  SpMoveOS.cKatOS
+   and  cNastr           ==  SpMoveOS.cNastrOS
+))
+;
+
+File f_log;
+
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_kk ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  var p1,p2,p3,p4,p5 : double;
+
+  Get4OS_kk := p1 := p2 := p3 := p4 := p5 := 0;
+
+  cUsl1 := cUsl2 := cUsl3 := cUsl4 := cUsl5 := comp(0);
+
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst KatUsl1 = tsOk )
+   cUsl1 := KatUsl1.nRec;
+
+  if ( GetFirst KatUsl2 = tsOk )
+   cUsl2 := KatUsl2.nRec;
+
+  if ( GetFirst KatUsl3 = tsOk )
+   cUsl3 := KatUsl3.nRec;
+
+  if ( GetFirst KatUsl4 = tsOk )
+   cUsl4 := KatUsl4.nRec;
+
+  if ( GetFirst KatUsl5 = tsOk )
+   cUsl5 := KatUsl5.nRec;
+
+  _loop KatVidD
+  {
+    _loop Dogovor
+    {
+      _loop SpDocs
+      {
+         if ( SpDocs.cMcUsl = cUsl1 )
+          p1 := p1 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl2 )
+          p2 := p2 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl3 )
+          p3 := p3 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl4 )
+          p4 := p4 + SpDocs.kol;
+
+         if ( SpDocs.cMcUsl = cUsl5 )
+          p5 := p5 + SpDocs.kol;
+      }
+    }
+  }
+
+  Get4OS_kk  := p1*GetBTN('110001',1)/GetBT('110002',longint(dat1))
+              + p2*GetBTN('110001',2)/GetBT('110002',longint(dat1))
+              + p3*GetBTN('110001',3)/GetBT('110002',longint(dat1))
+              + p4*GetBTN('110001',4)/GetBT('110002',longint(dat1))
+              + p5*GetBTN('110001',5)/GetBT('110002',longint(dat1));
+
+  Get4OS_kk := Get4OS_kk / GetBT('110003',longint(dat1)); // харош уже %)
+!   Get4OS_kk := p1;
+
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_kk_debug ( _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  var p1,p2,p3,p4,p5 : double;
+!  Get4OS_kk := 0;
+
+  p1 := p2 := p3 := p4 := p5 := 0;
+
+  cUsl1 := cUsl2 := cUsl3 := cUsl4 := cUsl5 := comp(0);
+
+  newFile := 'd:\out\Get4OS_kk_debug.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_kk_debug');
+  f_log.WriteLn('');
+  f_log.WriteLn('_sVidDog: '+_sVidDog);
+  f_log.WriteLn('_Dat1   : '+_Dat1   );
+  f_log.WriteLn('_Dat2   : '+_Dat2   );
+  f_log.WriteLn('');
+
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst KatUsl1 = tsOk )
+  {
+   cUsl1 := KatUsl1.nRec;
+   f_log.WriteLn(KatUsl1.name);
+  }
+
+  if ( GetFirst KatUsl2 = tsOk )
+  {
+   cUsl2 := KatUsl2.nRec;
+   f_log.WriteLn(KatUsl2.name);
+  }
+
+  if ( GetFirst KatUsl3 = tsOk )
+  {
+   cUsl3 := KatUsl3.nRec;
+   f_log.WriteLn(KatUsl3.name);
+  }
+
+  if ( GetFirst KatUsl4 = tsOk )
+  {
+   cUsl4 := KatUsl4.nRec;
+   f_log.WriteLn(KatUsl4.name);
+  }
+
+  if ( GetFirst KatUsl5 = tsOk )
+  {
+   cUsl5 := KatUsl5.nRec;
+   f_log.WriteLn(KatUsl5.name);
+  }
+
+  f_log.WriteLn('');
+
+  _loop KatVidD
+  {
+    _loop Dogovor
+    {
+      f_log.WriteLn('Dogovor: '+Dogovor.nRec);
+
+      _loop SpDocs
+      {
+        if ( SpDocs.cMcUsl = cUsl1 )
+        {
+         p1 := p1 + SpDocs.kol;
+         f_log.WriteLn('мц1: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl2 )
+        {
+         p2 := p2 + SpDocs.kol;
+         f_log.WriteLn('мц2: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl3 )
+        {
+         p3 := p3 + SpDocs.kol;
+         f_log.WriteLn('мц3: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl4 )
+        {
+         p4 := p4 + SpDocs.kol;
+         f_log.WriteLn('мц4: '+SpDocs.kol);
+        }
+
+        if ( SpDocs.cMcUsl = cUsl5 )
+        {
+         p5 := p5 + SpDocs.kol;
+         f_log.WriteLn('мц5: '+SpDocs.kol);
+        }
+      }
+    }
+  }
+
+!   Get4OS_kk  := p1*GetBTN('110001',1)/GetBT('110002',longint(dat1))
+!               + p2*GetBTN('110001',2)/GetBT('110002',longint(dat1))
+!               + p3*GetBTN('110001',3)/GetBT('110002',longint(dat1))
+!               + p4*GetBTN('110001',4)/GetBT('110002',longint(dat1))
+!               + p5*GetBTN('110001',5)/GetBT('110002',longint(dat1));
+
+!   Get4OS_kk := Get4OS_kk / GetBT('110003',longint(dat1)); // харош уже %)
+
+
+  f_log.WriteLn('');
+  f_log.WriteLn('p1:'+p1);
+  f_log.WriteLn('p2:'+p2);
+  f_log.WriteLn('p3:'+p3);
+  f_log.WriteLn('p4:'+p4);
+  f_log.WriteLn('p5:'+p5);
+
+  f_log.WriteLn('GetBTN(110001,1):'+GetBTN('110001',1));
+  f_log.WriteLn('GetBTN(110001,2):'+GetBTN('110001',2));
+  f_log.WriteLn('GetBTN(110001,3):'+GetBTN('110001',3));
+  f_log.WriteLn('GetBTN(110001,4):'+GetBTN('110001',4));
+  f_log.WriteLn('GetBTN(110001,5):'+GetBTN('110001',5));
+
+  f_log.WriteLn('GetBT(110002,longint(dat1)):'+GetBT('110002',longint(dat1)) );
+  f_log.WriteLn('GetBT(110003,longint(dat1)):'+GetBT('110003',longint(dat1)) );
+
+!  Get4OS_kk := p1;
+
+
+  f_log.close;
+
+  Get4OS_kk_debug := Get4OS_kk_debug;
+}
+////////////////////////////////////////////////////////////////////////////////
+end.

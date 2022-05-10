@@ -1,0 +1,89 @@
+#doc
+Окно для указания результатов профосмотра(Белтелеком)
+#end
+
+Interface iGetRezult 'Заполните информацию о результатах медосмотра' Gray, DoAccept, EscClose;
+  Show at (, , 43, 12);
+
+var
+RezDatProf, RezDatDoc : date;
+RezNomDoc: string;
+wRezRezult : word;
+
+Parameters
+ RezDatProf
+,RezDatDoc
+,RezNomDoc
+,wRezRezult
+;
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(RezDatProf=date(0,0,0))
+    {
+      message('Для продолжения необходимо заполнить дату прохождения медосмотра!');
+      Exit;
+    }
+  if(RezNomDoc='')
+    {
+      message('Для продолжения необходимо заполнить номер документа!');
+      Exit;
+    }
+  if(RezDatDoc=date(0,0,0))
+    {
+      message('Для продолжения необходимо заполнить дату документа!');
+      Exit;
+    }
+  if(wRezRezult=word(0))
+    {
+      message('Для продолжения необходимо выбрать результат!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Screen scrRezult ('Результаты медосмотра', ,);
+Fields
+  RezDatProf             ('Дата медосмотра',, sci13EnEsc): noProtect;
+  RezNomDoc              ('Номер документа',,)  :  NoProtect;
+  RezDatDoc              ('Дата документа',, sci13EnEsc): noProtect;
+  wRezRezult             ('Результат медосмотра',,sci13EnEsc):
+    [LIST 0 ' ', 1 'Годен', 2 'Негоден', 3 'Годен с ограничениями'],Protect, Skip;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+   `Дата медосмотра:      `.@@@@@@@@@@@
+
+   `Номер документа:  `    .@@@@@@@@@@@
+
+   `Дата документа:       `.@@@@@@@@@@@
+
+   `Результат:  `          .@@@@@@@@@@@
+
+     <.Продолжить.>      <.  Отмена  .>
+
+>>
+end;
+
+
+Handleevent
+cmInit:
+{
+  wRezRezult:=1;
+}
+cmOK:
+{
+ if(not CheckEmptyField)
+   {
+     Exit;
+   }
+ else
+   {
+     PutCommand(cmDefault);
+   }
+}
+end;
+End.

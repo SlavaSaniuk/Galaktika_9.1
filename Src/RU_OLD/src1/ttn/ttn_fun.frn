@@ -1,0 +1,131 @@
+.function KolAddInStr(var Str:String;LengthStr:word;UpdateStr:boolean):word;
+var
+  iLine, KolSpace, KolOdd: word;
+  TempStr : String;
+!Первый параметр - поле, второй длинна поля (в RTF- формате использовать шрифт Courier New)
+!Третий параметр - изменяить или нет Str
+!Ставит пробел в строке Str ч.з. каждые LtngthStr+1 символов (при печати этот пробел 'съедается' редактором
+Begin
+  TempStr := Str;
+
+  if (Length(Str) > LengthStr)
+  {
+    iLine := LengthStr + 1;
+    KolSpace := 0;
+
+    do
+    {
+      KolOdd := 0;
+
+      if (SubStr(Str, iLine, 1) <> ' ')
+      {
+        var s1, s2: String;
+        var l1, l2: word;
+        s1  := SubStr(Str, 1, iLine - 1);
+        l1  := Length(s1);
+        s2  := SubStr(Str, iLine, Length(Str));
+        l2  := Length(s2);
+
+        if (l1 + l2 + 1 > 255)
+        {
+          KolOdd := l1 + l2 - 254;
+          s2 := SubStr(s2, 1, l2 - KolOdd);
+        }
+
+        Str := s1 + ' ' + s2;
+      }
+
+      KolSpace := KolSpace + 1;//подсчитаем к-во пробелов
+      iLine    := iLine + LengthStr + 1;
+    }
+    while Length(Str) >= iLine //ставит в конце каждой строке пробел
+!length(Str) >iLine - можно написать и так,тогда последнее слово в строке
+!будет переходить на новую строку. Это не повлияет на подсчет строк...
+    KolAddInStr := ((length(Str)-1-KolSpace) div LengthStr);// к-во доп. строк в наим. МЦ
+  }
+  else
+    KolAddInStr := 0;
+
+  if (NOT UpdateStr)
+    Str := TempStr;
+end.
+!Фунция удаляет из строки Str повторяющуюся подстроку dblStr
+!isDel - удалять dblStr в начале и конце строки Str
+.function DelDblStr(Str, dblStr: string; isDel: boolean): string;
+var
+  iPos,iLine: byte;
+begin
+  iLine := length(dblStr);
+  iPos  := InStr(dblStr+dblStr, Str);
+  while (iPos > 0) do
+  {
+    iPos  := iPos + iLine;
+    Str   := SubStr(Str,1,iPos-1) + SubStr(Str,iPos+iLine,length(Str)-iPos-iLine+1);
+    iPos  := InStr(dblStr+dblStr, Str);
+  }
+  if isDel
+  {
+     if SubStr(Str,1,iline) = dblStr
+       Str := SubStr(Str,iLine+1,length(Str)-iLine);
+     if SubStr(Str,length(Str)-iLine+1,iline) = dblStr
+       Str := SubStr(Str,1,length(Str)-iLine);
+  }
+  DelDblStr := Str;
+end.
+!Декоративная функция
+!расставляет пробелы после каждого символа строки Str, кроме последнего
+!после пробела ставится 2 дополнительных пробела
+.function InsAfterAllSimbol(Str: string): string;
+var
+  i: byte;
+begin
+  if (length(Str) > 0)
+  {
+    Replace(Str, ' ', '  ');
+    for (i := 1; i < length(Str); i := i + 2)
+      Str := SubStr(Str,1,i) + ' ' + SubStr(Str,i+1,length(Str)-i);
+  }
+  InsAfterAllSimbol := Str;
+end.
+!Вывод массы прописью с учетом настройки округления массы
+.function MassaInWords(MassaKg: double; KolZN: word): string;
+var
+  sRes: string;
+begin
+  // тонны
+#ifdef _TTN_ALC_
+  if (Trunc (MassaKg / 1000) = 0)
+    sRes := ''
+  else
+#end
+    sRes := DoubleToStr ((MassaKg / 1000), '\f4') + 'т ';
+
+  // килограммы (не нулевые значения)
+  if (KolZN > 0)
+    if (KolZN > 3)
+    {
+      if (Longint (Trunc (MassaKg)) mod 1000 <> 0)
+        sRes := sRes + DoubleToStr (Longint (Trunc (MassaKg)) mod 1000, '\m4') + 'кг ';
+    }
+    else
+      if (Longint (Round (MassaKg)) mod 1000 <> 0)
+        sRes := sRes + DoubleToStr (Longint (Round (MassaKg)) mod 1000, '\m4') + 'кг ';
+
+  // граммы (не нулевые значения)
+  if (KolZN > 3)
+    if (Longint (Round (MassaKg * 1000)) mod 1000 <> 0)
+      sRes := sRes + DoubleToStr (Longint (Round (MassaKg * 1000)) mod 1000, '\m4') + 'г';
+
+  MassaInWords := sRes;
+end.
+!Вывод массы настройки округления массы
+.function MassaBrutto(MassaKg: double; KolZN: word): string;
+begin
+  MassaBrutto := '';
+
+  case KolZn of
+    0..2 : MassaBrutto := DoubleToStr(MassaKg / 1000, Massa_Tn);
+    3..5 : MassaBrutto := DoubleToStr(MassaKg, Massa_Kg);
+    6..12: MassaBrutto := DoubleToStr(MassaKg * 1000, Massa_Gr);
+  end;
+end.

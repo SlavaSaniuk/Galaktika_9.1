@@ -1,0 +1,27 @@
+const
+#include Tpp_Key.inc
+#include KauConst.inc
+#include GloConst.inc
+#include FldColor.inc
+#include buhconst.inc
+#include KatDoc.inc
+#include NalTunes.inc
+#include GALNET_CCM.INC
+#include GALNET_CSC.INC
+end;
+
+#include DicTypes.def
+#include ExtAttr.Vih
+
+!#include galnet.inc end;
+! ***   строка параметров   ***
+! У компоненты нет своих таблиц
+#param Vip.NoTablesInComponent=On
+! для форм
+!/Macro.IncludeEatLine=1 - чтобы не было на месте #include пустых строк в отчетах
+!/b - повторная пересборка (некоторых формы собираются под разными дефайнами)
+#param /Macro.IncludeEatLine=1 
+!/b
+
+#make "D:\TopSoft\Podpisanty\*.vip"
+#make "D:\TopSoft\Podpisanty\*.frm"

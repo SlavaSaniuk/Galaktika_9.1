@@ -1,0 +1,58 @@
+!подсчет сумм по странице и итоговых сумм
+.begin
+#ifdef _IN_VAL_DOC_
+  СтНДСНац := СтНДСНак;
+  СтНацБН  := СтНакБН;
+  СтНацСН  := СтНакСН;
+#else
+  СтНДСНац := СтНДСНац0;
+  СтНацБН  := СтНацБН0;
+  СтНацСН  := СтНацСН0;
+#end
+
+  inc(Nom);
+  var tKolItog, tMassaBrItog, tMassaNetItog: decimal(24,8);// временные
+
+  if (bAutoGrM)
+    tKolItog := if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КОЛ_ГРУЗОВЫХ_МЕСТ)
+  else
+    tKolItog := if (КОЛ_ГРУЗОВЫХ_МЕСТ <> 0, КОЛ_ГРУЗОВЫХ_МЕСТ,
+                    if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КолФ));
+
+  case wRoundMass2 of
+    0..2 :
+    {
+      tMassaBrItog := Round(((МассаМЦ + МассаТарыМЦ) * КолУч) / 1000, wRoundMass2) * 1000;
+      tMassaNetItog := Round((МассаМЦ * КолУч) / 1000, wRoundMass2) * 1000;
+    }
+    3..5 :
+    {
+      tMassaBrItog := Round(((МассаМЦ + МассаТарыМЦ) * КолУч), wRoundMass2 mod 3);
+      tMassaNetItog := Round((МассаМЦ * КолУч), wRoundMass2 mod 3);
+    }
+    6..12:
+    {
+      tMassaBrItog := Round(((МассаМЦ + МассаТарыМЦ) * КолУч) * 1000, wRoundMass2 mod 3) / 1000;
+      tMassaNetItog := Round((МассаМЦ * КолУч) * 1000, wRoundMass2 mod 3) / 1000;
+    }
+  end;
+
+
+  KolItog      := KolItog      + tKolItog;
+  MassaBrItog  := MassaBrItog  + tMassaBrItog;
+  MassaNetItog := MassaNetItog + tMassaNetItog;
+
+  Sum1Itog := Sum1Itog + СтНацБН;
+  Sum2Itog := Sum2Itog + СтНДСНац;
+  Sum3Itog := Sum3Itog + СтНацСН;
+
+  inc(NomFull);
+
+  KolItogFull      := KolItogFull      + tKolItog;
+  MassaBrItogFull  := MassaBrItogFull  + tMassaBrItog;
+  MassaNetItogFull := MassaNetItogFull + tMassaNetItog;
+
+  Sum1ItogFull := Sum1ItogFull + СтНацБН;
+  Sum2ItogFull := Sum2ItogFull + СтНДСНац;
+  Sum3ItogFull := Sum3ItogFull + СтНацСН;
+end.

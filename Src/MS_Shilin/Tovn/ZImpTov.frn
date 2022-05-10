@@ -1,0 +1,111 @@
+.var
+  ItogNDS, ItogAk, ItogSt, ItogRasx, ItogSNDS, ItogSumNDS, ItogSumAkc: double;
+  dCursVal: double
+.endvar
+.create view ZimpTov
+var pNrec:comp;
+from
+  KatSoprMemTTN,
+  KlVal
+where
+((
+  pNrec                   ==  KatSoprMemTTN.NRec  and
+  KatSoprMemTTN.cVal      ==  KlVal.Nrec          and
+  KatSoprMemTTN.cSchFact  ==  SchFact.NRec        and
+  KatSoprMemTTN.dPrice   >>=  CursVal.DatVal      and
+  KatSoprMemTTN.cValut    ==  CursVal.KodValut
+))
+;
+.fields
+  ПоставщикУНН
+#ifdef _Zimptov_rus_
+  ПоставщикКПП
+#end
+
+  ПолучательУНН
+#ifdef _Zimptov_rus_
+  ПолучательКПП
+#end
+
+  Поставщик       Получатель
+  Поставщик_Адрес Получатель_Адрес
+  Номер_Договора  if(Дата_Договора=Date(0,0,0), '', DateToStr(Дата_Договора, 'DD mon YYYY г.'))
+!МЦ
+    Название
+    ТНВЭД
+    ОтпЕд
+    DoubleToStr(КолОпл, Kol_Pr)
+    if(ZimpTov.KatSoprMemTTN.cVal <> 0, ZimpTov.KlVal.ISO + '/ ' +  DoubleToStr(dCursVal, Cena_PrR), '')
+    DoubleToStr(СтНакБН, Cena_Pr)
+!    DoubleToStr(0, Cena_PrR)
+    if(Дата = Date(0,0,0), '', 'N ' + Номер + ' от '+ DateToStr(Дата, 'DD/MM/YYYY'))
+    if(ZimpTov.SchFact.dFact = Date(0,0,0), '', 'N ' + СчФакт_Номер + ' от ' + DateToStr(ZimpTov.SchFact.dFact, 'DD/MM/YYYY'))
+    if(ZimpTov.KatSoprMemTTN.dPrice = Date(0,0,0), '', DateToStr(ZimpTov.KatSoprMemTTN.dPrice, 'DD/MM/YYYY'))
+    DoubleToStr(СтНацБН0, Cena_PrR)
+    DoubleToStr(СтНацБН0, Cena_PrR)
+    DoubleToStr(ПрНДС, '66.88')
+    DoubleToStr(ПрАкциз, '66.88')
+    DoubleToStr(СтНДСНац0, Cena_PrR)
+    DoubleToStr(СтАкцизНац, Cena_PrR)
+#ifdef _Zimptov_
+!Услуги
+    НазваниеУслуги
+    if(ZimpTov.KatSoprMemTTN.cVal <> 0, ZimpTov.KlVal.ISO + '/ ' +  DoubleToStr(dCursVal, Cena_PrR), '')
+!    DoubleToStr(0, Cena_Pr)
+    DoubleToStr(У_СтНацБН, Cena_PrR)
+    if(Дата = Date(0,0,0), '', 'N ' + Номер + ' от '+ DateToStr(Дата, 'DD/MM/YYYY'))
+    if(ZimpTov.SchFact.dFact = Date(0,0,0), '', 'N ' + СчФакт_Номер + ' от ' + DateToStr(ZimpTov.SchFact.dFact, 'DD/MM/YYYY'))
+    if(ZimpTov.KatSoprMemTTN.dPrice = Date(0,0,0), '', DateToStr(ZimpTov.KatSoprMemTTN.dPrice, 'DD/MM/YYYY'))
+    DoubleToStr(У_СтНацБН, Cena_PrR)
+    DoubleToStr(У_СтНацБН, Cena_PrR)
+    DoubleToStr(У_ПрНДС, '66.88')
+    DoubleToStr(У_ПрАкциз, '66.88')
+    DoubleToStr(У_СтНДСНац, Cena_PrR)
+    DoubleToStr(У_СтАкцизНац, Cena_PrR)
+#end
+!Итого
+#ifdef _Zimptov_rus_
+    DoubleToStr(ItogSt, Cena_PrR)
+    if (ItogRasx = 0 ,'', DoubleToStr(ItogRasx, Cena_PrR))
+    DoubleToStr(ItogSNDS, Cena_PrR)
+    DoubleToStr(ItogSNDS, Cena_PrR)
+    DoubleToStr(ItogSumNDS, Cena_PrR)
+    DoubleToStr(ItogSumAkc, Cena_PrR)
+#end
+
+Директор
+DateToStr(cur_date, 'DD mon YYYY г.')
+Главный_Бухгалтер
+DateToStr(cur_date, 'DD mon YYYY г.')
+
+#ifdef _Zimptov_B
+ DoubleToStr (ItogNDS, Cena_PrR) НацСимвол
+ DoubleToStr (ItogAk, Cena_PrR) НацСимвол
+#end
+
+спецсимвол
+
+.endfields
+.{
+.begin
+  ZimpTov.pNRec := comp(накладная_нрек);
+  if (ZimpTov.GetFirst KatSoprMemTTN <> tsOk) {}
+
+  dCursVal := 1;
+  if (ZimpTov.KatSoprMemTTN.cValut <> 0)
+    if (Longint(ZimpTov.KatSoprMemTTN.dPrice) <> 0)
+      if (ZimpTov.GetLast CursVal = tsOk)
+        dCursVal := ZimpTov.CursVal.SumRubl / if(ZimpTov.KlVal.SumValut = 0, 1, ZimpTov.KlVal.SumValut);
+
+  ItogNDS := 0;
+  ItogAk := 0;
+  ItogSt    := 0;
+  ItogRasx  := 0;
+  ItogSNDS  := 0;
+  ItogSumNDS:= 0;
+  ItogSumAkc:= 0;
+end.
+.if tovn01
+.end
+.if tovn02
+.end

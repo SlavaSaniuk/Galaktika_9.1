@@ -1,0 +1,14 @@
+#ifdef _TTN_2001F_
+  #OrgTTNBelAddr(Заказчик_Плательщик)
+  #OrgTTNBelBank(Заказчик_Плательщик)
+
+  #OrgTTNBelAddr(Грузоотправитель)
+  #OrgTTNBelBank(Грузоотправитель)
+
+  #OrgTTNBelAddr(Грузополучатель)
+  #OrgTTNBelBank(Грузополучатель)
+#else
+  #OrgTTNBel(Заказчик_Плательщик)
+  #OrgTTNBel(Грузоотправитель)
+  #OrgTTNBel(Грузополучатель)
+#end

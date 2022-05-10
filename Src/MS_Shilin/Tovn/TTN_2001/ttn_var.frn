@@ -1,0 +1,36 @@
+!переменные для RTF-отчетов
+.var
+strNN, kounter, fixkol, breakPage      : word;
+
+CheckKol, PrnOK, bAutoGrM, bBarKodMC,
+isRozn911                              : boolean;
+
+Название_Доп, КодМЦ_Доп,
+KolGrM, KolOneGrM                      : string;
+
+!в отчетах в валюте документа также используются значения этих переменных
+  СтНДСНац,     СтНацБН,      СтНацСН,
+   АНДСНац,    АстНацБН,     АстНацСН,
+strАНДСНац ,strАСтНацБН,  strАСтНацСН,
+
+sumkolf, sumves, strАКолФ, strАКолВес  : double;
+
+#ifdef _TTN_ALC_
+PrnAlc                                 : boolean;
+#end
+
+.endvar
+.begin
+
+#ifdef _IN_VAL_DOC_
+  Cena_PrR := Cena_PrV;
+#end
+#ifdef _TTN_ALC_
+  PrnAlc:=false;
+#end
+
+end.
+.begin
+  bBarKodMC := boGetTune('Doc.SD.PrnNakl.BarKodMC');
+  isRozn911 := FALSE;
+end.

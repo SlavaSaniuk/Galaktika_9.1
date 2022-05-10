@@ -1,0 +1,143 @@
+//=========================================================
+#include marker.vih
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+interface PickDogOS 'Выбор ОС по договорам' EscClose, Cyan, DoAccept;
+
+table Struct tKatOS
+(
+  nRec     : comp,
+  NameOS   : string,
+  InNum    : string
+)
+with index
+(
+  tKatOS01 = nRec ,
+  tKatOS02 = InNum
+);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var
+  pMarker : IMarker(marker) new
+
+  nRecMark   : comp
+
+  Marker
+, i
+, mCount     : longint
+
+  dat        : date
+
+  sParam     : string
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+create view
+as select *
+from
+  KatOS
+, SpDocs
+, pick
+, Nezemnal
+, AttrNam
+, AttrVal
+, tKatOS       // таблица в памяти
+
+where
+((
+        coSpDocs         ==  AttrNam.wTable
+   and  'ОС'             ==  AttrNam.name
+
+   and  AttrNam.nRec     ==  AttrVal.cAttrNam
+
+   and  AttrVal.cRec     ==  SpDocs.nRec
+   and ( dat >= SpDocs.dFrom and dat <= SpDocs.dTo )
+
+   and  AttrVal.vComp    ==  KatOS.nRec
+
+   and  coKatOS          ==  pick.wlist
+
+   and  sParam           ==  Nezemnal.param
+   and  dat              ==  Nezemnal.DataN
+   and  KatOS.nRec       ==  Nezemnal.cOS
+))
+;
+
+parameters  sParam, dat, mCount, nRecMark;
+
+//------------------------------------------------------------------------------------------------------------
+browse brwBrowse1;
+  table tKatOS;
+  recMarker = pMarker{tKatOS.nRec};
+
+fields
+  tKatOS.InNum  'Инвентарный №'   ('Инвентарный №'  ) : [10], protect;
+  tKatOS.NameOS 'Наименование ОС' ('Наименование ОС') : [30], protect;
+end;
+
+//------------------------------------------------------------------------------------------------------------
+handleEvent
+
+cmInit:
+{
+  if ( GetFirst AttrNam <> tsOk )
+  {
+    message('Не найден внешний атрибут "ОС" для таблицы SpDocs');
+    exit;
+  }
+
+  StartNewVisual(vtNumericVisual, vfTimer+vfBreak+vfConfirm, 'Подготовка ОС по договорам', 1);
+
+  _loop stdcache AttrVal
+  {
+    NextVisual;
+    if ( GetFirst SpDocs = tsOk and GetFirst KatOS = tsOk )
+    {
+     if ( GetFirst tKatOS where (( KatOS.nRec == tKatOS.nRec )) <> tsOk )
+      if ( GetFirst Nezemnal <> tsOk ) // не обрабатываем записи если уже есть такие
+      {
+        ClearBuffer(#tKatOS);
+         tKatOS.nRec    :=  KatOS.nRec;
+         tKatOS.InNum   :=  KatOS.InNum;
+         tKatOS.NameOS  :=  KatOS.NameOS;
+        insert current tKatOS;
+      }
+    }
+  }
+
+  StopVisual('', 0);
+
+  pMarker.Caption := (' Отмечено [%d] записей.'); // для заголовка
+  pMarker.AutoSave := false;
+
+  Marker := InitMarker('PickKatOS', 8, 1000, 10, false);
+}
+
+cmDone:
+{
+  pMarker.ExportTo(marker);
+
+  mCount := GetMarkerCount(Marker);
+
+  if ( mCount <> 0 )
+  {
+    delete all Pick;
+
+    for( i := 0; i < mCount; i++ )
+    {
+      GetMarker(Marker, i, nRecMark);
+
+      clearBuffer(#pick);
+       pick.wList    := coKatOS;
+       pick.cRec     := nRecMark;
+       pick.PickNum  := i;
+      insert current pick;
+    }
+  }
+
+  if ( mCount = 0 )
+   mCount := 1;
+
+  nRecMark := tKatOS.nRec; // вернуть текущую позицию
+}
+
+end;  // handleEvent interface
+
+end.

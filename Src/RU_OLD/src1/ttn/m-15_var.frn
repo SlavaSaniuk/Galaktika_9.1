@@ -1,0 +1,40 @@
+.var
+  StrNN,
+  Nom,
+  NomFull,
+  kolAdd,            // кол-во недопечатанных строк на текущей странице
+  MainKol,           // фиксированное кол-во строк на первой странице
+  KolPage,           // счетчик обработанных строк на текущей странице
+  FixKol,            // фиксированное кол-во строк на страницах, начиная со второй
+  KolSpSopr,
+  FixKolPage,        // допустимое кол-во строк на текущей странице
+  breakPage   : word;
+
+  KolDOItog,           // итоговые суммы по страницам
+  KolFItog,
+  Sum1Itog,
+  Sum2Itog,
+  Sum3Itog,
+
+  KolDOItogFull,       // итоговые суммы по документу
+  KolFItogFull,
+  Sum1ItogFull,
+  Sum2ItogFull,
+  Sum3ItogFull,
+
+  СтНДСНац,
+  СтНацБН,
+  СтНацСН
+             : double;
+
+  NextPage
+             : boolean;
+
+  СпСимвол,
+  strEmpty,
+  Kredit,
+  ChrBreakPage,
+  Cena_Pr0
+             : string;
+
+.endvar

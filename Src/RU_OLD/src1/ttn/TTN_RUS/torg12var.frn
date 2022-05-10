@@ -1,0 +1,45 @@
+.var
+  StrNN,
+  Nom,
+  NomFull,
+  kolAdd,            // кол-во недопечатанных строк на текущей странице
+  MainKol,           // фиксированное кол-во строк на первой странице
+  KolPage,           // счетчик обработанных строк на текущей странице
+  FixKol,            // фиксированное кол-во строк на страницах, начиная со второй
+  KolSpSopr,
+  FixKolPage,        // допустимое кол-во строк на текущей странице
+  breakPage,
+  wFillCol10         // заполнение 10-й графы формы (моссой нетто или кол-вом)
+             : word;
+
+  KolItog,           // итоговые суммы по страницам
+  MassaBrItog,
+  MassaNetItog,
+  Sum1Itog,
+  Sum2Itog,
+  Sum3Itog,
+
+  KolItogFull,       // итоговые суммы по документу
+  MassaBrItogFull,
+  MassaNetItogFull,
+  Sum1ItogFull,
+  Sum2ItogFull,
+  Sum3ItogFull,
+
+  СтНДСНац,
+  СтНацБН,
+  СтНацСН
+             : double;
+
+  NextPage,
+  bAutoGrM          // автоматический расчет кол-ва грузовых мест
+             : boolean;
+
+  СпСимвол,
+  strEmpty,
+  Cena_Pr0,
+  KolGrM,
+  KolOneGrM
+             : string;
+
+.endvar

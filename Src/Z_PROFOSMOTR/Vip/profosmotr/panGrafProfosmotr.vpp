@@ -1,0 +1,53 @@
+Panel panGrafProfosmotr
+  Show at (, , , 10)
+Table DISTDOCHIERARCHY;
+Browse brGrafProfosmotr ('<Enter> - редактирование', , sci178EnEsc)
+Fields
+  DISTDOCHIERARCHY.WTYPEHIER       #3'Год'                  : [4], protect;
+  DISTDOCHIERARCHY.DTCALC          #3'Дата'                 : [10], protect;
+  DISTDOCHIERARCHY.SNAME           #3'Номер'                : [10], protect,skip;
+  DISTDOCHIERARCHY.WDOCNORM        #3'Вид медосмотра' ('Вид медосмотра'):
+  [LIST 0 ' ', 1 'Предварительный', 2 'Периодический', 3 'Внеочередной'],Protect,skip;
+  DISTDOCHIERARCHY.SOBOZN          #3'Примечание'           : [20], protect,skip;
+  CATALOGSStrEdMain.name           #3'Ответственное подразделение'        : [20], protect,skip;
+end; //Browse
+end; // Panel
+
+Panel panGrafProfosmotrPers
+  Show at (, 11, , 21)
+  Table SPALLSTAFF;
+Browse brGrafProfosmotrPers ('<Enter> - редактирование', , sci1Esc)
+Fields
+  {Font = {Color = if (IsValid(#SPALLSTAFFfactorRED), ColorSysRed, 0) }};
+  SPALLSTAFF.INUM               #3'№ п/п' : [5], protect;
+  PERSONS.Fio                   #3'ФИО'    : [40], protect,skip;
+  PERSONS.TABNMB                #3'Табельный номер'    : [10], protect,skip;
+  CATALOGSpost.name             #3'Должность'    : [30], protect,skip;
+  CATALOGSStrEd.name            #3'СЕ сотрудника'    : [30], protect,skip;
+  PERSONS.SEX                   #3'Пол'    : [4], protect,skip;
+  fAdressAll                    #3'Адрес проживания'    : [20], protect,skip;
+  PERSONS.BORNDATE              #3'Дата рождения' : [12], protect,skip;
+end; //Browse
+end;//Panel
+
+Panel panGrafProfosmotrFactor
+  Table SPALLSTAFFfactor;
+Browse brGrafProfosmotrFactor ('<Enter> - редактирование',, sci1Esc);
+  Show at (,22,,);
+Fields
+//------------------------------------------------------------------------------
+  SPALLSTAFFfactor.INUM                #3'№ п/п' : [5], protect;
+  DISTDOCHIERARCHYfactor.SNAME         #3'Наименование' :[28],protect,skip;
+  DISTDOCHIERARCHYnabor.WKOLNORM         #3'Класс' ('Класс условий труда'):
+  [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, Skip;
+  DISTDOCHIERARCHYnabor.WKODGRKAU1       #3'Периодичность' ('Периодичность условий труда'):
+  [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, Skip;
+  objCheckFactorRez.DateLastOsmotr(SPALLSTAFFfactor.RESCOMP[1])  #3'Дата предыдущего медосмотра' ('Дата предыдущего медосмотра'):[10],Protect, Skip;
+  SPALLSTAFFfactor.RESDATE[3]          #3'Плановая дата медосмотра' : [12], protect,skip;
+  SPALLSTAFFfactor.RESSTRING[1]        #3'Номер документа' : [10], protect,skip;
+  SPALLSTAFFfactor.RESDATE[1]          #3'Дата документа' : [12], protect,skip;
+  SPALLSTAFFfactor.RESWORD[1]          #3'Результат' ('Результат медосмотра'):
+  [LIST 0 ' ', 1 'Годен', 2 'Негоден', 3 'Годен с ограничениями'],Protect,skip;
+  SPALLSTAFFfactor.RESDATE[2]          #3'Дата медосмотра' : [12], protect,skip;
+end; //Browse
+end;//Panel

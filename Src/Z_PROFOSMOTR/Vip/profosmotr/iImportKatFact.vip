@@ -1,0 +1,224 @@
+#doc
+Импорт справочника факторов(Белтелеком)
+#end
+
+Interface iImportKatFact 'Выберите файл-источник' Gray, DoAccept, EscClose;
+  Show at (, ,60, 16);
+
+var
+sFile:string;
+Nkol, NstrFirst, NstrLast : word;
+
+Create view
+as select
+*
+from
+ DISTDOCHIERARCHY DISTDOCHIERARCHYfactor
+;
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(sFile='Не выбран')
+    {
+      message('Для продолжения необходимо выбрать файл-источник!');
+      Exit;
+    }
+  if(Nkol=0)
+    {
+      message('Для продолжения необходимо задать номер колонки с данными!');
+      Exit;
+    }
+  if(NstrFirst=0)
+    {
+      message('Для продолжения необходимо задать номер первой строки с данными!');
+      Exit;
+    }
+  if(NstrLast=0)
+    {
+      message('Для продолжения необходимо задать номер последней строки с данными!');
+      Exit;
+    }
+  if(NstrFirst>NstrLast)
+    {
+      message('Номер первой строки не может быть больше номера последней стройки!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Function ImportKatFact_Pick: boolean;
+{
+   ImportKatFact_Pick:=false;
+
+   case CurField of
+     #sFile:
+        {
+          sFile   :='Не выбран';
+
+          sFile:=GetFileName('*xls','Выберите Файл(источник данных):');
+        }
+   end;
+
+   ReReadRecord;
+
+   ImportKatFact_Pick:=true;
+}
+
+Function ImportKatFact_DelOnProtect: boolean;
+{
+  ImportKatFact_DelOnProtect:=false;
+
+  CASE (CurField) OF
+     #sFile:
+        {
+          sFile   :='Не выбран';
+        }
+   end;
+
+  ReReadRecord;
+
+  ImportKatFact_DelOnProtect:=true;
+}
+
+Procedure CreateProtokol;
+{
+ OpenMessageLog(GetDefaultUserPath+'ProcessingImportFactor.log',mfLog2Stream+mfNoTimeStamp);
+}
+
+Procedure CloseProtokol;
+{
+ CloseMessageLog;
+ processText(GetDefaultUserPath+'ProcessingImportFactor.log',vfEscable+vfMacroSize,'Лог процесса импорта справочника факторов');
+}
+
+Procedure RunImportKatFact;
+var
+istr,ikol:word;
+sNameFactor,structerror1:string;
+{
+  xlCreateExcelWithTemplate(sFile, false);
+  structerror1:='';
+  xlGetCellValue(1,5,structerror1);
+
+  if(structerror1<>'Факторы')
+     {
+      message('Загрузка невозможна! Выбран файл неверной структуры!');
+      xlCloseWorkBook(1);
+      xlKillExcel;
+      exit;
+     }
+
+  CreateProtokol;
+
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm,
+                 'Обработка файла', 1);
+
+  istr:=NstrFirst;
+  ikol:=0;
+  do
+    {
+      sNameFactor:='';
+      xlGetCellValue(istr,Nkol,sNameFactor);
+
+      if(trim(sNameFactor)<>'')
+        {
+          if(getfirst DISTDOCHIERARCHYfactor where ((constTypeCatFactor    == DISTDOCHIERARCHYfactor.WDOCTYPE
+                                              and   sNameFactor            == DISTDOCHIERARCHYfactor.sname(noindex)))=tsok)
+            {
+               writeMessageLog('  ОШИБКА! Фактор "'+sNameFactor+'" уже есть в каталоге!');
+            }
+          else
+            {
+               ClearBuffer(#DISTDOCHIERARCHYfactor);
+               DISTDOCHIERARCHYfactor.WDOCTYPE:=constTypeCatFactor;
+               DISTDOCHIERARCHYfactor.sname:=sNameFactor;
+               if(Insert current DISTDOCHIERARCHYfactor=tsok)
+                 {
+                   writeMessageLog('УСПЕШНО! Фактор "'+sNameFactor+'" добавлен в каталог!');
+                   ikol+=1;
+                 }
+               else
+                 {
+                   writeMessageLog('СИСТЕМНАЯ ОШИБКА! Фактор "'+sNameFactor+'" добавлен в каталог не был!');
+                 }
+            }
+        }
+
+      istr+=1;
+    }
+  while istr<>NstrLast+1;
+
+  writeMessageLog('');
+  writeMessageLog('Всего было создано новых факторов: '+ikol);
+  StopVisual('', 0);
+  xlCloseWorkBook(1);
+  xlKillExcel;
+  CloseProtokol;
+}
+
+Screen scrPrintRep ('Выбор отчета', ,);
+Fields
+  sFile ('Файл-источник'): Protect, PickButton;
+  Nkol ('Номер колонки',,)  :  NoProtect;
+  NstrFirst ('Номер первой строки с данными',,)  :  NoProtect;
+  NstrLast  ('Номер последней строки с данными',,)  :  NoProtect;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+   `Файл(источник данных)` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   `Номер колонки с данными:  `           .@@@@@
+
+   `Номер первой строки с данными:  `     .@@@@@
+
+   `Номер последней строки с данными:  `  .@@@@@
+
+    Примечание: для контроля корректности выбранного файла
+                проверяется значение ячейки E1, в ней должно
+                быть записано слово "Факторы"
+
+             <.Продолжить.>      <.  Отмена  .>
+
+>>
+end;
+
+
+Handleevent
+cmInit:
+{
+  sFile :='Не выбран';
+}
+cmOK:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+ if(not CheckEmptyField)
+   {
+     Abort;
+   }
+ else
+   {
+     RunImportKatFact;
+   }
+}
+cmPick:
+{
+   if (not ImportKatFact_Pick)
+    {
+     Abort;
+    }
+}
+cmDelOnProtect:
+{
+   if (not ImportKatFact_DelOnProtect)
+    {
+     Abort;
+    }
+}
+end;
+End.

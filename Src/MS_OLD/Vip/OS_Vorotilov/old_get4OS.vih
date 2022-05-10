@@ -1,0 +1,23 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 2011 (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------------------------------------
+// Галактика 8.10 - ФРО
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifndef __Get4OS__vih__
+#define __Get4OS__vih__
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ObjInterface objGet4OS;
+ function Get4OS_zdan( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+ function Get4OS_izn ( _cKatOS : comp ) : double;
+ function Get4OS_Nal ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+ function Get4OS_kk50( _sNalog : string; _pl : double; _Dat1 : date ) : double;
+ function Get4OS_NEDV_LGOTA ( _sNalog : string; _kat : string; _cMetod : comp; _Dat1 : date; _Dat2 : date; _w : word ) : double;
+ function Get4OS_N_OUT ( _sNalog : string; _cOS : comp; _Dat1 : date; _Dat2 : date ) : double;
+ function ArP_Nal ( _sNalog : string; _cOS : comp; _Dat1 : date; _w : word ) : double;
+ function ArKK_Nal( _sNalog : string; _Dat1 : date ) : double;
+end;
+!-------------------------------------------------------------------------------
+VipInterface NIK_GetOS_atr implements objGet4OS #Licensed_Free;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#end

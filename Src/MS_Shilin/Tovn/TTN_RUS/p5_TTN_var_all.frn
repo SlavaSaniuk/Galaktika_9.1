@@ -1,0 +1,7 @@
+.var
+!Общие суммы по документу
+  CountKolF, MassaNetItog, MassaBrItog: double;
+  iStrname: integer;
+!список наименований МЦ
+  strname: array [1..10] of string;
+.endvar

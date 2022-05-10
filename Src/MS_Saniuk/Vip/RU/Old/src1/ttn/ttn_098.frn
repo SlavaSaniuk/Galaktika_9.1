@@ -1,0 +1,79 @@
+.begin
+ var MainKol,FixKol,Options:word;
+
+#ifdef _TTN_FRN_
+ #ifdef _TTN_2009F_
+  if not readmydsk(MainKol,'MainKolTTN2009',false)
+    {
+      SaveMyDsk(word(19),'MainKolTTN2009');
+      MainKol:=19
+    }
+  if not readmydsk(FixKol,'FixKolTTN2009',false)
+    {
+      SaveMyDsk(word(27),'FixKolTTN2009');
+      FixKol:=27
+    }
+  if not readmydsk(Options,'OptionsTTN2009',false)
+    {
+      SaveMyDsk(word(1),'OptionsTTN2009');
+      Options:=1
+    }
+ #else
+  if not readmydsk(MainKol,'MainKolTTN',false)
+    {
+      SaveMyDsk(word(9),'MainKolTTN');
+      MainKol:=9
+    }
+  if not readmydsk(FixKol,'FixKolTTN',false)
+    {
+      SaveMyDsk(word(17),'FixKolTTN');
+      FixKol:=17
+    }
+  if not readmydsk(Options,'OptionsTTN',false)
+    {
+      SaveMyDsk(word(1),'OptionsTTN');
+      Options:=1
+    }
+ #end
+#end
+
+#ifdef _TN2_PC_FRN_
+ if not readmydsk(MainKol,'MainKolTN2',false)
+    {
+      SaveMyDsk(word(26),'MainKolTN2');
+      MainKol:=26
+    }
+ if not readmydsk(FixKol,'FixKolTN2',false)
+    {
+      SaveMyDsk(word(42),'FixKolTN2');
+      FixKol:=42
+    }
+ if not readmydsk(Options,'OptionsTN2',false)
+    {
+      SaveMyDsk(word(1),'OptionsTN2');
+      Options:=1
+    }
+#end
+
+ if not boGetTune('Doc.AdditionalTunePRN') Exit;
+ if(RunDialog('ForFormTTN', MainKol,FixKol,Options) = cmCancel) Exit;
+
+#ifdef _TTN_FRN_
+ #ifdef _TTN_2009F_
+     SaveMyDsk(word(MainKol),'MainKolTTN2009');
+     SaveMyDsk(word(FixKol),'FixKolTTN2009');
+     SaveMyDsk(word(Options),'OptionsTTN2009');
+ #else
+     SaveMyDsk(word(MainKol),'MainKolTTN');
+     SaveMyDsk(word(FixKol),'FixKolTTN');
+     SaveMyDsk(word(Options),'OptionsTTN');
+ #end
+#end
+
+#ifdef _TN2_PC_FRN_
+    SaveMyDsk(word(MainKol),'MainKolTN2');
+    SaveMyDsk(word(FixKol),'FixKolTN2');
+    SaveMyDsk(word(Options),'OptionsTN2');
+#end
+
+end.

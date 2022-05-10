@@ -1,0 +1,13 @@
+.var
+  KolPage,    //счетчик обработанных строк на текущей странице
+  kolAdd,     //кол-во недопечатанных строк на текущей странице
+  MainKol,    //фиксированное кол-во строк на первой странице
+  FixKol,     //фиксированное кол-во строк на страницах, начиная со второй
+  FixKolPage, //допустимое кол-во строк на текущей странице
+  KolSpSopr,  //кол-во позиций, выведенных в отчет
+  StrNN :Word;
+  SumItog1, SumItogFull1: Double;
+  SumItog2, SumItogFull2: Double;
+  breakPage : word;
+  NextPage  : boolean;
+.endvar

@@ -1,0 +1,29 @@
+#ifdef ComponentVersion
+#component "z_staffcat"
+#end
+
+//vipinterface CatalogsFunctions licensed(free);
+vipinterface StaffDeleteCat licensed(free) parameters(iEntryPoint: integer);
+//vipinterface DepartIer licensed(free);
+vipinterface Koks licensed(free);
+//vipinterface PickCatalog2 licensed(free) parameters(iEntryPoint: integer; cCurPos: comp; parmode: Comp);
+#include PickCat.VIH
+vipinterface PostCatConvertor licensed(free);
+vipinterface StaffReportCat licensed(free) parameters(iEntryPoint: integer);
+vipinterface StaffCatsReport licensed(free);
+vipinterface StaffRepsReport licensed(free);
+vipinterface StaffPRepsReport licensed(free);
+vipinterface StaffCheckReports licensed(free);
+vipinterface Rep_Nastr licensed(free);
+vipinterface Set_Access_For_User licensed(free);
+vipinterface CheckCatalog licensed(free) parameters(wIsDial: word);
+vipinterface StaffKatPodrRef licensed(free);
+vipinterface TestEduc licensed(free);
+//vipinterface userAcs licensed(free);
+//vipinterface DepartmentRigthsIterator licensed(free);
+vipinterface CatHist licensed(free) parameters(cPar: comp);
+vipinterface GetCat1 licensed(free) parameters(cRec: comp; oldRec: comp; iEntryPoint: integer; mode: comp);
+vipinterface StaffKatPodrRefs licensed (free);
+vipinterface StaffKatPodrHier licensed (free);
+
+Menu ChooseLevel;

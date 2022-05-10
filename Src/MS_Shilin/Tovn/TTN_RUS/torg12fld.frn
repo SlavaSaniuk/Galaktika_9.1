@@ -1,0 +1,202 @@
+.fields
+  Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2) + ', '
+  if (wGetTune('Doc.SD.PrnNakl.SelfAdrTorg12')= 0, #AdrFieldsUr(Грузоотправитель), #AdrFields(Грузоотправитель))
+  #OrgFieldsBank(Грузоотправитель)
+  Грузоотправитель_ОКПО
+#ifdef _TTN_PRIH_
+  Склад_Пол
+  Получатель_ОКОНХ
+#else
+  Склад
+  Поставщик_ОКОНХ               // KatOrg.OKONH
+#end
+
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2) + ','
+  if (wGetTune('Doc.SD.PrnNakl.AdrTorg12')= 0, #AdrFieldsUr(Грузополучатель), #AdrFields(Грузополучатель))
+  #OrgFieldsBank(Грузополучатель)
+  Грузополучатель_ОКПО
+
+  Поставщик_ОКПО
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2) + ','
+  #AdrFieldsUr(Поставщик)
+  #OrgFieldsBank(Поставщик)
+
+#ifdef _TTN_PRIH_
+  Плательщик_ОКПО
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 2) + ','
+  #AdrFieldsUr(Плательщик)
+  #OrgFieldsBank(Плательщик)
+#else
+  Плательщик_ОКПО
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 2) + ','
+  #AdrFieldsUr(Плательщик)
+  #OrgFieldsBank(Плательщик)
+#end
+
+  if (Номер_Договора <> '', Номер_Договора,
+    if (НарядЗаказНомер <> '', НарядЗаказНомер,
+      if (Основание <> '', Основание, '')))
+
+  if (Номер_Договора <> '', 'Договор',
+    if (НарядЗаказНомер <> '', 'Заказ-наряд',
+      if (Основание <> '', 'Счет', '')))
+
+  if (Номер_Договора <> '', DateToStr(Дата_Договора, 'DD/MM/YYYY'),
+    if (НарядЗаказНомер <> '', DateToStr(НарядЗаказДата, 'DD/MM/YYYY'),
+      if (Основание <> '', DateToStr(ДатаОснования, 'DD/MM/YYYY'), '')))
+
+  номер
+
+  if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+  DoubleToStr(KolItog     , RoundGrm)
+  oPrnSoprFun.GetMassaBr (1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr (1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  oPrnSoprFun.GetwRoundMass2Str
+  oPrnSoprFun.GetwRoundMass2Str
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+    // Графа 1. Номер п/п
+    Nom
+
+    // Графа 2. Наименование МЦ
+    Название
+
+    // Графа 3. Код
+    КодМЦ
+
+    // Графа 4. Наименование единицы измерения
+    oPrnSoprFun.NastrEdIzm(УчЕд, ОтпЕд)
+
+    // Графа 5. Код по ОКЕИ
+    oPrnSoprFun.NastrEdIzm(CodeEd, CodeOtpEd)
+
+    // Графа 6. Вид упаковки
+    if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд)
+
+    // Графа 7. Количество в одной упаковке
+    KolOneGrM
+
+    // Графа 8. Количество грузовых мест
+    KolGrM
+
+    // Графа 9. Масса брутто
+    oPrnSoprFun.GetMassaBr(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч))
+
+    // Графа 10. Заполняется в зависимости от настройки
+    if (wFillCol10 = 0,
+      oPrnSoprFun.GetMassaBr(Признак_МЦ, (МассаМЦ * КолУч)), oPrnSoprFun.NastrEdIzm(DoubleToStr(КолУч, Kol_Pr), DoubleToStr(КолФ, Kol_Pr))) // выводится по настройке
+
+#ifdef _IN_VAL_DOC_
+  DoubleToStr(oPrnSoprFun.NastrEdIzmP(спецификацияМЦ_нрек, 0, Признак_МЦ, ЦНакСН, ЦНакБН, ЦНакСН, ЦНакБН, ЦНакСНУч, ЦНакБНУч, ЦНакСНУч, ЦНакБНУч), if (GetPrecisionGroup('brForSoprTTN_RVPrice')<> 5, Cena_PrTTN, Cena_Pr0))
+#else
+  DoubleToStr(oPrnSoprFun.NastrEdIzmP(спецификацияМЦ_нрек, 0, Признак_МЦ, ЦНацСН, ЦНацБН, ЦНацСН, ЦНацБН, ЦНацСНУч, ЦНацБНУч, ЦНацСНУч, ЦНацБНУч), if (GetPrecisionGroup('brForSoprTTN_Price')<> 5, Cena_PrRTTN, Cena_Pr0))
+#end
+    DoubleToStr(СтНацБН , Cena_Pr0)
+    if (ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSStZero'), if (ставка_первого_налога = 0, sGetTune('Doc.SD.AbbrField.NDSStZero'), DoubleToStr(ставка_первого_налога, NDS_St)))
+    if (ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSSummZero'), if (СтНДСНац = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНац, Cena_Pr0)))
+    DoubleToStr(СтНацСН , Cena_Pr0)
+
+
+  DoubleToStr(KolItog, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr(1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItog, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr (1, MassaBrItog)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr (1, MassaNetItog), '')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  DoubleToStr(KolItogFull, RoundGrm)
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItogFull)
+  if (wFillCol10 = 0, oPrnSoprFun.GetMassaBr(1, MassaNetItogFull), '')
+
+  DoubleToStr(Sum1ItogFull, Cena_Pr0)
+  DoubleToStr(Sum2ItogFull, Cena_Pr0)
+  DoubleToStr(Sum3ItogFull, Cena_Pr0)
+
+  DoubleToStr(NomFull, '4\m')
+
+  oPrnSoprFun.GetMassaBr(1, MassaNetItogFull)
+
+  DoubleToStr(Round(KolItogFull, KolZn), strDr)
+
+
+  if (MassaNetItogFull = 0, '',
+    MassaInWords (MassaNetItogFull, wRoundMass2))
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItogFull)
+
+  if (MassaBrItogFull = 0, '',
+    MassaInWords (MassaBrItogFull, wRoundMass2))
+
+  НомерДовер
+  if(LongInt(ДатаДовер) <> LongInt(0), DateToStr(ДатаДовер, 'DD mon YYYY'), '')
+
+#ifdef _IN_VAL_DOC_
+  doubleToString(Валюта_нрек, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+  doubleToString(0, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_Price')))
+#end
+
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 6, 0)
+
+#ifdef _TTN_PRIH_
+  strEmpty strEmpty
+#else
+  отпуск_разрешил_должность  отпуск_разрешил
+#end
+
+  ДовЛицоДолжность + if (ДовЛицоДолжность <> '', ' ', '')
+  + ФИОДовер
+
+#ifdef _TTN_PRIH_
+  отпуск_разрешил_должность  отпуск_разрешил
+  strEmpty strEmpty strEmpty
+  сдал_отправитель_должность  сдал_отправитель
+#else
+  ДовЛицоДолжность ФИОДовер
+  oPrnSoprFun.GetGlBuhName(накладная_нрек, Главный_бухгалтер)
+  сдал_отправитель_должность  сдал_отправитель
+  strEmpty strEmpty
+#end
+  Спецсимвол
+.endfields

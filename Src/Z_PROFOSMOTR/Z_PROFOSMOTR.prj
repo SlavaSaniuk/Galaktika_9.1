@@ -1,0 +1,14 @@
+#param /linc:""
+#statusline "statgal"
+
+//*************************************
+// *** Интерфейс: Профосмотр
+//************************************
+
+
+#include galnet.inc end;
+#include glovars.inc
+#include galaktika.vil
+#include "Vip\profosmotr\constProfOsmotr.inc"
+
+#make "Vip\profosmotr\*.vip"

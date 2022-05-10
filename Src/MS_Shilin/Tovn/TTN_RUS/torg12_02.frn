@@ -1,0 +1,45 @@
+.begin
+  var KolLine, KolLine2: word;
+
+  KolPage++; 
+  KolSpSopr++;
+
+#ifdef _TORG_12L_
+  if wGetTune('Doc.SD.PrnNakl.TTNFormatMC') = 1
+  {
+    KolLine  := GetKolStr (Название, 24);
+    KolLine2 := GetKolStr (КодМц, 11);
+  }
+  else
+  {
+    KolLine  := KolAddInStr (Название, 24, true);
+    KolLine2 := KolAddInStr (КодМц, 11, true);
+  }
+#else
+  if wGetTune('Doc.SD.PrnNakl.TTNFormatMC') = 1
+  {
+    KolLine  := GetKolStr   (Название, 20);
+    KolLine2 := KolAddInStr (КодМц, 7, false);
+  }
+  else
+  {
+    KolLine  := KolAddInStr (Название, 20, true);
+    KolLine2 := KolAddInStr (КодМц, 7, false);
+  }
+#end
+
+  if (KolLine2 > KolLine)
+    KolLine := KolLine2;
+
+  if (KolLine > 0)
+  {
+    KolPage += KolLine;
+
+    if (KolPage > FixKolPage)
+    {
+      NextPage   := true;
+      KolAdd     := KolLine + 1;
+      FixKolPage := FixKol;
+    }
+  }
+end.

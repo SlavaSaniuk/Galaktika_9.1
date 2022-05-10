@@ -1,0 +1,219 @@
+//
+//
+interface OS_KArt;
+
+var
+	cRecord : comp
+	NameF4,NameF8	: string
+        NameF3	: string
+        amort : string
+        podr  : word
+        data1: date
+        data2: date
+        ostst: double
+        mgts: string
+        bal_st, izn, prizn_nov : double
+
+
+create view 
+
+
+from
+	katos
+  
+where
+((       
+        word(16)         >>=  katos.tidk    and  
+        
+
+         word(3000)     ==    kaureff.cotable and
+         katos.nrec      ==    kaureff.crec   and
+
+         kaureff.ckau    ==   spkau.nrec     and
+  
+         katos.nrec       ==   spkatos.ckatos  and
+         spkatos.cnorma   == vidnorma.nrec  and
+         spkatos.cnastros  ==    nastros.nrec and
+         katos.nrec       ==   arciznos.ckatos and
+         spkatos.cnastros == arciznos.cnastros and
+          data2 == arciznos.data and
+        spkatos.chozoper ==  hozoper.nrec and
+
+         hozoper.nrec        ==  hozobor.chozoper
+
+        ))     and   hozobor.dbscheto='RUOS'  and datek<=data2   and   ( datv < date (01,01,0001) or (datv >= data1 and datv <= data2 ))
+;
+    
+ 
+   
+    File f_var4;
+    File f_var3;
+!    File f_var8;
+    var l,l1,m,l2,l3,l4,l5,l6,l7,l8 : string;
+
+  handleEvent
+    cmInit: 
+{
+  if (message(' Экспортировать ОС ?', YesNo+Confirmation)=cmYes)
+{
+  podr:='900'
+ rundialog(mydlg_podr,podr)  
+}
+{
+  data1:=cur_date
+  data2:=cur_date
+  RunDialog(GetInterval,data1,data2)
+    } 
+
+ l:=  string(month(data2))
+    if (double(l)<10)
+        {   
+ l :='0' + l 
+} 
+  NameF4 := 'OC'+podr+'_'+l +string(year(data2))+ '.kart' ;
+  if  (f_var4.OpenFile( NameF4, stCreate) = true)
+!   NameF8 := 'OC'+podr+'_'+l +string(year(data2))+ '.balans' ;
+!      if  (f_var8.OpenFile( NameF8, stCreate) = true)
+
+
+
+{
+  NameF3 := 'OC_ERROR'+podr+'_'+l +string(year(data2))+ '.kart' ;
+      if  (f_var3.OpenFile( NameF3, stCreate) = true) 
+      
+      {
+           StartNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm,
+               ''#3'...EXPORT...'#13#3, RecordsInTable(#KatOs));
+               _loop katos
+	   {
+	     l  := ''
+	     l1 := ''
+	     l2 := ''
+	     l3 := ''
+	     l4 := ''
+             l5 := ''  
+             l7:=''
+l6 := ''
+l8 := ''
+mgts:='0'
+bal_st:=0
+izn:=0
+prizn_nov:=0
+   _loop kaureff
+         {
+      
+        if 
+
+kaureff.wkau='501'
+l1 :=spkaU.CODE                   
+ else
+ if
+
+ kaureff.wkau='502'
+  l2 :=spkaU.CODE
+  IF (substr(l2,4,6)='6.2.16')
+{
+         mgts:='1'    
+}
+  else
+     if  kaureff.wkau='503'
+      l3 :=spkaU.CODE
+ 	      else
+     if
+
+ kaureff.wkau='504'
+      l5 :=spkaU.CODE
+       }
+
+      {    
+if (mgts='0')
+{
+  if GetFirst katpodr where ((katos.cpodr == katpodr.nrec)) = tsok
+     {
+    l7:= katpodr.name
+     }
+    if (data2>=datv and data1<=datv)
+    {
+    bal_st:=0
+    }
+
+    if (data2>=katos.otchper)
+    {
+      if (nastros.field4=0)
+    {
+      bal_st:=spkatos.stoim*katos.kol
+    izn:=spkatos.siznm*katos.kol
+    }
+    else
+    {
+    bal_st:=spkatos.stoim
+    izn:=spkatos.siznm
+    }
+    }
+     else
+     {
+     if GetFirst arciznos  = tsok
+
+     if (nastros.field4=0)
+      {
+      bal_st:=arciznos.stoim*arciznos.kol
+      izn:=arciznos.siznm*arciznos.kol
+      }
+      else
+      {
+        bal_st:=arciznos.stoim
+      izn:=arciznos.siznm
+      }
+
+    else
+        prizn_nov:=1
+
+    }
+
+   if (prizn_nov=0)
+   {
+l8 :=bal_st+l1+';'+ l2+';9.9.9;'+ l5
+l6 :=katos.innum+';'+katos.nameos+';'+ vidnorma.kod+';'+l1+';'+ l2+';'+ l3+';'+ l5+';'+ l7
+l4 :=katos.innum+';'+katos.nameos+';'+ vidnorma.kod+';'+l1+';'+ l2+';'+ l3+';'+ l5+';'+bal_st+';'+izn
+     if (l1= '' or l2= '' or l3= '' or l5= '' )
+{
+f_var3.WriteLn(DocBasFn866To1251(l6))
+}
+
+}
+}
+             l1 := ''
+	     l2 := ''
+	     l3 := ''
+             l5 := ''
+             l7:=''
+l6 := ''
+  bal_st:=0
+  izn:=0
+  prizn_nov:=0
+if (mgts='0')
+{
+DocBasFn866To1251(l4)  
+	        f_var4.WriteLn(DocBasFn866To1251(l4))
+}
+
+}
+} 
+}
+   StopVisual('',0);
+    
+    f_var4.Close;
+ f_var3.Close;
+!  f_var8.Close;
+    message('EXPORT ALL');
+     
+}    
+   else
+message('... Проблемы с открытием файлов ???');
+      abort; // что бы не открывалось окно
+
+
+}
+
+  end;
+end.

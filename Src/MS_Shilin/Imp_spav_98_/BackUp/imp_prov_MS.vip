@@ -1,0 +1,577 @@
+//
+#component "F_PlPor"
+Interface FRO_984_spravka_ms 'Импорт справок 98х ' DoAccept,EscClose,cyan;
+  show at (,,73,8);
+create view
+var
+            vid : word;
+            PathToFile : string;
+            _mes, _year : word;
+            sPlanSch, ActiveXLSName : string;
+            col_start, col_end : byte;
+            rx1, rx2, ry1, ry2, row, col : longint;
+            temp_bool : boolean;
+                StrXar, StrIzg, StrPSNUM : string
+                rrbeg,rrend,ii	: double
+                nrec_name ,cPlanS ,nplpor, nsoprhoz    : comp
+                prizn_isp       : string
+                biz_kod         : string
+                biz_name , kod_zatr       : string
+                level_kod, kod_stroki, sskod_stroki  : string
+                kau_nrec : comp
+                nodok,Sch,SubSchet,kod, kau,sskau,
+                scheto,
+                subscheto,
+                kauo1, kauo2,  kauo3, kauo4,  kauo5,  kauo6,
+                kauf1, kauf2, kauf3,kauf4, kauf5,kauf6,kauf7, kauf8,
+                podro,
+                schetk,
+                subschetk,schh, deskr,
+                kauk1,
+                kauk2,
+                kauk3,
+                kauk4,
+                kauk5,
+                kauk6,  datob, 
+                podrk: string
+                dat1, dat2: date
+                sumob, summa, itog: double
+
+from
+   buhschet
+   ,spkau
+   ,planssch
+   ,plpor
+   ,soprhoz
+   ,oborot
+where
+  ((
+
+    cPlanS              ==  PlanSSch.nRec        and
+
+    cPlanS              ==  BuhSchet.cPlanSsch  and
+    Schh     ==  BuhSchet.code
+  ))
+  ;
+procedure PrepareXLS;
+{
+  if (not FileExist(PathToFile))
+  {
+    Message('Указанный файл не существует!');
+    Exit;
+  }
+  if (not xlCheckExcelInstall)
+  {
+    Message('На вашем компьютере не установлен Excel!');
+    Exit;
+  }
+
+  if (not xlCreateNewExcelWithTemplate(PathToFile, False))
+  {
+    Message('Не удалось открыть книгу Excel: ' + PathToFile + '!');
+    xlKillExcel;
+    StopVisual('', 0);
+    Exit;
+  }
+  if (not xlIsExcelValid)
+  {
+    Message('Не удалось инициализировать Excel!');
+    xlKillExcel;
+    StopVisual('', 0);
+    Exit;
+  }
+
+  xlDisplayAlerts(true);
+  xlSetActiveSheet(1);
+  xlGetUsedRange(rx1,ry1,rx2,ry2);
+
+}
+
+
+procedure Create984;
+{
+  if (not FileExist(PathToFile))
+  {
+    Message('Указанный файл не существует!');
+    Exit;
+  }
+  if (not xlCheckExcelInstall)
+  {
+    Message('На вашем компьютере не установлен Excel!');
+    Exit;
+  }
+
+  if (not xlCreateNewExcelWithTemplate(PathToFile, False))
+  {
+    Message('Не удалось открыть книгу Excel: ' + PathToFile + '!');
+    xlKillExcel;
+ //   StopVisual('', 0);
+    Exit;
+  }
+  if (not xlIsExcelValid)
+  {
+    Message('Не удалось инициализировать Excel!');
+    xlKillExcel;
+//    StopVisual('', 0);
+    Exit;
+  }
+
+  xlDisplayAlerts(true);
+  xlSetActiveSheet(1);
+  xlGetUsedRange(rx1,ry1,rx2,ry2);
+/*  if (not FileExist(PathToFile))
+  {
+    Message('Указанный файл не существует!');
+    Exit;
+  }
+  if (not xlCheckExcelInstall)
+  {
+    Message('На вашем компьютере не установлен Excel!');
+    Exit;
+  }
+
+  if (not xlCreateNewExcelWithTemplate(PathToFile, False))
+  {
+    Message('Не удалось открыть книгу Excel: ' + PathToFile + '!');
+    xlKillExcel;
+    StopVisual('', 0);
+    Exit;
+  }
+  if (not xlIsExcelValid)
+  {
+    Message('Не удалось инициализировать Excel!');
+    xlKillExcel;
+    StopVisual('', 0);
+    Exit;
+  }
+
+  xlDisplayAlerts(true);
+
+  */
+//   xlSetActiveSheet(1);
+//   xlGetUsedRange(rx1,ry1,rx2,ry2);
+  // Message('rx2 =' + rx2 + ', ry2 =' + ry2);
+/*    if (xlGetUsedRange(rx1,ry1,rx2,ry2) != tsOK)
+    {
+      message('В файле нет данных! Ошибка ' + string(xlGetLastError));
+      StopVisual;
+      stop;
+      exit;
+    }
+    */
+    StartNewVisual(vtRotateVisual,vfTimer,'Импорт из EXCEL',1);
+    var _col : integer;
+    for (_col := col_start; _col <= col_end; _col++)
+    {
+      xlGetCellValue( 5, rx1 + _col - 1 , kod_stroki );
+      if (vid = 0)
+      {
+        if (Message('Загрузить данные для ' + kod_stroki + '?', yesNo + Confirmation) != cmYes)
+        {
+          xlKillExcel;
+          stop;
+          exit;
+        }
+      }
+      if (col_start < ry1 or col_end > ry2)
+      {
+        message('Введенные номера колонок с суммами не попадают в область данных Excel');
+        StopVisual;
+        xlKillExcel;
+        stop;
+        exit;
+      }
+
+
+  ///// plpor
+      ClearBuffer(#plpor);
+      deskr:=sGetTune('USER.DESCR');
+      plpor.tidk:=10;
+      plpor.tidkgal:=10;
+      plpor.descr:=sGetTune('USER.DESCR');
+      plpor.datob:=dat2;
+      plpor.datvip:=dat2;
+      plpor.datots:= dat2;//date(0,0,0);
+      plpor.yeardoc:=year(dat2);
+      plpor.datapol:=date(0,0,0);
+      itog := 0;
+
+      if (vid = 0)
+      {
+        plpor.nodok:='^^984'
+      }
+      else
+      {
+        plpor.nodok:='^^988'
+      }
+
+      if (vid = 0)
+      {
+        plpor.namepl1:='Импорт проводок Справка-расчет '+plpor.nodok+' для '+ kod_stroki +' по распределению расходов МС ';
+      }
+      else
+      {
+        plpor.namepl1:='Импорт проводок Справка-расчет '+plpor.nodok+' по распределению расходов МС ';
+      }
+      plpor.namepl2:='при оказании услуг эфирного телевидения ZALA ';
+      plpor.namepl3:='';
+      plpor.modedoc:=4098;
+      if (insert current plpor != tsOK)
+      {
+        message('Ошибка вставки записи в таблицу plpor');
+        StopVisual;
+        stop;
+        exit;
+      }
+  //////soprhoz
+      ClearBuffer(#soprhoz);
+      soprhoz.datob:=dat2;
+      soprhoz.csoprdoc:=plpor.nrec;
+      soprhoz.tipdoc:=10;
+      soprhoz.tidkgal:=10;
+      soprhoz.nodoc:=plpor.nodok;
+      soprhoz.descr:=plpor.descr;
+      soprhoz.direct := 1;
+      soprhoz.VHSUMHOZ := '+';
+      soprhoz.modedoc := 1026;
+      if (insert current soprhoz != tsOK)
+      {
+        Message('Ошибка вставки записи в таблицу soprhoz');
+        StopVisual;
+        stop;
+        exit;
+      }
+
+    //  message('rx1 = ' + rx1 +', rx2 = ' + rx2);
+      if (getfirst planssch != tsOK){'Ошибка позиционирования на план счетов'};
+     // message('_col = ' + _col);
+      for (row := rx1; row <rx2; row++)
+      {
+         xlGetCellValue( row, rx1, kau );
+         xlGetCellValue( row, rx1 + 1 , kod_stroki );
+         xlGetCellValue( row, rx1 + 2 , kod_zatr   );
+         xlGetCellValue( row, rx1 + _col - 1 , summa);
+        // message('summa = ' + summa);
+         if (InStr('КР_',kau) != 1)
+         {
+           kau := substr(kau,InStr('КР_',kau),Length(kau) - InStr('КР_',kau)+1);
+         }
+         if (InStr('КБП_',kau) != 1)
+         {
+           kau := substr(kau,InStr('КБП_',kau),Length(kau) - InStr('КБП_',kau)+1);
+         }
+         kau:=substr(trim(kau),1,27);
+         sskau:=Substr(trim(kau),1,2);
+         sskod_stroki:= substr(trim(kod_stroki),1,3 );
+         kod_zatr:=trim(kod_zatr);
+         summa:=-summa;
+         if (length(kod_zatr) = 8)
+         {
+           if (summa !=0)
+           {
+                If (Sskau = 'КР' )
+                {
+                  kau:=substr(trim(kau),1,19)
+                  if ( substr(sskod_stroki,1,3)= '290')
+                  {
+                    scheto:= 'RUZAR';
+                  }
+                  else
+                  {
+                    scheto:='RUOS';
+                  }
+                }
+                else
+                {
+                  scheto := 'RU';
+                  kau := substr(kau,5,1)+substr(kau,7,1)+substr(kau,9,1)+substr(kau,11,2)+substr(kau,14,2)+substr(kau,17,2)+substr(kau,20,1)+substr(kau,22,2)+substr(kau,25,1)+substr(kau,27,1);
+                }
+                   kauo3:=kod_zatr
+                   subscheto:=''
+                   schetk:='XXX'
+                   kauo1:=kau
+                   if (vid = 0)
+                   {
+                     kauo2:='ОС_4.3.00.0.00'
+                     case _col of
+                      4: kauo4:='СП_1.01';
+                      5: kauo4:='СП_2.01';
+                      6: kauo4:='СП_3.01';
+                      7: kauo4:='СП_4.01';
+                      8: kauo4:='СП_5.01';
+                      9: kauo4:='СП_6.01';
+                     10: kauo4:='СП_7.02';
+                     11: kauo4:='СП_10.03';
+                     else message('Выбраны ошибочные столбцы. Диапазон - от 4 до 11');
+                     end; //case
+                     oborot.tblos[5]:=buhschet.KODTABLE[5];
+                     oborot.tblos[6]:=buhschet.KODTABLE[6];
+
+                   }
+                   else
+                   {
+                     kauo2:='ОС_5.4.00.0.00';
+                     kauo4:='СП_10.03';
+                   }
+                   ClearBuffer(#oborot);
+                   oborot.tidk:=10;
+                   oborot.tidkgal:=10;
+                   oborot.csoprdoc:=plpor.nrec;
+                   oborot.csoprhoz:=soprhoz.nrec;
+                   oborot.cplanssch:=planssch.nrec;
+                   oborot.descr:=plpor.descr;
+                   oborot.scheto:=trim(planssch.kod)+scheto;
+                   if(getfirst buhschet where ((planssch.nrec == buhschet.cplanssch and scheto == buhschet.code)) != tsOK)
+                   {
+                     message('Ошибка позиционирования на счет ' + scheto + ' в плане счетов ' + planssch.name);
+                     exit;
+                   }
+                   oborot.tblos[1]:=buhschet.KODTABLE[1];
+                   oborot.tblos[2]:=buhschet.KODTABLE[2];
+                   oborot.tblos[3]:=buhschet.KODTABLE[3];
+                   oborot.tblos[4]:=buhschet.KODTABLE[4];
+
+                   oborot.schetk:=trim(planssch.kod)+schetk;
+
+
+                   oborot.datob:=plpor.datob;
+                   oborot.dataot:=plpor.datots;
+                   oborot.nodok:=plpor.nodok;
+                   oborot.sumob:=summa;
+                   OBOROT.VHPROP :='+';
+                   OBOROT.SODPR:=trim(nodok)+'  '+trim(datob);
+                   oborot.dbscheto:=scheto;
+                   oborot.krschetk:=schetk;
+
+            ////// debet
+                   sch:=trim(scheto);
+                   subschet:=trim(subscheto);
+                   if (subscheto>'')
+                   {
+                     schh:= Sch+'.'+SubSchet;
+                   }
+                   else
+                   {
+                     schh:=sch;
+                   }
+                   if ( GetFirst BuhSchet = tsOk )
+                   {
+                     if (kauo1>0)
+                     {
+                         oborot.TBLOS[1]:= Buhschet.KodTable[1]
+                         if ( GetFirst spkau where ((Buhschet.KodTable[1]==SpKau.KodGrKau and kauo1==SpKau.code)) = tsOk )
+                         {
+                              oborot.KAUOS[1] := spkau.nrec
+                         }
+                     }
+                     if (kauo2>0)
+                     {
+                         oborot.TBLOS[2]:= Buhschet.KodTable[2]
+                         if ( GetFirst spkau where ((Buhschet.KodTable[2]==SpKau.KodGrKau and kauo2==SpKau.code)) = tsOk )
+                         {
+                              oborot.KAUOS[2] := spkau.nrec
+                         }
+                     }
+
+                     if (kauo3>0)
+                     {
+                         oborot.TBLOS[3]:= Buhschet.KodTable[3]
+                         if ( GetFirst spkau where ((Buhschet.KodTable[3]==SpKau.KodGrKau and kauo3==SpKau.code)) = tsOk )
+                         {
+                              oborot.KAUOS[3] := spkau.nrec
+                         }
+                     }
+                     if (kauo4>0)
+                     {
+                         oborot.TBLOS[4]:= Buhschet.KodTable[4]
+                         if ( GetFirst spkau where ((Buhschet.KodTable[4]==SpKau.KodGrKau and kauo4==SpKau.code)) = tsOk )
+                         {
+                              oborot.KAUOS[4] := spkau.nrec
+                         }
+                     }
+                   }
+
+                  if (insert current oborot != tsOK) message('Ошибка вставки записи в таблицу oborot.');
+                  itog += summa;
+         }
+      }
+    }
+    plpor.sumplat:=itog;
+    if (update current plpor != tsOK) message('Ошибка обновления суммы бухсправки');
+    soprhoz.summa:=summa
+    if (update current soprhoz != tsOK) message('Ошибка обновления журнала хозопераций');
+    Message('Импорт по филиалу завершен'+chr(13)+'Сумма по справке равна ' + string(itog));
+  }
+  StopVisual('',0);
+  xlKillExcel;
+
+
+}
+ screen scrIMP
+  fields
+        _mes ('Месяц'):
+                    [LIST
+                      1 'Январь',
+                      2 'Февраль',
+                      3 'Март',
+                      4 'Апрель',
+                      5 'Май',
+                      6 'Июнь',
+                      7 'Июль',
+                      8 'Август',
+                      9 'Сентябрь',
+                      10 'Октябрь',
+                      11 'Ноябрь',
+                      12 'Декабрь'
+                      ], protect;
+        _year ('Год'):NoProtect, SpinButton [1,2000,2100];
+        vid ('Вид загружаемой справки') : NoProtect;
+        sPlanSch ('План счетов') : pickbutton, NoProtect;
+        col_start ('Начальная колонка') :  noprotect;
+        col_end ('Конечная колонка') :  noprotect;
+        PathToFile ('Выбор EXCEL файла') : pickbutton, NoProtect;
+
+
+  buttons
+//    cmOK,,,'Импорт',,sci1Esc;
+  cmOk, Default, , 'Ввод - запустить импорт справки из выбранного файла', , sci1Esc;
+  cmCancel,    , , 'Отмена', , sci1Esc;
+
+<<
+     `Вид справки:`    Месяц .@@@@@@@@@@ Год .@@@@@@
+     (.) 984`          План счетов .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     (.) 988`
+     Обрабатывать суммы в колонках с номерами с.@@ по .@@
+     Выберите файл для импорта:
+    .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+               <. ~П~ровести Импорт .>    <.   ~О~тмена   .>
+>>
+end; // screen
+
+HandleEvent
+
+cmInit:
+{
+    _year := Year(Add_Months(dGetTune('UP.DATOTCH'), -1));
+    _mes  := Month(Add_Months(dGetTune('UP.DATOTCH'), -1));
+    dat2 := Date(Last_day(Date(1,_mes, _year)), _mes, _year);
+    ReadMyDsk(vid,'vid_988_RU_Zar', temp_bool);
+    if (vid = 1)
+    {
+      set col_start := 4;
+      set col_end := 4;
+    }
+    else
+    {
+      set col_start := 11;
+      set col_end := 11;
+    }
+    SetFieldSelectable(#col_start, vid = 0);
+    SetFieldVisible(#col_end, vid = 0);
+
+    if not ReadMyDsk(cplans,'cplans_988_RU_Zar', temp_bool)
+    {
+       if (getfirst planssch where ((coGetTune('FIN.USER.CPLANSSCH') == nrec)) = tsOK)
+       {
+         sPlanSch:= planssch.code + ', ' + planssch.name;
+         cplans:= coGetTune('FIN.USER.CPLANSSCH');
+       }
+    }
+    else
+    {
+       if (getfirst planssch where ((cplans == nrec)) = tsOK)
+       {
+         sPlanSch:= planssch.code + ', ' + planssch.name;
+       }
+    }
+    if not ReadMyDsk(col_start,'col_start_988_RU_Zar', temp_bool) col_start:= 11;
+    if not ReadMyDsk(col_end,'col_end_988_RU_Zar', temp_bool) col_end:=11;
+    ReadMyDsk(PathToFile,'PathToFile_988_RU_Zar', temp_bool);
+
+}
+cmPick:
+
+   case (curField) of
+  #sPlanSch:
+  {
+     Runinterface(GetPlansSch, cplans);
+     if (getfirst planssch where ((cplans == nrec)) = tsOK)
+     {
+       sPlanSch:= planssch.code + ', ' + planssch.name;
+     }
+//     Message('cplans = ' + cplans);
+  }
+  #PathToFile:
+  {
+    set PathToFile:= GetFileName('*.xls*', 'Выбор файла для импорта');
+  }
+  end;
+
+cmCheckField:
+{
+  case (curField) of
+  #vid:
+  {
+    if (vid = 1)
+    {
+      set col_start := 4;
+      set col_end := 4;
+    }
+    else
+    {
+      set col_start := 11;
+      set col_end := 11;
+    }
+
+  //ToggleFieldState(#col_start,ofSelectable + ofProtected, vid = 1);
+    SetFieldSelectable(#col_start, vid = 0);
+  //ToggleFieldState(#col_end,sfVisible,vid = 1);
+    SetFieldVisible(#col_end, vid = 0);
+  }
+
+  #col_start:
+  {
+    if (col_start > col_end)
+    {
+      Message('Номер начальной колонки не может быть меньше конечной!');
+      set col_start := 11;
+      set col_end := 11;
+    }
+  }
+
+  #col_end:
+  {
+    if (col_start > col_end)
+    {
+      Message('Номер начальной колонки не может быть меньше конечной!');
+      set col_start := 11;
+      set col_end := 11;
+    }
+  }
+  end;
+}
+
+cmOK:
+ {
+    SaveMyDSK(vid,'vid_988_RU_Zar');
+    SaveMyDSK(cplans,'cplans_988_RU_Zar');
+    SaveMyDsk(col_start,'col_start_988_RU_Zar');
+    SaveMyDsk(col_end,'col_end_988_RU_Zar');
+    SaveMyDSK(PathToFile,'PathToFile_988_RU_Zar');
+//    var i : integer;
+//    PrepareXLS;
+//    for (i := col_start; i <= col_end; i++)
+//    {
+      Create984;
+//    }
+//    xlKillExcel;
+    CloseInterface (cmOK) ;
+ } //end cmOK
+
+cmCancel:
+{
+  CloseInterface (cmCancel) ;
+}
+end;
+end.

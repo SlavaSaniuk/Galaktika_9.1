@@ -1,0 +1,88 @@
+.fields
+  Номер
+
+#ifdef _TOVN_DEI
+  sPost1 sFIO1
+#end
+
+  Получатель
+  Получатель_ОКПО
+
+  if (Дата = Date(0,0,0), '', DateToStr(Дата, 'DD/MM/YYYY'))
+
+#ifdef _TOVN_DEI
+  Склад_Пол_Адрес
+  Номер
+  sPrihNaklNum
+  sPrihNaklDate
+#else
+  Номер
+  Номер
+  if (Дата = Date(0,0,0), '', DateToStr(Дата, 'DD/MM/YYYY'))
+#end
+
+  Грузоотправитель + ' Адрес: ' + Грузоотправитель_Адрес + ' Тел: ' + Грузоотправитель_ТЕЛ
+  Поставщик        + ' Адрес: ' + Поставщик_Адрес        + ' Тел: ' + Поставщик_ТЕЛ
+  Грузополучатель  + ' Адрес: ' + Грузополучатель_Адрес  + ' Тел: ' + Грузополучатель_ТЕЛ
+
+  if (Номер_Договора <> '', Номер_Договора,
+    if (Основание <> '', Основание, ''))
+
+  if (Дата_Договора <> Date(0,0,0), DateToStr(Дата_Договора, 'DD/MM/YYYY'),
+    if (Основание <> Date(0,0,0), DateToStr(ДатаОснования, 'DD/MM/YYYY'), ''))
+
+  // спецификация
+#ifdef _TOVN_DEI
+   ДлНазвание
+#end
+    KolGrM
+    if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд)
+    Название
+    УчЕд
+    if (КолВес = 0, '', DoubleToStr(КолВес / 1000, Massa_Tn))
+
+#ifdef _TOVN_DEI
+     ДЕИ_Кол
+     ДЕИ_Наим
+#end
+  // 3-я страница
+  Склад_Пол
+  Kredit
+    // спецификация
+#ifdef _TOVN_DEI
+   if (wNSoprDoc = 2, sRaspNum,
+     if (wNSoprDoc = 1, номер, ''))
+#else
+   номер
+#end
+
+#ifdef _TOVN_DEI
+   ДлНазвание2
+#end
+    Название2
+    КодМЦ2
+    ОтпЕдАббр2
+    DoubleToStr(КолФ2 , Kol_Pr)
+    DoubleToStr(ЦНац2 , Cena_PrR)
+    DoubleToStr(СтНац2, Cena_PrR)
+
+#ifdef _TOVN_DEI
+    ДЕИ2_Наим
+    DoubleToStr(ДЕИ2_Кол, Kol_Pr)
+    DoubleToStr(ДЕИ2_Цена, Cena_PrR)
+
+  if (wItog < 2, '', DoubleToStr(TotKol, Kol_Pr))
+  DoubleToStr(TotSum, Cena_PrR)
+
+  sZakl
+
+  // подписи
+  sPost3  sFIO3
+  sPost4  sFIO4
+  sPost5  sFIO5
+
+  // зав.складом
+  sFIO2
+#end
+
+.endfields

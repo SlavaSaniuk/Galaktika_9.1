@@ -1,0 +1,272 @@
+#doc
+Формирование отчета
+"Список работающих с истекающими сроками ограничения в профпригодности (по организации)"(Белтелеком)
+#end
+
+#include iCheckFactorRez.vih
+
+Interface iRepSpisBound 'Формирование отчета' Gray, EscClose;
+  Show at (, , 50, 7);
+
+var
+dDatRep:date;
+objCheckFactorRez: iCheckFactorRez new;
+wMakroPageRun:word;
+
+file file_macro;
+
+Create view
+as select
+*
+from
+ Persons (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYBound (ReadOnly)
+,APPOINTMENTS (ReadOnly)
+,CATALOGS CATALOGSpost (ReadOnly)         //должность
+,CATALOGS CATALOGSStrEd (ReadOnly)
+Where
+((
+    'С'             == Persons.ISEMPLOYEE
+and date(0,0,0)     == Persons.DISDATE
+
+and Persons.nrec    == DISTDOCHIERARCHYfactorPers.CPARENT
+and constFactorPers == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and (DISTDOCHIERARCHYfactorPers.CDOCBOUND<>0
+and _GetDate(DISTDOCHIERARCHYfactorPers.DTDATETIME)<>date(0,0,0)
+and _GetDate(DISTDOCHIERARCHYfactorPers.DTDATETIME)<=dDatRep)  //обрабатываем с установленным ограничением
+
+and Persons.APPOINTCUR        == APPOINTMENTS.nrec                //назначение
+
+and APPOINTMENTS.post         == CATALOGSpost.nrec                //должность
+
+and APPOINTMENTS.DEPARTMENT   == CATALOGSStrEd.nrec              //СЕ сотрудника
+
+and DISTDOCHIERARCHYfactorPers.CDOCBOUND == DISTDOCHIERARCHYBound.nrec
+))
+;
+
+Screen scrRepSpisProf ('Выбор подписантов', ,);
+Fields
+  dDatRep  ('Дата формирования отчета',, sci13EnEsc): noProtect;
+  wMakroPageRun  ('Применить макрос подгонки страницы к печати',,sci1Esc): NoProtect;
+Buttons
+  cmOk, Default,, 'Продолжить',, sci1Esc;
+  cmCancel,,,'Отмена',, sci1Esc;
+<<
+   `Дата формирования отчета:      `.@@@@@@@@@@@
+
+   [.] Применить макрос подгонки страницы к печати`
+
+         <. Сформировать .>  <.   ~О~тмена   .>
+>>
+end;
+
+
+Function CheckDateRep: boolean;
+{
+  CheckDateRep:=false;
+   if(dDatRep=date(0,0,0))
+     {
+       message('Задайте дату формирования отчета!');
+       exit;
+     }
+  CheckDateRep:=true;
+}
+
+Procedure StatTextExcel;
+{
+  xlPageSetupSetOrientation(2);
+
+  xlSetColumnWidth(4,1,1,1,1);       // ширина столбцов
+  xlSetColumnWidth(30,1,2,1,2);       // ширина столбцов
+  xlSetColumnWidth(6,1,3,1,3);       // ширина столбцов
+  xlSetColumnWidth(20,1,4,1,4);       // ширина столбцов
+  xlSetColumnWidth(15,1,5,1,5);       // ширина столбцов
+  xlSetColumnWidth(20,1,6,1,6);       // ширина столбцов
+  xlSetColumnWidth(20,1,7,1,7);       // ширина столбцов
+  xlSetColumnWidth(10,1,8,1,8);       // ширина столбцов
+
+
+  xlSetFontstyle(1,1,1,1,8);  // жирным
+  xlSetFontSize(12,1,1,1,8);  // высота  шрифта
+  xlSetRowHeight(15,1,1,1,8);     //высота строки
+  xlMergeCells(1,1,1,8);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,1,1,1,8);
+  xlSetCellStringValue('Список работающих с истекающими сроками ограничения в профпригодности (по организации)',1,1,1,8);
+
+  xlSetFontSize(12,2,1,2,8);  // высота  шрифта
+  xlSetRowHeight(15,2,1,2,8);     //высота строки
+  xlMergeCells(2,1,2,8);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,2,1,2,8);
+  xlSetCellStringValue(sgettune('myorg'),2,1,2,8);
+  xlFrameCells(xlBorderB,xlThin, 0, 0, 2, 1, 2, 8);
+
+  xlSetFontSize(8,3,1,3,8);  // высота  шрифта
+  xlSetRowHeight(10,3,1,3,8);     //высота строки
+  xlMergeCells(3,1,3,8);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,3,1,3,8);
+  xlSetCellStringValue('наименование организации, адрес ее места нахождения',3,1,3,8);
+
+  xlSetRowHeight(120,4,1,4,8);     //высота строки
+  xlWrapText(4,1,4,8);
+  xlSetFontSize(10,4,1,4,8);     //высота  шрифта
+  xlAlignCellsEx(xlCenter,xlCenter,4,1,4,8);
+  xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+               xlThin, 0, 0, 4, 1, 4, 8);
+
+  xlSetCellStringValue('№ п/п',4,1,4,1);
+  xlSetCellStringValue('Фамилия, собственное имя, отчество (полностью)',4,2,4,2);
+  xlSetCellStringValue('Год рождения',4,3,4,3);
+  xlSetCellStringValue('Подразделение',4,4,4,4);
+  xlSetCellStringValue('Профессия (должность)',4,5,4,5);
+  xlSetCellStringValue('Фактор',4,6,4,6);
+  xlSetCellStringValue('Ограничение',4,7,4,7);
+  xlSetCellStringValue('Дата окончания ограничения',4,8,4,8);
+}
+
+Procedure InsertRecExcel;
+var
+istr,n,npp:double;
+{
+istr:=5;
+npp:=1;
+ _loop Persons
+  {
+     n:=0;
+   if(not isValid(#DISTDOCHIERARCHYfactorPers))
+     {
+       continue;
+     }
+
+    _loop DISTDOCHIERARCHYfactorPers
+      {
+        if(getfirst DISTDOCHIERARCHYBound=tsok)
+          {
+            xlSetCellStringValue(objCheckFactorRez.StrValueNabor('Factor',DISTDOCHIERARCHYfactorPers.CANVAL1),iStr,6,iStr,6);
+            xlSetCellStringValue(DISTDOCHIERARCHYBound.Sname,iStr,7,iStr,7);
+            xlSetCellStringValue(chr(39)+_GetDate(DISTDOCHIERARCHYfactorPers.DTDATETIME),iStr,8,iStr,8);
+          }
+        xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+               xlThin, 0, 0, iStr, 6, iStr, 8);
+        xlAlignCellsEx(xlLeft,xlCenter,iStr,6,iStr,8);
+        xlSetFontSize(8,iStr, 6, iStr, 8);
+        xlWrapText(iStr,6,iStr,8);
+        iStr+=1;
+        n+=1;
+      }
+
+    xlMergeCells(iStr-n,1,iStr-1,1);
+    xlMergeCells(iStr-n,2,iStr-1,2);
+    xlMergeCells(iStr-n,3,iStr-1,3);
+    xlMergeCells(iStr-n,4,iStr-1,4);
+    xlMergeCells(iStr-n,5,iStr-1,5);
+    xlAlignCellsEx(xlCenter,xlCenter,iStr-n,1,iStr-1,1);
+    xlAlignCellsEx(xlLeft,xlCenter,iStr-n,2,iStr-1,2);
+    xlAlignCellsEx(xlCenter,xlCenter,iStr-n,3,iStr-1,3);
+    xlAlignCellsEx(xlLeft,xlCenter,iStr-n,4,iStr-1,5);
+    xlSetFontSize(8,iStr-n,1,iStr-1,5);
+    xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+             xlThin, 0, 0, iStr-n, 1, iStr-1, 5);
+    xlSetCellStringValue(npp,iStr-n,1,iStr-1,1);
+
+    xlSetCellStringValue(Persons.Fio,iStr-n,2,iStr-1,2);
+    xlSetCellStringValue(Year(PERSONS.BORNDATE),iStr-n,3,iStr-1,3);
+    if(getfirst Appointments=tsok)
+      {
+        if(getfirst CATALOGSStrEd=tsok)
+          {
+            xlSetCellStringValue(CATALOGSStrEd.Name,iStr-n,4,iStr-1,4);
+          }
+        if(getfirst CATALOGSPost=tsok)
+          {
+            xlSetCellStringValue(CATALOGSPost.Name,iStr-n,5,iStr-1,5);
+          }
+      }
+    xlWrapText(iStr-n,1,iStr-1,5);
+    npp+=1;
+  }
+}
+
+Procedure CreateMacro;     //процедура создания макросов
+{
+ file_macro.OpenFile(GetDefaultUserPath+'MacroRepSpisBound.bas', stCreate);
+ //////макрос для того чтобы при окончании листа не обрезалась объединенная строка
+ file_macro.WriteLn('Sub MakePagesBreack()');
+ file_macro.WriteLn('Dim rUsRng As Range, li As Long, lCnt As Long');
+ file_macro.WriteLn('Set rUsRng = Range("A1", Cells.SpecialCells(11))');
+ file_macro.WriteLn('For li = 1 To rUsRng.Rows.Count+1000');
+ file_macro.WriteLn('If rUsRng.Rows(li).PageBreak <> xlNone Then');
+ file_macro.WriteLn('If rUsRng.Cells(li, 1).MergeCells Then');
+ file_macro.WriteLn('lCnt = li - Cells(li, 1).MergeArea.Row');
+ file_macro.WriteLn('If lCnt > 0 Then Rows(li - lCnt).Resize(lCnt).Insert: lCnt = 0');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('Next li');
+ file_macro.WriteLn('End Sub');
+ file_macro.WriteLn('');
+ ///////////
+
+ file_macro.WriteLn('');
+ //////макрос для установки заголовка, который будет повторяться на каждом листе
+ file_macro.WriteLn('Sub PrintTop()');
+ file_macro.WriteLn('Application.PrintCommunication = False');
+ file_macro.WriteLn('With ActiveSheet.PageSetup');
+ file_macro.WriteLn('.PrintTitleRows = "$4:$4"');     // координаты строки с заголовком
+ file_macro.WriteLn('.PrintTitleColumns = ""');
+ file_macro.WriteLn('End With');
+ file_macro.WriteLn('End Sub');
+ ///////
+ file_macro.Close;
+}
+
+Procedure CreateRepExcel;
+{
+  xlCreateExcel(GetDefaultUserPath+'Список работающих с истекающими сроками ограничения в профпригодности (по организации)',true);
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm,
+                 'Формирование отчета', 1);
+
+  StatTextExcel;
+  InsertRecExcel;
+
+  CreateMacro;
+
+  if(xlImportModule(GetDefaultUserPath+'MacroRepSpisBound.bas'))
+    {
+      xlRunMacro('PrintTop');
+
+      if(wMakroPageRun=1)
+        {
+          xlRunMacro('MakePagesBreack');
+        }
+    }
+
+  StopVisual('', 0);
+  xlSaveWorkBook(1);
+  message('Отчет сформирован!');
+  xlKillExcel;
+}
+
+HandleEvent
+cmInit:
+{
+  dDatRep:=cur_date;
+}
+cmOk:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+  if(not CheckDateRep)
+    {
+      abort;
+    }
+  else
+    {
+      CreateRepExcel;
+      CloseInterFace(0);
+    }
+}
+end;
+End.

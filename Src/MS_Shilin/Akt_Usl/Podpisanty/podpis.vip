@@ -1,0 +1,224 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 9.1 - Логистика
+// Выбор доверенности подписанта в формах сбыта
+//********************************************************************************
+
+#doc
+Назначение:
+  Выбор доверенности подписанта в формах сбыта
+
+Возвращаемые параметры:
+  Номер доверенности, Дата доверенности, Фамилия И.О. подписанта, И.О.Фамилия подписанта
+#end
+#Component "MS_Shilin"
+
+Interface GetPodpis 'Выберите подписанта' doAccept, EscClose, cyan;
+  Show at (, , 120, 25);
+//******************************************************************************
+Var
+  NDov  : string;  // Номер доверенности
+  DDov  : string;  // Дата доверенности
+  FIO   : string;  // Фамилия И.О. подписанта
+  IOF   : string; // И.О.Фамилия подписанта
+  Dolzhn: string;
+  FullName: string;
+  Pers_NRec : Comp;
+Parameters
+  NDov    // Номер доверенности
+, DDov    // Дата доверенности
+, FIO     // Фамилия И.О. подписанта
+, IOF     // И.О.Фамилия подписанта
+, Dolzhn  // Должность подписанта
+, fullName
+, Pers_NRec
+;
+Create view MainTable
+As select
+ *
+From
+  Dover, DovFIO, attrval,
+  dover dover1,
+  dovfio dovfio1
+Where
+((
+    281474976734029   == attrval.cattrnam //Атрибут "Руководитель (число > 0)"
+    and 1138          == attrval.wtable (noindex)
+    and attrval.crec  == dover.nrec
+    and dover.cdovfio == dovfio.nrec
+
+/*   dover.nrec/==attrval.crec   (noindex)
+   and 562949953421569   == attrval.cattrnam (noindex)//Атрибут "Руководитель (число > 0)"
+   and 1138          == attrval.wtable (noindex)
+   and dover.cdovfio == dovfio.nrec
+*/
+))
+//-----------------------------------
+//order by  dover.dend
+//-----------------------------------
+;
+
+//Panel pKatPodpis
+//  Table Dover;
+
+Browse brKatPodpis show at (,,,);
+table attrval;
+Fields
+//---------------------------------
+   Dover.DForm
+                  #3'Дата'#13#3'выдачи'
+                : [10], Protect, Centered, NoAutoSize;
+//---------------------------------
+  Dover.DEnd
+                #3'Действи-'#13#3'тельна по'
+                : [10], Protect, Centered, NoAutoSize;
+//---------------------------------
+  Dover.NoDoc
+                #3'Номер'
+                : [8], Protect, Centered, NoAutoSize;
+
+//---------------------------------
+  DovFIO.Post
+                #3'Должность'
+                : [15], Protect;
+//---------------------------------
+  DovFIO.Name
+                #3'ФИО'
+                : [15], Protect;
+//---------------------------------
+  AttrVal.vString
+                #3'В лице... (должность и ФИО в родительном падеже)'
+                : [15], NoProtect;
+//  ordered Dover.DEnd, DovFio.Name;
+end;
+function FamIO(tFIO : string) : string;
+{
+  var stemp : string;
+  FamIO := SubStr(tFIO,1,InStr(' ',tFIO));
+  FamIO := FamIO + SubStr(tFIO,InStr(' ',tFIO)+1,1) + '.';
+  stemp := SubStr(tFIO,InStr(' ',tFIO)+1,Length(tFIO)-InStr(' ',tFIO)+1);
+  FamIO := FamIO + SubStr(stemp,InStr(' ',stemp)+1,1) + '.';
+}
+
+function IOFam(tFIO : string) : string;
+{
+  var stemp : string;
+  IOFam := SubStr(tFIO,InStr(' ',tFIO)+1,1) + '.';
+  stemp := SubStr(tFIO,InStr(' ',tFIO)+1,Length(tFIO)-InStr(' ',tFIO)+1);
+  IOFam := IOFam + SubStr(stemp,InStr(' ',stemp)+1,1) + '. ';
+  IOFam := IOFam + SubStr(tFIO,1,InStr(' ',tFIO));
+}
+
+HandleEvent
+
+cmInit:
+{
+  var w: comp;
+
+  if (NOT ReadMyDsk(w, 'Shilin_Podpis_NRec1', TRUE))
+    w := Comp(0);
+  if (w!=Comp(0))
+  {
+    if getfirst attrval where ((w == attrval.nrec)) <> tsOK
+       if GetFirst attrval <> tsOK {};;
+  }
+}
+
+cmUpdateRecord:
+{
+  update current AttrVal;
+  //ReReadRecord(#AttrVal);
+}
+
+cmInsert:
+{
+  var New_Dover : Comp;
+  if (Message('Добавить новую доверенность в список подписантов?'#13'Продолжить?', Confirmation + YesNo) <> cmYes)
+  {
+    Exit;
+  }
+  RunInterface('L_Dover::GetDover',2, New_Dover);
+  if(New_Dover != Comp(0))
+  {
+    ClearBuffer(#AttrVal);
+    attrval.wTable:=1138;
+    AttrVal.cRec:=New_Dover;
+    AttrVal.cAttrNam:=281474976734029;
+    AttrVal.vDouble:=1;
+    if(GetFirst dover1 where ((New_Dover==dover1.nrec)) = tsOK)
+    {
+      if(GetFirst DovFIO1 where((dover1.cdovfio == dovfio1.nrec)) = tsOK )
+      {
+        AttrVal.vString:=dovfio1.post + ' ' + dovfio1.name;
+      }
+    }
+    if(insert current AttrVal !=tsOK)
+    {
+      Message('Ошибка добавления внешнего атрибута!');
+    }
+  }
+}
+
+cmPick:
+{
+  var New_Dover : Comp;
+  New_Dover := AttrVal.cRec;
+  if (Message('Изменить доверенное лицо??'#13'Продолжить?', Confirmation + YesNo) <> cmYes)
+  {
+    Exit;
+  }
+  RunInterface('L_Dover::GetDover',2, New_Dover);
+  if(New_Dover != Comp(0))
+  {
+    delete current attrval;
+    ClearBuffer(#AttrVal);
+    attrval.wTable:=1138;
+    AttrVal.cRec:=New_Dover;
+    AttrVal.cAttrNam:=281474976734029;
+    AttrVal.vDouble:=1;
+    if(GetFirst dover1 where ((New_Dover==dover1.nrec)) = tsOK)
+    {
+      if(GetFirst DovFIO1 where((dover1.cdovfio == dovfio1.nrec)) = tsOK )
+      {
+        AttrVal.vString:=dovfio1.post + ' ' + dovfio1.name;
+      }
+    }
+    if(insert current AttrVal !=tsOK)
+    {
+      Message('Ошибка добавления внешнего атрибута!');
+    }
+  }
+}
+
+cmDelete:
+{
+  if (Message('Удалить доверенность на имя ' + DovFIO.Name +
+              ' из списка подписантов?'#13'Продолжить?', Confirmation + YesNo) <> cmYes)
+  {
+    Exit;
+  }
+  delete current attrval;
+}
+
+cmDone:
+{
+  NDov:=Dover.NoDoc;    // Номер доверенности
+  DDov:=DateToStr(Dover.DForm,'DD.MM.YYYY');    // Дата доверенности
+  FIO :=FamIO(DovFIO.Name);    // Фамилия И.О. подписанта
+  IOF :=IOFam(DovFIO.Name);    // И.О.Фамилия подписанта
+  Dolzhn := dovfio.post;      // Должность
+  FullName := AttrVal.vString; //Должность + ФИО в родительном падеже
+  Pers_NRec := DovFIO.cpersons;
+  SaveMyDsk(Attrval.NRec, 'Shilin_Podpis_NRec1');
+}
+
+cmCancel:
+{
+       CloseInterface(cmCancel);
+}
+
+end; // HandleEvent Window
+end. //Browse
+
+
+//End.

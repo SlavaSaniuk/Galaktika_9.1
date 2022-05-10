@@ -1,0 +1,100 @@
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+
+/*
+*  Для пакетного формирования ДО из договоров:
+* Управление договорами -> Пакетное формирование ДО -> ДО по договорам -> ДО на продажу
+*
+*/
+#make "Vip\OS_Vorotilov\get4OS.vip"
+#make "Vip\OS_Vorotilov\get4OS_kk.vip"
+#make "Vip\OS_Vorotilov\old_get4OS.vih"
+
+
+//#include C_EXTCLASS.vil
+//#include Z_Katpodr.vil
+//#include F_OS.vil
+// #include galaktika.vil
+
+//#include ExtAttr.vih
+
+
+//#make "d:\Galaxy\Viper_Project\FRM\RTF_TTN2009_600_TOVN_sdvig.frm"
+
+ //#make "d:\Galaxy\temp\Res910_MS\MS_PRINTINMOVNAK_2016.frm"
+
+//   #make "d:\Galaxy\Viper_Project\FRM\MS_PRINTINMOVNAK_2016.frm"
+ //#make "d:\Galaxy\Viper_Project\FRM\OS_Inv\DOPINV.prj"
+// #make "d:\Galaxy\Viper_Project\FRM\OS_Inv\91cnf\OSINV_1711_BARKOD.cnf"
+//#make "d:\Galaxy\Viper_Project\FRM\InvNomBRTPC.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\SpravkaKredM5.frm"
+
+!!Список сотрудников по алфавиту
+!!20.02.2017 начало
+!#include Predefs.inc
+!#include G_Com_EF.inc
+
+!#include ExcelFun.Inc
+
+!здесь описаны объекты
+!строковые функции
+!Функции для целевого учета
+!здесь описаны диалоги
+!#include c_common.vil
+!#include Z_Katpodr.vil
+!!#include z_staffcat.vil
+
+!!формы
+!#make "d:\Galaxy\Viper_Project\FRM\Alfavit_Spis_Sotr\T54form.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\Alfavit_Spis_Sotr\T54_ALFAVIT_T54FORM.rtf"
+!!20.02.2017 конец
+/*
+#include Predefs.inc
+
+!здесь описаны объекты
+!строковые функции
+!Функции для целевого учета
+!здесь описаны диалоги
+#include c_common.vil
+#include Z_Katpodr.vil
+!#include z_staffcat.vil
+ */
+!формы
+
+!#make "d:\Galaxy\Viper_Project\FRM\WEB_Klient_Bank\bank.dlg"
+!#make "d:\Galaxy\Viper_Project\FRM\WEB_Klient_Bank\reestr_zar.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\WEB_Klient_Bank\reestr_av.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\WEB_Klient_Bank\reestr_alim.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\WEB_Klient_Bank\reestr_ot.frm"
+
+
+!#make "d:\Galaxy\Viper_Project\FRM\AktSpecOsn_2017.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\PRINTINMOVNAK_09A.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\TEX_REP_01_MG_MUES5_2017.frm"
+!#make "d:\Galaxy\Viper_Project\FRM\Kartochka_учета_работы (МУЭС 5) для 2 баков_tex_rep_2017.rtf"
+!#make "d:\Galaxy\Viper_Project\FRM\VedIzn.frm"
+
+!#make "d:\Galaxy\Viper_Project\FRM\FORM_OS6_BEL_MET_RTF_FORMOS6_MS.rtf"
+!#make "d:\Galaxy\Viper_Project\FRM\OSVED_02BEL_EXCEL_OSOPIS_MS_1.slk"
+!#make "d:\Galaxy\Viper_Project\FRM\VidDogInterf.crf"
+#make "d:\Galaxy\Viper_Project\FRM\Новый_вид_договора\Vid_dogovora\*.*"
+#make "d:\Galaxy\Viper_Project\FRM\Новый_вид_договора\Specificac\*.*"
+#make "d:\Galaxy\Viper_Project\FRM\Новый_вид_договора\atributi_do\*.*"
+!#make "d:\Galaxy\Viper_Project\FRM\Новый_вид_договора\Vnesh_atributi_KatOS\*.*"
+!#make "d:\Galaxy\Viper_Project\FRM\Новый_вид_договора\Vnesh_atributi_KatPodr\*.*"
+
+
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Glob_fnc.nik\func.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Glob_fnc.nik\func_kv2.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Glob_fnc.nik\func_getbt.vip"
+
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Arenda.isa\VIP для расчетных услуг\VIP02.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Arenda.isa\VIP для расчетных услуг\VIP01.vip"
+
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Nezemnal_OS\Copy.Nezemnal.Koef3.dlg"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Nezemnal_OS\PickDogOS.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Nezemnal_OS\PickAttrKatOS.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Nezemnal_OS\Nezemnal_OS.vip"
+ #make "d:\Galaxy\Viper_Project\FRM\ARENDA_от_Виктории\Nezemnal_OS\OtchPol.vip"

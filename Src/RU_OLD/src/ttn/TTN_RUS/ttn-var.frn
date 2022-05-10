@@ -1,0 +1,19 @@
+.var
+!Общие суммы по документу
+  АСтНацСН,     АСТНац2,
+  CountPoz,     CountKolF,
+  MassaNetItog, MassaBrItog: double;
+!для СВЕДЕНИЙ О ГРУЗЕ
+  iNpp                 : word;
+  pClassDocOfGoods     : comp;
+  wClassCodeDocOfGoods : word;
+  sDocOfGoods          : string;
+  CodeGoods, ClassGoods: string;
+!автоматический расчет кол-ва грузовых мест
+  bAutoGrM: boolean;
+  KolGrM,
+  KolOneGrM: string;
+  KolGrM2,
+  EdGrM2: string;
+  ValSymb: string; //символ валюты
+.endvar

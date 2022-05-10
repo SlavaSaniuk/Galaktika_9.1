@@ -1,0 +1,45 @@
+!переменные для fast-отчетов
+.var
+  Define_TTN_2001f, Define_TTN_2009f, Define_Torg12_F : boolean;
+
+#ifdef _PROCNAC_
+  DocTuneNDS : boolean;
+#end
+
+  MCDopInfo, MCStrana : array [1..2] of string;
+
+  NalogNDS       : comp;
+  KatSoprVidSopr : word;
+  KatSoprVhodNal : word;
+!настройка для отчетов с внешним расчетом полей
+  isTTN_Fast     : boolean;
+.endvar
+
+
+.begin
+
+   Define_TTN_2001F := false;
+   Define_Torg12_F  := false;
+
+#ifdef _TTN_2001F_
+   Define_TTN_2001f := true;
+#end
+
+#ifdef _TTN_2009F_
+   Define_TTN_2009f := true;
+#end
+
+#ifdef _TORG_12F_
+   Define_Torg12_F  := true;
+#end
+
+#ifdef _PROCNAC_
+   DocTuneNDS := boGetTune('Doc.TuneNDS');
+#end
+
+   NalogNDS   := coGetTune('Nalog.cNalogNDS');
+   if wGetTune('Country') <> ccRus
+     isTTN_Fast := FALSE;
+   else
+   isTTN_Fast := boGetTune('Doc.FastReport');
+end.

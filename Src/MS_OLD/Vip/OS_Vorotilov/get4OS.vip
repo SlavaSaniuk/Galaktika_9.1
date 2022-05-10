@@ -1,0 +1,597 @@
+#include epSystem.vih
+
+////////////////////////////////////////////////////////////////////////////////
+
+handler with replace RegisterGlobTestFnc4 on extensionPoint epAppInit
+action
+{
+  RegisterGlobalIfc('NIK_GetOS_atr');
+  result := true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+vipInterface NIK_GetOS_atr;
+  static: function Get4OS_zdan( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+  static: function Get4OS_izn ( _cKatOS : comp ) : double;
+  static: function Get4OS_Nal ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+  static: function Get4OS_kk50( _sNalog : string; _pl : double; _Dat1 : date ) : double;
+  static: function Get4OS_NEDV_LGOTA ( _sNalog : string; _kat : string; _cMetod : comp; _Dat1 : date; _Dat2 : date; _w : word ) : double;
+  static: function Get4OS_N_OUT ( _sNalog : string; _cOS : comp; _Dat1 : date; _Dat2 : date ) : double;
+  static: function ArP_Nal ( _sNalog : string; _cOS : comp; _Dat1 : date; _w : word ) : double;
+  static: function ArKK_Nal( _sNalog : string; _Dat1 : date ) : double;
+end;
+
+////////////////////////////////////////////////////////////////////////////////
+
+interface NIK_GetOS_atr;
+
+var
+  newFile  : string;
+  last     : comp;
+  osalg    : double;
+  zn,dPL   : double;
+  s1,s2,s3 : double;
+
+  nRecOS   : comp;
+  cNastr   : comp;
+  sVidDog  : string;
+  sNalog   : string;
+  sKat     : string;
+  Dat1     : date;
+  Dat2     : date;
+  cUsl1    : comp;
+  cUsl2    : comp;
+  cUsl3    : comp;
+  cUsl4    : comp;
+  cUsl5    : comp;
+
+  bError   : boolean;
+
+create view
+as select  *
+
+from
+  AttrNam
+, AttrVal
+, AttrNam AttrNam2
+, AttrVal AttrVal2
+, Dogovor
+, KatVidD
+, KatUsl KatUsl1
+, KatUsl KatUsl2
+, KatUsl KatUsl3
+, KatUsl KatUsl4
+, KatUsl KatUsl5
+, KatOS
+, KatOS KatOS1
+, SpKatOS
+, SpMoveOS
+, MoveOS
+, Sposob
+, NezemNal
+, NezemNal NezemNal2
+, KatOS KatOS2
+, NezemNal NezemNal3
+, KatOS KatOS3
+, NezemNal NezemNal4
+, KatOS KatOS4
+, NezemNal NezemNal5
+, KatOS KatOS5
+, arciznos
+, NezemNal NezemNal6
+, NezemNal NezemNal7
+
+where
+((
+        coSpDocs         ==  AttrNam.wTable
+   and  'ОС'             ==  AttrNam.name
+
+   and  '000261'         ==  KatUsl1.kod
+   and  '000264'         ==  KatUsl2.kod
+   and  '000265'         ==  KatUsl3.kod
+   and  '000266'         ==  KatUsl4.kod
+   and  '000263'         ==  KatUsl5.kod
+
+!   and  sVidDog          ==  KatVidD.sName     (NoIndex)
+
+   and  AttrNam.nRec     ==  AttrVal.cAttrNam
+!   and  coSpDocs         ==  AttrVal.wTable    (NoIndex)
+   and  nRecOS           ==  AttrVal.vComp     (NoIndex)
+
+   and  AttrVal.cRec     ==  SpDocs.nRec
+   and  word(400)        ==  SpDocs.tidk       (NoIndex)
+   and ( dat2 >= SpDocs.dFrom and dat2 <= SpDocs.dTo )
+
+   and  SpDocs.cDoc      ==  Dogovor.nRec
+   and ( dat2 >= Dogovor.dBeg and dat1 <= Dogovor.dEnd )
+   and  Dogovor.cVidDog  ==  KatVidD.nRec
+
+   and  nRecOS           ==  KatOS.nRec
+
+   and  nRecOS           ==  SpKatOS.cKatOS
+   and  cNastr           ==  SpKatOS.cNastrOS
+   and (    comp(281474976710673) <> SpKatOS.cMetod
+         or comp(281474976710669) <> SpKatOS.cMetod )
+
+   and  word(3)          ==  SpMoveOS.SysOper
+   and  nRecOS           ==  SpMoveOS.cKatOS
+   and  cNastr           ==  SpMoveOS.cNastrOS
+
+   and  SpMoveOS.cMoveOS ==  MoveOS.nRec
+
+   and  sNalog           ==  NezemNal.param
+   and  nRecOS           ==  NezemNal.cOS
+   and  dat1             ==  NezemNal.DataN
+
+   and  NezemNal.cOS     ==  KatOS1.nRec
+
+   and  coKatOS                 ==  AttrNam2.wTable
+   and  'Общая площадь здания'  ==  AttrNam2.name
+
+   and  coKatOS          ==  AttrVal2.wTable
+   and  nRecOS           ==  AttrVal2.cRec
+   and  AttrNam2.nRec    ==  AttrVal2.cAttrNam
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal2.param
+   and  dat1             ==  NezemNal2.DataN
+   and  dPL              ==  NezemNal2.pl     (NoIndex)
+
+   and  NezemNal2.cOS    ==  KatOS2.nRec
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal3.param
+   and  dat1            <<=  NezemNal3.DataN
+   and  dat2            >>=  NezemNal3.DataN
+   and  sKat             ==  NezemNal3.kat     (NoIndex)
+   and  0                <<  NezemNal3.koef1   (NoIndex)
+
+   and  NezemNal3.cOS    ==  KatOS3.nRec
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal4.param
+   and  dat1            <<=  NezemNal4.DataN
+   and  dat2            >>=  NezemNal4.DataN
+
+   and  NezemNal4.cOS    ==  KatOS4.nRec
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal5.param
+   and  nRecOS           ==  NezemNal5.cOS
+   and  dat1            <<=  NezemNal5.DataN
+   and  dat2            >>=  NezemNal5.DataN
+
+   and  NezemNal5.cOS    ==  KatOS5.nRec
+   /////////////////////////////////////////////////////////
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal6.param
+   and  nRecOS           ==  NezemNal6.cOS
+   and  dat1             ==  NezemNal6.DataN
+
+   /////////////////////////////////////////////////////////
+   and  sNalog           ==  NezemNal7.param
+   and  dat1             ==  NezemNal7.DataN
+   and  -1               ==  NezemNal7.pl     (NoIndex)
+
+))
+;
+
+File f_log;
+
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_zdan ( _cKatOS : comp; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_zdan := 0;
+
+  nRecOS  := _cKatOS;
+  sVidDog := _sVidDog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  newFile := 'd:\out\Get4OS_zdan'+DateToStr(Cur_Date, 'DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_zdan');
+  f_log.WriteLn('');
+
+  if ( GetFirst AttrNam <> tsOk )
+   f_log.WriteLn('Не найден внешний атрибут "ОС" для SpDocs');
+  else
+  {
+    _loop AttrVal
+     if ( GetFirst SpDocs = tsOk )
+      if ( GetFirst Dogovor = tsOk and GetFirst KatVidD = tsOk and _sVidDog = KatVidD.sName ) // проверка договора на период и по виду договора
+      {
+         Get4OS_zdan := Get4OS_zdan + SpDocs.kol;
+
+         f_log.WriteLn(Dogovor.nRec);
+         f_log.WriteLn(SpDocs.kol);
+      }
+  }
+
+  f_log.WriteLn('');
+  f_log.WriteLn('итог: '+Get4OS_zdan );
+  f_log.close;
+}
+////////////////////////////////////////////////////////////////////////////////
+function Get4OS_izn ( _cKatOS : comp ) : double;
+{
+  Get4OS_izn := 0;
+
+  nRecOS  := _cKatOS;
+
+  cNastr  := comp(281474976710658); // МГТС
+
+  newFile := 'd:\out\Get4OS_izn_debug'+DateToStr(Cur_Date, 'DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_izn_debug');
+  f_log.WriteLn('');
+
+
+  if ( GetFirst SpKatOS = tsOk and GetFirst KatOS = tsOk )
+  {
+    ZN := SpKatOS.stoim;
+    osalg := SpKatOS.cMetod;
+
+    if ( (osalg = 281474976710673) or (osalg = 281474976710669) )
+    {
+      Get4OS_izn := 0;
+    }
+    else
+    {
+      Get4OS_izn := (GetBT('02',longint(KatOS.DatEk))/100-1);
+    }
+  }
+
+  f_log.WriteLn('ZN: '   +ZN);
+  f_log.WriteLn('osalg: '+osalg);
+  f_log.WriteLn('ZN: '   +Get4OS_izn);
+
+  f_log.close;
+}
+////////////////////////////////////////////////////////////////////////////////
+//  используется в ПАТ отчете 'Расчет 50% от суммы арендной платы'
+function Get4OS_Nal ( _sNalog : string; _sVidDog : string; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_Nal := 0; // в случае ошибки будем возвращать нуль
+
+  sVidDog := _sVidDog;
+  sNalog  := _sNalog;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  if ( GetFirst AttrNam <> tsOk )
+  {
+    message('Не найден внешний атрибут "ОС" для SpStep');
+    exit;
+  }
+
+/*
+  if ( GetFirst KatVidD <> tsOk )
+  {
+    message('Не найден вид договора');
+    exit;
+  }
+*/
+  if ( GetFirst AttrNam2 <> tsOk )
+  {
+    message('Не найден внешний атрибут "Общая площадь здания" для KatOS');
+    exit;
+  }
+
+  bError  := FALSE;
+
+  newFile := 'd:\out\Get4OS_nal'+DateToStr(Cur_Date, 'DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_Nal');
+  f_log.WriteLn('переданные параметры:');
+  f_log.WriteLn('_sNalog:' +_sNalog);
+  f_log.WriteLn('_sVidDog:'+_sVidDog);
+  f_log.WriteLn('_Dat1:'   +_Dat1);
+  f_log.WriteLn('_Dat2:'   +_Dat2);
+  f_log.WriteLn('');
+  f_log.WriteLn('лог расчета:');
+
+  if ( GetFirst Sposob where (( 'Сдаваемый в аренду' == Sposob.NameSB )) = tsOk )
+   _loop KatOS where (( word(15) == KatOS.tidk and Sposob.nRec == KatOS.cSposob(noindex) )) ordered by index KatOS22
+   {
+     nRecOS := KatOS.nRec;
+
+     s1 := s2 := s3 := 0;
+
+     _loop AttrVal
+      if ( GetFirst SpDocs = tsOk )
+       if ( GetFirst Dogovor = tsOk and GetFirst KatVidD = tsOk and _sVidDog = KatVidD.sName ) // проверка договора на период и по виду договора
+       {
+          s1 := s1 + SpDocs.kol;
+       }
+
+     if ( GetFirst AttrVal2 = tsOk )
+      s2 := AttrVal2.vDouble;
+
+     if ( GetFirst NezemNal = tsOk )
+      s3 := NezemNal.SumNal;
+
+     if ( s2 = 0 )
+     {
+       bError := TRUE;
+       f_log.WriteLn('bError: '+ bError);
+     }
+
+     Get4OS_Nal := Get4OS_Nal + (s1/s2)*s3;
+
+     f_log.WriteLn('KatOS                : '+KatOS.InNum+' '+KatOS.nameOS );
+     f_log.WriteLn('сдано в аренду м2    : '+ s1 );
+     f_log.WriteLn('общая площадь здания : '+ s2 );
+     f_log.WriteLn('сумма налога         : '+ s3 );
+
+   }
+
+  f_log.WriteLn('Get4OS_Nal'+Get4OS_Nal);
+
+  if bError
+   Get4OS_Nal := -1;
+
+  f_log.WriteLn('bError: '+bError);
+  f_log.close;
+}
+////////////////////////////////////////////////////////////////////////////////
+//  !используется в ПАТ отчете 'Расчет 50% по аренде канализации'
+function Get4OS_kk50 ( _sNalog : string; _pl : double; _Dat1 : date ) : double;
+{
+  Get4OS_kk50 := 0; // в случае ошибки будем возвращать нуль
+
+  sNalog  := _sNalog;
+  Dat1    := _Dat1;
+  dPL     := _pl;
+
+  newFile := 'd:\out\Get4OS_kk50_'+DateToStr(Cur_Date, 'DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_kk50');
+  f_log.WriteLn('переданные параметры:');
+  f_log.WriteLn('_sNalog:'+_sNalog);
+  f_log.WriteLn('_pl:'    +_pl);
+  f_log.WriteLn('_Dat1:'  +_Dat1);
+  f_log.WriteLn('');
+  f_log.WriteLn('лог расчета:');
+
+  _loop NezemNal2
+  {
+    Get4OS_kk50 := Get4OS_kk50 + NezemNal2.SumNal;
+
+    if ( GetFirst KatOS2 = tsOk )
+     f_log.WriteLn( NezemNal2.SumNal + ' KatOS: '+KatOS2.InNum+' '+KatOS2.nameOS );
+    else
+     f_log.WriteLn( NezemNal2.SumNal + ' KatOS: ОС не найдено' );
+  }
+
+  f_log.WriteLn('Get4OS_kk50: '+Get4OS_kk50);
+
+  f_log.close;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function Get4OS_NEDV_LGOTA ( _sNalog : string; _kat : string; _cMetod : comp; _Dat1 : date; _Dat2 : date; _w : word ) : double;
+!используется в ПАТ отчете 'Справка о размере льгот налога на недвижимость'
+{
+  Get4OS_NEDV_LGOTA := 0; // в случае ошибки будем возвращать нуль
+
+  // _w = 1 - получить налог
+  // _w = 2 - получить стоимость ОС
+
+  sNalog  := _sNalog;
+  dat1    := _Dat1;
+  dat2    := _Dat2;
+  sKat    := _kat;
+
+
+  newFile := 'd:\out\Get4OS_NEDV_LGOTA_'+_kat+'_'+_w+'_'+DateToStr(Cur_Date, '_DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_NEDV_LGOTA');
+  f_log.WriteLn('переданные параметры:');
+  f_log.WriteLn('_sNalog:'+_sNalog);
+  f_log.WriteLn('_kat:'   +_kat );
+  f_log.WriteLn('_Dat1:'  +_Dat1);
+  f_log.WriteLn('_Dat2:'  +_Dat2);
+  f_log.WriteLn('_w:'     +_w + if( _w = 1, ' - получить налог ', '')+ if( _w = 2, ' - получить стоимость ОС ', '')  );
+  f_log.WriteLn('');
+  f_log.WriteLn('лог расчета:');
+
+  // используем для поиска архива износа за предыдущий месяц (на последнюю дату)
+  _Dat1 := Sub_Months(_Dat1,1); //
+  _Dat1 := date( last_day(_Dat1), month(_Dat1), year(_Dat1) );
+
+  // _w = 1 - получить налог
+  if ( _w = 1 )
+   _loop NezemNal3
+   {
+     Get4OS_NEDV_LGOTA := Get4OS_NEDV_LGOTA + NezemNal3.SumVozm;
+
+     if ( GetFirst KatOS3 = tsOk )
+      f_log.WriteLn('налог на '+DateToStr(NezemNal3.DataN,'DD.MM.YYYY') + '=' + doubletostr(NezemNal3.SumVozm,'77777777777777777777777777777777.888888') + ' карточка  ОС: '+KatOS3.InNum+' '+KatOS3.nameOS );
+     else
+      f_log.WriteLn( DateToStr(NezemNal3.DataN,'DD.MM.YYYY') + ' KatOS: ОС не найдено' );
+   }
+
+  // _w = 2 - получить стоимость ОС
+  if ( _w = 2 )
+   _loop KatOS3 where (( word(15) == KatOS3.tidk ))
+   {
+     nRecOS := KatOS3.nRec;
+
+!        подцепка для неземнала
+
+     if ( GetFirst NezemNal3 where ((
+                                             sNalog   ==  NezemNal3.param
+                                        and  nRecOS   ==  NezemNal3.cOS
+                                        and  dat1    <<=  NezemNal3.DataN
+                                        and  dat2    >>=  NezemNal3.DataN
+                                        and  sKat     ==  NezemNal3.kat     (NoIndex)
+                                        and  0        <<  NezemNal3.koef1   (NoIndex)
+                                   )) = tsOk )
+     {
+       if ( GetFirst arciznos where (( KatOS3.nRec == arciznos.cKatOS and _cMetod == arciznos.cnastros and _Dat1 == arciznos.data )) = tsOk )
+       {
+          Get4OS_NEDV_LGOTA := Get4OS_NEDV_LGOTA + arciznos.stoim - arciznos.sumIzn - arciznos.SIZNM;
+          f_log.WriteLn( DateToStr(NezemNal3.DataN,'DD.MM.YYYY') + ' ' + (arciznos.stoim - arciznos.sumIzn - arciznos.SIZNM) + ' архив KatOS: '+KatOS3.InNum+' '+KatOS3.nameOS );
+       }
+       else
+        if ( getfirst SpKatOS where (( KatOS3.nRec == spkatos.ckatos and _cMetod == spkatos.cnastros )) = tsOk )
+        {
+          Get4OS_NEDV_LGOTA := Get4OS_NEDV_LGOTA + SpKatOS.stoim - SpKatOS.sumIzn - SpKatOS.SIZNM;
+          f_log.WriteLn('ост.стоим. на '+ DateToStr(NezemNal3.DataN,'DD.MM.YYYY') + ' ' + doubletostr((SpKatOS.stoim - SpKatOS.sumIzn - SpKatOS.SIZNM),'77777777777777777777777777777777.888888') + ' карточка ОС: '+KatOS3.InNum+' '+KatOS3.nameOS );
+        }
+     }
+   }
+
+
+  f_log.WriteLn('Get4OS_NEDV_LGOTA: '+Get4OS_NEDV_LGOTA);
+
+  f_log.close;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function Get4OS_N_OUT ( _sNalog : string; _cOS : comp; _Dat1 : date; _Dat2 : date ) : double;
+{
+  Get4OS_N_OUT := 0; // в случае ошибки будем возвращать нуль
+
+  // _w = 1 - получить налог
+  // _w = 2 - получить стоимость ОС
+
+  sNalog  := _sNalog;
+  nRecOS  := _cOS;
+  Dat1    := _Dat1;
+  Dat2    := _Dat2;
+
+  newFile := 'd:\out\Get4OS_N_OUT_'+DateToStr(Cur_Date, '_DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+
+  f_log.WriteLn('Get4OS_N_OUT');
+  f_log.WriteLn('переданные параметры:');
+  f_log.WriteLn('_sNalog:'+_sNalog);
+  f_log.WriteLn('_cOS:'   +_cOS );
+  f_log.WriteLn('_Dat1:'  +_Dat1);
+  f_log.WriteLn('_Dat2:'  +_Dat2);
+  f_log.WriteLn('');
+  f_log.WriteLn('лог расчета:');
+
+
+  if ( _cOS = -1 )
+  {
+    _loop NezemNal4
+    {
+      if ( GetFirst KatOS4 = tsOk )
+      {
+        Get4OS_N_OUT := Get4OS_N_OUT + NezemNal4.SumNal;
+        f_log.WriteLn( NezemNal4.SumNal + ' KatOS: '+KatOS4.InNum+' '+KatOS4.nameOS );
+      }
+      else
+      {
+        f_log.WriteLn( NezemNal4.SumNal + ' KatOS: ОС не найдено' );
+      }
+    }
+  }
+  else
+  {
+    _loop NezemNal5
+    {
+      if ( GetFirst KatOS5 = tsOk )
+      {
+        Get4OS_N_OUT := Get4OS_N_OUT + NezemNal5.SumNal;
+        f_log.WriteLn( NezemNal5.SumNal + ' KatOS: '+KatOS5.InNum+' '+KatOS5.nameOS );
+      }
+      else
+      {
+        f_log.WriteLn( NezemNal5.SumNal + ' KatOS: ОС не найдено' );
+      }
+    }
+  }
+
+  f_log.WriteLn('Get4OS_N_OUT: '+Get4OS_N_OUT);
+
+  f_log.close;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ф-ция для работы в расчетных услугах
+function ArP_Nal ( _sNalog : string; _cOS : comp; _Dat1 : date; _w : word ) : double;
+{
+  // _w = 1 - получить налог
+  // _w = 2 - получить стоимость налога без учета льготирования
+  // _w = 3 - получить PL
+  // _w = 4 - получить OSVPL
+  // _w = 5 - получить KADASTR
+  // _w = 5 - получить PROCENT
+
+  // _w = 11 - получить KOEF1
+  // _w = 12 - получить KOEF2
+  // _w = 13 - получить KOEF3
+  // _w = 14 - получить KOEF4
+  // _w = 15 - получить KOEF5
+
+  ArP_Nal := 0; // в случае ошибки будем возвращать нуль
+
+  sNalog  := _sNalog;
+  nRecOS  := _cOS;
+  Dat1    := _Dat1;
+
+  dat1 := date(1,month(dat1),year(dat1));
+
+  if ( GetFirst NezemNal6 = tsOk )
+    {
+         if ( _w = 1 ) ArP_Nal := NezemNal6.SumNal;
+         if ( _w = 2 ) ArP_Nal := NezemNal6.SumVozm;
+         if ( _w = 3 ) ArP_Nal := NezemNal6.PL     ;
+         if ( _w = 4 ) ArP_Nal := NezemNal6.OSVPL  ;
+         if ( _w = 5 ) ArP_Nal := NezemNal6.KADASTR;
+         if ( _w = 6 ) ArP_Nal := NezemNal6.PROCENT;
+
+
+
+         if ( _w = 11 ) ArP_Nal := NezemNal6.KOEF1;
+         if ( _w = 12 ) ArP_Nal := NezemNal6.KOEF2;
+         if ( _w = 13 ) ArP_Nal := NezemNal6.KOEF3;
+         if ( _w = 14 ) ArP_Nal := NezemNal6.KOEF4;
+         if ( _w = 15 ) ArP_Nal := NezemNal6.KOEF5;
+
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// ф-ция для работы в расчетных услугах
+function ArKK_Nal ( _sNalog : string; _Dat1 : date ) : double;
+{
+/*
+  newFile := 'd:\out\ArKK_Nal'+DateToStr(Cur_Date, 'DD_MM_YYYY_')+TimeToStr(Cur_Time, 'HH.MM.SS.SSS')+'.txt';
+  f_log.OpenFile(newFile, stCreate);
+  f_log.WriteLn('ArKK_Nal');
+  f_log.WriteLn('переданные параметры:');
+  f_log.WriteLn('_sNalog:'+_sNalog);
+  f_log.WriteLn('_Dat1:'  +_Dat1);
+  f_log.WriteLn('');
+  f_log.WriteLn('лог расчета:');
+*/
+
+  ArKK_Nal := 0; // в случае ошибки будем возвращать нуль
+
+  sNalog  := _sNalog;
+  Dat1    := _Dat1;
+
+  dat1 := date(1,month(dat1),year(dat1));
+
+  _loop NezemNal7
+  {
+    ArKK_Nal := ArKK_Nal + NezemNal7.SumNal;
+!    f_log.WriteLn(doubletostr(NezemNal7.SumNal,'77777777777777777777777777777777.888888')+'по инв: '+NezemNal7.OS_INV);
+  }
+!  f_log.WriteLn('Итого ArKK_Nal ='+ArKK_Nal);
+
+!  f_log.close;
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+end.

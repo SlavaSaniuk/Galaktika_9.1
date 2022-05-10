@@ -1,0 +1,79 @@
+#doc
+Интерфейс для изменения ограничения профпригодности по фактору сотрудника(Белтелеком)
+#end
+
+Interface iGetClose 'Параметры закрытия' Gray, DoAccept, EscClose;
+  Show at (, , 65, 8);
+
+var
+paramdatClose:date;
+paramwReason:word;
+ddateClose:date;
+wtipClose:word;
+
+Parameters
+ paramdatClose    //дата открытия/закрытия фактора
+,paramwReason     //причина закрытия/открытия
+;
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(ddateClose=date(0,0,0))
+    {
+      message('Для продолжения необходимо заполнить дату закрытия фактора!');
+      Exit;
+    }
+  if(wtipClose=0)
+    {
+      message('Для продолжения необходимо выбрать причину закрытия!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Screen scrPrintRep ('Параметры закрытия', ,);
+Fields
+  ddateClose         ('Дата закрытия фактора',,): NoProtect;
+  wtipClose          ('Причина закрытия фактора',,):
+  [LIST 0 ' ', 1 'Болезнь', 2 'Смена условий работы', 3 'Другая'],Protect, skip;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+      `Дата закрытия фактора:`  .@@@@@@@@@@@
+
+      `Причина закрытия:`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+            <. Установить .>  <.   ~О~тмена   .>
+
+>>
+end;
+
+
+Handleevent
+cmInit:
+{
+  ddateClose:=cur_date;
+
+  wtipClose:=1;
+}
+cmOK:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+ if(not CheckEmptyField)
+   {
+     Abort;
+   }
+ else
+   {
+     paramdatClose     := ddateClose;
+     paramwReason      := wtipClose;
+   }
+}
+end;
+End.

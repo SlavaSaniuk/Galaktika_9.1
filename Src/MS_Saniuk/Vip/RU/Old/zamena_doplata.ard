@@ -1,0 +1,12 @@
+.Form 'zamena_DOPLATA'
+.ard
+.Group 'Постоянные доплаты'
+.NameInList 'ЗAМЕНА % в постоянных ДОПЛАТАХ'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('zamena_DOPLATA');
+end.
+.endform

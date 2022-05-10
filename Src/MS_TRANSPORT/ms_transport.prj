@@ -1,0 +1,23 @@
+#statusline "statgal"
+
+//********************************
+// Модуль: Управление транспортом
+//********************************
+
+#include galnet.inc end;
+#include glovars.inc
+//#include C_EXTCLASS.vil
+//#include Z_Katpodr.vil
+//#include F_OS.vil
+//#include galaktika.vil
+//#include ExtAttr.vih
+
+// ********************************
+// *** Отчеты: Карточка работы автомобиля*
+//
+#make "Frm\tex-ekspl-pokaz\*.rtf"
+
+// *** Отчеты: Карточки учета расхода топлива
+#make "Frm\uchet_gsm\ms_transport_kartUcheRashToplWMotachasMS_rtf.rtf"
+#make "Frm\uchet_gsm\ms_transport_kartUchetVRazbAvto_rtf.rtf"
+#make "Frm\uchet_gsm\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf"

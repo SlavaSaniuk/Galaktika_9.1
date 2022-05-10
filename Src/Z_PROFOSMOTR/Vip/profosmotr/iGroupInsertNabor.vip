@@ -1,0 +1,137 @@
+#doc
+Интерфейс разноски набора по помеченным записям(Белтелеком)
+#end
+
+#include iCheckFactorRez.vih
+
+Interface iGroupInsertNabor 'Параметры разноски' Gray, DoAccept, EscClose;
+  Show at (, , 90, 10);
+
+var
+ddateOpen:date;
+sNabor:string;
+coNabor:comp;
+paramdatOpen:date;
+paramcoNrecNabor:comp;
+objCheckFactorRez: iCheckFactorRez new
+
+Parameters
+ paramdatOpen
+,paramcoNrecNabor
+;
+
+Function CheckEmptyField: boolean;
+{
+  CheckEmptyField:=false;
+  if(ddateOpen=date(0,0,0))
+    {
+      message('Для продолжения необходимо заполнить дату открытия фактора!');
+      Exit;
+    }
+  if(sNabor='Не выбран' or coNabor=0)
+    {
+      message('Для продолжения необходимо выбрать набор!');
+      Exit;
+    }
+  CheckEmptyField:=true;
+}
+
+Function GroupInsertNabor_Pick: boolean;
+var
+fcoNabor : comp;
+{
+   GroupInsertNabor_Pick:=false;
+
+   case CurField of
+     #sNabor:
+        {
+          sNabor   :='Не выбран';
+          coNabor  :=0;
+          if (RunInterface(iNaborFactClasPer,1,fcoNabor)=cmDefault)
+            {
+              sNabor:=objCheckFactorRez.StrValueNabor('Factor',fcoNabor)+'/'+objCheckFactorRez.StrValueNabor('Klass',fcoNabor)+'/'+objCheckFactorRez.StrValueNabor('Period',fcoNabor);
+              coNabor:=fcoNabor;
+            }
+        }
+   end;
+
+   ReReadRecord;
+
+   GroupInsertNabor_Pick:=true;
+}
+
+Function GroupInsertNabor_DelOnProtect: boolean;
+{
+  GroupInsertNabor_DelOnProtect:=false;
+
+  CASE (CurField) OF
+    #sNabor:
+      {
+        sNabor:= 'Не выбран';
+        coNabor:=0;
+      }
+   end;
+
+  ReReadRecord;
+
+  GroupInsertNabor_DelOnProtect:=true;
+}
+
+Screen scrPrintRep ('Параметры разноски', ,);
+Fields
+  ddateOpen         ('Дата открытия фактора',,): NoProtect;
+  sNabor            ('Набор', , sci13EnEsc) : protect;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+                                  `Дата открытия фактора:`  .@@@@@@@@@@@
+
+      `Набор фактора  :`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                      <. Запустить .>  <.   ~О~тмена   .>
+
+>>
+end;
+
+
+Handleevent
+cmInit:
+{
+  ddateOpen:=cur_date;
+  sNabor   :='Не выбран';
+  coNabor  :=0;
+}
+cmOK:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+ if(not CheckEmptyField)
+   {
+     Abort;
+   }
+ else
+   {
+     paramdatOpen     :=ddateOpen;
+     paramcoNrecNabor :=coNabor;
+   }
+}
+cmPick:
+{
+   if (not GroupInsertNabor_Pick)
+    {
+     Abort;
+    }
+}
+cmDelOnProtect:
+{
+   if (not GroupInsertNabor_DelOnProtect)
+    {
+     Abort;
+    }
+}
+end;
+End.

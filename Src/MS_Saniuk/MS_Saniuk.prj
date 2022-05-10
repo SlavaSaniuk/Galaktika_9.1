@@ -1,5 +1,10 @@
 #statusline "statgal"
 
+#include galnet.inc end;
+#include glovars.inc
+
+#include galaktika.vil
+
 /* ************************************************
  * *** Разные наработки Санюка В.В. ***************
  * ************************************************
@@ -9,3 +14,8 @@
  // ******************** Учет ПК ******************
  #make "Vip\Compreg\CompReg.vip"
  #make "Vip\Compreg\URepCompReg.vip"
+
+ // *******************************************************
+ // ** Отчет по исполнению договорных обязательств(MTC) ***
+#make "Vip\RepDogAll\RepDogAll.vip"
+#make "Vip\RepDogAll\UseRep.vip"

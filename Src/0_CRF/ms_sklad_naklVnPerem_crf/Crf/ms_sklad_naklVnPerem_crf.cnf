@@ -1,0 +1,272 @@
+object 'L_MCU::GETSOMEMC_KATMC' : InterfaceWindow {
+  Title = 'Выбор МЦ. (всего: 124436)';
+  EmbName = 'L_MCU::GETSOMEMC->';
+  object TRVPRKAT : TreeBrowser {
+    object 'c_TRVPRKAT_KATMC.BARKOD2' : TreeColumn {
+      Title = 'Дополнительный код';
+      HelpLine = 'Дополнительный код матценности';
+    } // c_TRVPRKAT_KATMC.BARKOD2 : TreeColumn
+    object 'c_TRVPRKAT_SALDOMCKOL_Наличие_по_виду' : TreeColumn {
+      Visible = False;
+    } // c_TRVPRKAT_SALDOMCKOL_Наличие_по_виду : TreeColumn
+    object 'c_TRVPRKAT_KATED.ABBR_УчЕд' : TreeColumn {
+      Visible = False;
+    } // c_TRVPRKAT_KATED.ABBR_УчЕд : TreeColumn
+  } // TRVPRKAT : TreeBrowser
+  object KATMCNAM : Browser {
+    ViewFlags = 6;
+    RowColorDark = 10;
+    VerDelimiterWidth = 1;
+    object 'c_KATMCNAM_KATMC.NAME_Наименование' : Column {
+      DefaultWidth = 16;
+    } // c_KATMCNAM_KATMC.NAME_Наименование : Column
+    object 'c_KATMCNAM_MCALTNAME_Альтернативное_наименование_МЦ' : Column {
+      Visible = False;
+    } // c_KATMCNAM_MCALTNAME_Альтернативное_наименование_МЦ : Column
+    object 'c_KATMCNAM_KATMC.BARKOD2' : Column {
+      Title = 'Дополнительный код';
+      HelpLine = 'Дополнительный код матценности';
+      DefaultWidth = 10;
+    } // c_KATMCNAM_KATMC.BARKOD2 : Column
+    object 'c_KATMCNAM_KATMC.OBOZN_Конструкт._обозначение' : Column {
+      Visible = False;
+    } // c_KATMCNAM_KATMC.OBOZN_Конструкт._обозначение : Column
+    object 'c_KATMCNAM_GROUPMC.NAME_Группа' : Column {
+      DefaultWidth = 6;
+    } // c_KATMCNAM_GROUPMC.NAME_Группа : Column
+    // Информация: объект "KAUREFFARRAY" типа Column не найден в базовой конфигурации!
+    object KAUREFFARRAY : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Вн. КАУ';
+      HelpLine = '';
+      FieldName = 'KAUREFFARRAY';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 7;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // KAUREFFARRAY : Column
+    // Информация: объект "'GetKauReffName('KATMC',katmc.nrec,10265)'" типа Column не найден в базовой конфигурации!
+    object 'GetKauReffName(''KATMC'',katmc.nrec,10265)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'ВЭД';
+      HelpLine = '';
+      FieldName = 'GetKauReffName(''KATMC'',katmc.nrec,10265)';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 8;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // GetKauReffName('KATMC',katmc.nrec,10265) : Column
+    // Информация: объект "'GetKauReffName('KATMC',katmc.nrec,10261)'" типа Column не найден в базовой конфигурации!
+    object 'GetKauReffName(''KATMC'',katmc.nrec,10261)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Импорт';
+      HelpLine = '';
+      FieldName = 'GetKauReffName(''KATMC'',katmc.nrec,10261)';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 9;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // GetKauReffName('KATMC',katmc.nrec,10261) : Column
+    object 'c_KATMCNAM_KATMC.KGROUPMC_Код_гр.' : Column {
+      Index = 10;
+    } // c_KATMCNAM_KATMC.KGROUPMC_Код_гр. : Column
+    object 'c_KATMCNAM_TEKMCKA_Наличие' : Column {
+      Index = 11;
+    } // c_KATMCNAM_TEKMCKA_Наличие : Column
+    object 'c_KATMCNAM_SALDOMCKOL_Наличие_по_виду' : Column {
+      Visible = False;
+      Index = 12;
+    } // c_KATMCNAM_SALDOMCKOL_Наличие_по_виду : Column
+    object 'c_KATMCNAM_KATED.ABBR_УчЕд' : Column {
+      Visible = False;
+      Index = 13;
+    } // c_KATMCNAM_KATED.ABBR_УчЕд : Column
+    object 'c_KATMCNAM_KATOTPED.ABBR_Активная_EдИзм' : Column {
+      Index = 14;
+    } // c_KATMCNAM_KATOTPED.ABBR_Активная_EдИзм : Column
+    object 'c_KATMCNAM_GRNAL.NAME_Группа_налогов' : Column {
+      Index = 15;
+    } // c_KATMCNAM_GRNAL.NAME_Группа_налогов : Column
+    object 'c_KATMCNAM_ISARHIV_А' : Column {
+      Index = 16;
+    } // c_KATMCNAM_ISARHIV_А : Column
+    object 'c_KATMCNAM_DRAGMETKOL_ДМ' : Column {
+      Index = 17;
+    } // c_KATMCNAM_DRAGMETKOL_ДМ : Column
+  } // KATMCNAM : Browser
+  object KATMCNAMN : Browser {
+    object 'c_KATMCNAMN_MCALTNAME_Альтернативное_наименование_МЦ' : Column {
+      Visible = False;
+    } // c_KATMCNAMN_MCALTNAME_Альтернативное_наименование_МЦ : Column
+    object 'c_KATMCNAMN_KATMC.BARKOD2' : Column {
+      Title = 'Дополнительный код';
+      HelpLine = 'Дополнительный код матценности';
+    } // c_KATMCNAMN_KATMC.BARKOD2 : Column
+    object 'c_KATMCNAMN_KATMC.OBOZN_Конструкт._обозначение' : Column {
+      Visible = False;
+    } // c_KATMCNAMN_KATMC.OBOZN_Конструкт._обозначение : Column
+    object 'c_KATMCNAMN_SALDOMCKOL_Наличие_по_виду' : Column {
+      Visible = False;
+    } // c_KATMCNAMN_SALDOMCKOL_Наличие_по_виду : Column
+    object 'c_KATMCNAMN_KATED.ABBR_УчЕд' : Column {
+      Visible = False;
+    } // c_KATMCNAMN_KATED.ABBR_УчЕд : Column
+  } // KATMCNAMN : Browser
+  object WNALLPICK : InterfaceWindow {
+    object M_KATMCNAM : Browser {
+      object 'c_M_KATMCNAM_M_TMPGTSU.KOD2' : Column {
+        Title = 'Дополнительный код';
+        HelpLine = 'Дополнительный код матценности';
+      } // c_M_KATMCNAM_M_TMPGTSU.KOD2 : Column
+      object 'c_M_KATMCNAM_M_KATMC.OBOZN_Конструкт.обозначение' : Column {
+        Visible = False;
+      } // c_M_KATMCNAM_M_KATMC.OBOZN_Конструкт.обозначение : Column
+    } // M_KATMCNAM : Browser
+  } // WNALLPICK : InterfaceWindow
+  object WINGETPICKKOL : InterfaceWindow {
+    object SCRGETPICKKOL1 : Screen {
+      object i_SCRGETPICKKOL1_SBARKOD2 : PanelInputLine {
+        HelpLine = 'Дополнительный код матценности';
+      } // i_SCRGETPICKKOL1_SBARKOD2 : PanelInputLine
+      object 'i_SCRGETPICKKOL1_KATMC.BARKOD2' : PanelInputLine {
+        HelpLine = 'Дополнительный код матценности';
+      } // i_SCRGETPICKKOL1_KATMC.BARKOD2 : PanelInputLine
+    } // SCRGETPICKKOL1 : Screen
+  } // WINGETPICKKOL : InterfaceWindow
+} // L_MCU::GETSOMEMC_KATMC : InterfaceWindow
+//-----------------------------------------------------------------------------

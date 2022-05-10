@@ -1,0 +1,145 @@
+table struct tmpDog
+(
+   coDog           : comp
+  ,svidDog         : string
+  ,sstatus         : string
+  ,scontr          : string
+  ,sname           : string
+  ,ddate           : date
+  ,sval            : string
+  ,dosumPlan       : double
+  ,dosumPlanrep    : double
+  ,snameBudj       : string
+  ,dosumBudj       : double
+  ,dosumBudjrep    : double
+  ,sOtv            : string
+)
+with index
+(
+   tmpDog02=svidDog+scontr+ddate
+);
+
+table struct tmpTPKP
+(
+   wTip            : word               //0-товарные, 1-авансовые
+  ,wtipIspoln      : word               // подтип товарных, 0- товарные с периодом, 1-товарные исполнение которых зависит от исполнения финансовых
+  ,coDog           : comp
+  ,coCALPLAN       : comp
+  ,coCALPLANfin    : comp               //предшествующий авансовый ФПКП
+  ,sname           : string
+  ,ddate           : date
+  ,dosumPlan       : double
+  ,dosumPlanrep    : double
+  ,dosumBudj       : double
+  ,dosumBudjrep    : double
+  ,dsrok           : date
+  ,scodCalendTPKP  : string
+  ,kolDn           : double
+  ,sDopField       : string
+)
+with index
+(
+   tmpTPKP01=wTip+coDog,
+   tmpTPKP02=wTip+wtipIspoln,
+   tmpTPKP03=coCALPLAN
+);
+
+table struct tmpDO
+(
+   wTip            : word                //0-с ссылкой на товарные, 2 без ссылки
+  ,coDog           : comp
+  ,coCALPLAN       : comp
+  ,coBasedoc       : comp
+  ,coStepdoc       : comp
+  ,sname           : string
+  ,ddate           : date
+  ,ddatePodpis     : date
+  ,dosumBudj       : double
+  ,dosumBudjrep    : double
+  ,dosumFact       : double
+  ,dosumFactrep    : double
+  ,dosumAvans      : double
+  ,dosumAvansrep   : double
+  ,wprovodki       : word
+)
+with index
+(
+   tmpDO01=wtip+coDog+coCALPLAN+ddate
+);
+
+table struct tmpFPKP         //условия по фактическим ФПКП
+(
+   dokoldnFact         : double
+  ,sDopField           : string
+  ,coDog               : comp
+  ,coCALPLAN           : comp
+  ,coCALPLANfin        : comp
+  ,coBasedoc           : comp
+  ,dDatPlan            : date
+  ,dosumPlan           : double
+  ,dosumPlanrep        : double
+  ,doProsr             : double
+  ,doproc              : double
+  ,scodCalendFPKP      : string
+  ,sNomer              : string
+)
+with index
+(
+   tmpFPKP02=coBasedoc+sNomer
+);
+table struct tmpPlat
+(
+   wtip                : word      //0-платежи по авансовым ФПКП, 1- платежи по фактическим ФПКП, 2- платежи с неопределенным ФПКП, 3- платежи не распределенные
+  ,coDog               : comp
+  ,coCALPLAN           : comp
+  ,coCALPLANfin        : comp
+  ,coBasedoc           : comp
+  ,coBasefin           : comp
+  ,sName               : string
+  ,sIstok              : string
+  ,dDate               : date
+  ,dosumFact           : double
+  ,dosumFactrep        : double
+  ,sPrim               : string
+  ,insertTrue          : word
+  ,dDatOB              : date
+)
+with index
+(
+   tmpPlat01=wtip+coBasedoc+coCALPLANfin,
+   tmpPlat02=coDog+insertTrue,
+   tmpPlat03=wtip+coCALPLANfin,
+   tmpPlat04=wtip+coBasedoc+insertTrue,
+   tmpPlat05=coDog+coBasedoc+wtip,
+   tmpPlat06=coCALPLANfin+dDate
+);
+table struct tmpGroupVid      //для группировки по видам
+(
+  svidDog : string
+)
+with index
+(
+   tmpGroupVid01=svidDog
+);
+table struct tmpGroupOrg    //для группировки по организациям
+(
+   svidDog: string
+  ,scontr : string
+)
+with index
+(
+   tmpGroupOrg01=svidDog+scontr
+);
+
+table struct tmpNakl    // для сверки
+(
+   NrecSopr     : comp
+  ,NomerDatSopr : string
+  ,summa        : double
+  ,DoTrue       : word
+)
+with index
+(
+   tmpNakl01=NrecSopr,
+   tmpNakl03=DoTrue
+);

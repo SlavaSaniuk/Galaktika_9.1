@@ -1,0 +1,339 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.1
+// Словарь базы данных - типы пользователя
+//********************************************************************************
+
+Set type
+(
+  tNRec            = Comp,
+  tDesGr           = String [4],
+  tDescr           = String [20],
+  tBarKod          = String [30],
+  tNomLSch         = String [35],
+  tSumma           = Decimal(24,8),               // Число с фиксированной точкой
+  tName            = String [80],
+  tNpp             = Word,
+  s1               = String [1],
+  s2               = String [2],
+  s3               = String [3],
+  s4               = String [4],
+  s5               = String [5],
+  s6               = String [6],
+  s8               = String [8],
+  s9               = String [9],
+  s10              = String [10],
+  s12              = String [12],
+  s13              = String [13],
+  s15              = String [15],
+  s16              = String [16],
+  s17              = String [17],
+  s19              = String [19],
+  s20              = String [20],
+  s23              = String [23],
+  s24              = String [24],
+  s25              = String [25],
+  s26              = String [26],
+  s29              = String [29],
+  s30              = String [30],
+  s31              = String [31],
+  s32              = String [32],
+  s34              = String [34],
+  s35              = String [35],
+  s36              = String [36],
+  s40              = String [40],
+  s41              = String [41],
+  s44              = String [44],
+  s45              = String [45],
+  s48              = String [48],
+  s50              = String [50],
+  s59              = String [59],
+  s60              = String [60],
+  s63              = String [63],
+  s70              = String [70],
+  s76              = String [76],
+  s78              = String [78],
+  s80              = String [80],
+  s100             = String [100],
+  s120             = String [120],
+  s128             = String [128],
+  s150             = String [150],
+  s160             = String [160],
+  s180             = String [180],
+  s200             = String [200],
+  s240             = String [240],
+  s250             = String [250],
+  s252             = String [252],
+// начало типов из ББ
+  tNamePl          = String [100],                // Наименование платежа для PLPOR !!!
+  tSodPr           = String [80],                 // Содержание проводки для OBOROT !!!
+  tNameOper        = String [200],                // Наименование операции
+  tKodOrg          = String [10],                 // Код организации
+  tNameOrg         = String [150],                // Наименование организации
+  tSch20           = String [20],                 // Счет плательщика
+  tKodBank         = String [20],                 // Код банка
+  tBankName        = String [120],                // Наименование банка
+  tNoDoc           = String [20],                 // Номер документа
+  tNoDok           = String [20],                 // Номер документа
+  tSchet3          = String [21],                 // Счет
+  tAuxOper         = Array [1..3] of s250,        // доп.информация о содержании операции
+  tSchet19         = String [20],                 // Счет
+  tSubSch          = String [21],                 // Субсчет
+  tSchCode         = String [42],                 // SizeOf(tSchet3)-1{код плана}+1{точка}+SizeOf(tS
+  tKodKAU          = Comp,                        // код КАУ
+  tKAUstr          = String [20],                 // КАУ (пользовательские КАУ)
+  tNamKau          = String [50],                 // Наименование КАУ
+  tKey             = String [40],                 // Ключ формулы
+  tExpr            = String,                      // Формулa
+  tKodPlat         = String [20],                 // код платежа
+  tKodOper         = String [15],                 // код платежа
+  tOutSumBuh       = Array [1..6] of tSumma,      // итоговые суммы по ведомости
+  tTabKau          = Array [1..6] of Word,        // привязанные таблицы для КАУ
+  tGetKau          = Array [1..6] of tKodKAU,     // привязанные к записи коды КАУ
+  tKeyKAU          = String [35],                 // длина ключа для сортировки КАУ
+  tFullKeyKau      = Array [1..6] of tKeyKAU,     // ключ для сортировки в отчетах
+  tFullNameKau     = Array [1..6] of tName,       // имена КАУ для аналит.отчетов
+  tOrdKau          = Array [1..6] of Longint,     // Порядок значения аналитики из таблицы сортировок
+  tForSort         = String [30],                 // Надо размер:
+                                                 // 1/2(tNoDok) + 1/2(tSchet3) + 1/2(tSubSch)
+                                                 // конец типов из ББ
+
+// типы зарплаты
+  tZarSchet        = String [19],
+  tZarSbSch        = String [20],
+  tEndInt          = tSumma,
+  tProc            = tSumma,                      // Процент
+  tTabN            = LongInt,
+  tTabN_x11        = Array [1..11] of tTabN,
+  tVidOpl          = LongInt,                     // Код  вида  оплаты
+  tParam           = String [20],                 // Параметр ТХО
+  tCex             = Comp,                        // Код подразделения
+  tCex_x11         = Array [1..11] of tCex,
+  tDoubleArray     = Array [1..255] of Double,
+  tDoubleAr1       = Array [1..250] of Double,
+  tVedArray        = Array [1..65] of Double,
+  DayT             = Array [1..31] of Word,       // Часы, минуты по дням
+  DayTb            = Array [1..31] of byte,       // Часы, минуты по дням
+  DayTd            = Array [1..31] of Double,     // Часы,минуты по дням
+  DayTs            = Array [1..31] of s2,         // Часы,минуты по дням
+  VHOPLT           = Array [1..41] of s1,         // Входим1 в подох.нал
+                                                 // Резерв2 в доп.налог
+                                                 // Входим3 в исч.выслу.
+                                                 // Входим4 в исч.север.
+                                                 // Входим5 в исч.профс.
+                                                 // Входим6 в исч.алимен
+                                                 // Входим7 в пост.удер.
+                                                 // Входим8 в исч.индек.
+                                                 // Входим9 в ср.по нетр
+                                                 // Входи10 в вр.по нетр
+                                                 // Входи11 в расчет1/12
+                                                 // -ходи12 в вр.по 1/12
+                                                 // Входи13 в общий ср.з
+                                                 // Входи14 в вр.поОб.ср
+                                                 // Входи15 в ср.из ФЗП
+                                                 // Входи16 в ср.из ФМП
+                                                 // Резер17 в коэф.белор
+                                                 // -ходи18 в ср.за год
+                                                 // Входи19 в исч.рай.к.
+                                                 // Резер20
+                                                 // Резер21
+                                                 // Резер22
+                                                 // Резер23
+                                                 // Резер24
+                                                 // Резер25
+                                                 // Резер26
+                                                 // Резер27
+                                                 // Входи28 в пенс.фонд
+                                                 // Входи29 в алгоритм34
+                                                 // Входи30 в алгоритм35
+                                                 // Входи31 в алгоритм36
+                                                 // Входи32 в алгоритм37
+                                                 // Входи33 в алгоритм38
+                                                 // Входи34 в алгоритм39
+                                                 // Входи35 в алгоритм40
+                                                 // Входи36 в алгоритм41
+                                                 // Входи37 в алгоритм42
+                                                 // Входи38 в алгоритм43
+                                                 // Входи39 в алгоритм44
+                                                 // Входи40 в алгоритм45
+                                                 // Входи41 в алгоритм46
+  ArMET            = Array [1..12] of s1,         // Январь
+                                                 // Февраль
+                                                 // Март
+                                                 // Апрель
+                                                 // Май
+                                                 // Июнь
+                                                 // Июль
+                                                 // Август
+                                                 // Сентябрь
+                                                 // Октябрь
+                                                 // Ноябрь
+                                                 // Декабрь
+  FZPT             = Array [1..12] of Double,     // Январь  ФЗП-Сумма
+                                                 // Февраль ФЗП-Сумма
+                                                 // Март    ФЗП-Сумма
+                                                 // Апрель  ФЗП-Сумма
+                                                 // Май     ФЗП-Сумма
+                                                 // Июнь    ФЗП-Сумма
+                                                 // Июль    ФЗП-Сумма
+                                                 // Август  ФЗП-Сумма
+                                                 // СентябрьФЗП-Сумма
+                                                 // Октябрь ФЗП-Сумма
+                                                 // Ноябрь  ФЗП-Сумма
+                                                 // Декабрь ФЗП-Сумма
+  FMPT             = Array [1..12] of Double,     // Январь  ФМП-Сумма
+                                                 // Февраль ФМП-Сумма
+                                                 // Март    ФМП-Сумма
+                                                 // Апрель  ФМП-Сумма
+                                                 // Май     ФМП-Сумма
+                                                 // Июнь    ФМП-Сумма
+                                                 // Июль    ФМП-Сумма
+                                                 // Август  ФМП-Сумма
+                                                 // СентябрьФМП-Сумма
+                                                 // Октябрь ФМП-Сумма
+                                                 // Ноябрь  ФМП-Сумма
+                                                 // Декабрь ФМП-Сумма
+  TTabDop          = Array [1..10] of tTabN,      // Дополнительные таб.номера
+  TCexDop          = Array [1..10] of Comp,       // Дополнительные подразделения
+  TAppDop          = Array [1..10] of Comp,       // Дополнительные должности
+
+// типа графики
+  tWorks           = Array [1..7] of Comp,
+
+// клиент типы
+  tMDSotr          = String [6],                  // дескриптор сотрудника,
+                                                 // работающего с системой Клиенты
+// массивы вида array [1..n]
+  Boolean_x05      = Array [1..5] of Boolean,
+
+  Byte_x03         = Array [1..3] of Byte,
+  Byte_x31         = Array [1..31] of Byte,
+
+  Char_09          = Array [1..9] of Char,
+  Char_x12         = Array [1..12] of Char,
+
+  Date_x03         = Array [1..3] of Date,
+  Date_x05         = Array [1..5] of Date,
+  Date_x06         = Array [1..6] of Date,
+  Date_x07         = Array [1..7] of Date,
+  Date_x10         = Array [1..10] of Date,
+  Date_x12         = Array [1..12] of Date,
+  Date_x20         = Array [1..20] of Date,
+
+  Double_x02       = Array [1..2] of tSumma,
+  Double_x04       = Array [1..4] of tSumma,
+  Double_x05       = Array [1..5] of tSumma,
+  Double_x06       = Array [1..6] of tSumma,
+  Double_x07       = Array [1..7] of tSumma,
+  Double_x08       = Array [1..8] of tSumma,
+  Double_x10       = Array [1..10] of tSumma,
+  Double_x12       = Array [1..12] of tSumma,
+  Double_x20       = Array [1..20] of tSumma,
+  Double_x24       = Array [1..24] of tSumma,
+  Double_x30       = Array [1..30] of tSumma,
+  Double_x31       = Array [1..31] of tSumma,
+  Double_x40       = Array [1..40] of tSumma,
+  Double_x50       = Array [1..50] of tSumma,
+  Double_x60       = Array [1..60] of tSumma,
+  Double_x62       = Array [1..62] of tSumma,
+
+  Longint_x03      = Array [1..3] of Longint,
+  Longint_x05      = Array [1..5] of Longint,
+  Longint_x10      = Array [1..10] of Longint,
+  Longint_x20      = Array [1..20] of Longint,
+  Longint_x30      = Array [1..30] of Longint,
+
+  Single_x31       = Array [1..31] of Single,
+
+  Time_x06         = Array [1..6] of Time,
+
+  Word_x03         = Array [1..3] of Word,
+  Word_x05         = Array [1..5] of Word,
+  Word_x06         = Array [1..6] of Word,
+  Word_x10         = Array [1..10] of Word,
+  Word_x12         = Array [1..12] of Word,
+  Word_x20         = Array [1..20] of Word,
+  Word_x30         = Array [1..30] of Word,
+  Word_x31         = Array [1..31] of Word,
+  Word_x40         = Array [1..40] of Word,
+  Word_x50         = Array [1..50] of Word,
+  s1_x10           = Array [1..10] of s1,
+  s4_x31           = Array [1..31] of s4,
+  s5_x10           = Array [1..10] of s5,
+  s5_x31           = Array [1..31] of s5,
+  s10_x07          = Array [1..7] of s10,
+  s10_x20          = Array [1..20] of s10,
+  s10_x31          = Array [1..31] of s10,
+  s12_x06          = Array [1..6] of s12,
+  s12_x07          = Array [1..7] of s12,
+  s15_x05          = Array [1..5] of s15,
+  s20_x05          = Array [1..5] of s20,
+  s20_x10          = Array [1..10] of s20,
+  s20_x20          = Array [1..20] of s20,
+  s20_x30          = Array [1..30] of s20,
+  s20_x40          = Array [1..40] of s20,
+  s25_x20          = Array [1..20] of s25,
+  s34_x50          = Array [1..50] of s34,
+  s40_x20          = Array [1..20] of s40,
+  s48_x24          = Array [1..24] of s48,
+  s50_x05          = Array [1..5] of s50,
+  s60_x10          = Array [1..10] of s60,
+  s60_x30          = Array [1..30] of s60,
+  s80_x03          = Array [1..3] of s80,
+  s80_x05          = Array [1..5] of s80,
+  s80_x06          = Array [1..6] of s80,
+  String_x05       = Array [1..5] of String,
+  tExpr_05         = Array [1..5] of tExpr,
+  tName_x03        = Array [1..3] of tName,
+  tName_x05        = Array [1..5] of tName,
+  tName_x10        = Array [1..10] of tName,
+  tName_x20        = Array [1..20] of tName,
+  tNrec_x02        = Array [1..2] of tNrec,
+  tNrec_x03        = Array [1..3] of tNrec,
+  tNrec_x05        = Array [1..5] of tNrec,
+  tNrec_x06        = Array [1..6] of tNrec,
+  tNrec_x09        = Array [1..9] of tNrec,
+  tNrec_x10        = Array [1..10] of tNrec,
+  tNrec_x11        = Array [1..11] of tNrec,
+  tNrec_x12        = Array [1..12] of tNrec,
+  tNrec_x16        = Array [1..16] of tNrec,
+  tNrec_x20        = Array [1..20] of tNrec,
+  tNrec_x30        = Array [1..30] of tNrec,
+  tNrec_x31        = Array [1..31] of tNrec,
+  tNrec_x40        = Array [1..40] of tNrec,
+  tNrec_x50        = Array [1..50] of tNrec,
+  tSumma_x02       = Array [1..2] of tSumma,
+  tSumma_x03       = Array [1..3] of tSumma,
+  tSumma_x05       = Array [1..5] of tSumma,
+  tSumma_x10       = Array [1..10] of tSumma,
+  tSumma_x13       = Array [1..13] of tSumma,
+  tSumma_x15       = Array [1..15] of tSumma,
+  tSumma_x18       = Array [1..18] of tSumma,
+  tSumma_x20       = Array [1..20] of tSumma,
+  tSumma_x30       = Array [1..30] of tSumma,
+  tSumma_x50       = Array [1..50] of tSumma,
+  tSumma_x60       = Array [1..60] of tSumma,
+  s60_x20          = Array [1..20] of s60,
+  ch150            = Array [1..2] of Word,        // служебный
+  ch150_x10        = Array [0..9] of Word,        // служебный
+  tNameOrgSh       = String [120],                // сокращенное наименование организации
+  s245             = string[245],
+  s40_x10          = Array [1..10] of s40,
+  s8_x10           = Array [1..10] of s8,
+  String_x10       = Array [1..10] of String,
+  s255             = string[255],
+  tNrec_x60        = Array [1..60] of tNrec,
+  Word_x60         = Array [1..60] of Word,
+  tNameMC          = String [250],                // наименование МЦ
+  _DateTime_x05    = Array [1..5] of _DateTime,
+  Word_x09         = Array [1..9] of Word,
+  s220             = String[220],
+  tDocNumber       = String[40],                  // номер документа
+  tAddrName        = String [250],                // адрес
+  TabnStr          = String [20],                 // строковое значение табельного номера
+  tSumma_x17       = Array [1..17] of tSumma,
+  tSumma_x12       = Array [1..12] of tSumma,
+  tSumma_x24       = Array [1..24] of tSumma,
+  tSumma_x04       = Array [1..4] of tSumma,
+  tSumma_x25       = Array [1..25] of tSumma
+);

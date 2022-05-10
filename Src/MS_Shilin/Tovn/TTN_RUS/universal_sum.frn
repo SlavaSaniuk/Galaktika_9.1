@@ -1,0 +1,19 @@
+!―®¤αη¥β αγ¬¬ ―® αβΰ ­¨ζ¥ ¨ ¨β®£®Άλε αγ¬¬
+.begin
+#ifdef _IN_VAL_DOC_
+  ‘β„‘ ζ := ‘β„‘ ª;
+  ‘β ζ  := ‘β ª;
+  ‘β ζ‘  := ‘β ª‘;
+#else
+  ‘β„‘ ζ := ‘β„‘ ζ0;
+  ‘β ζ  := ‘β ζ0;
+  ‘β ζ‘  := ‘β ζ‘0;
+#end
+
+  inc(Nom);
+
+  Sum1Itog := Sum1Itog + ‘β ζ;
+  Sum2Itog := Sum2Itog + ‘β„‘ ζ;
+  Sum3Itog := Sum3Itog + ‘β ζ‘;
+
+end.

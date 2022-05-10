@@ -1,0 +1,72 @@
+/*
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                     (c) 1994,2002 корпорация ГАЛАКТИКА                    ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Общая функциональность                                    ║
+ ║ Версия        : 5.8                                                       ║
+ ║ Назначение    : Функции для работы с внешними атрибутами и                ║
+ ║	 					 классификаторами документов                               ║
+ ║ Ответственный : Пстыга Михаил Васильевич                                  ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+  Параметры:
+    __wTable     - co-код Таблицы
+    _cRec        - ссылка на запись в таблице
+    _NeedMessage - выдавать сообщение об ошибке
+
+  Могут пригодиться:
+    aAttrCm.vpp - обработка событий cmPickAttr, cmPickClass
+    aAttrMn.vpp - пункты локального меню
+*/
+
+
+#ifndef _ExtAttr_Func
+  #include ExtAttr.vih
+#end
+
+#ifndef _ExtClass_Func
+  #include ExtClass.vih
+#end
+
+#ifndef _ExtAttrClass_Func
+#define _ExtAttrClass_Func
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+ObjInterface objExtAttrClass;
+
+!------------------------------------------------------------------------------
+!   Набор функций для удаления, перемещения и копирования вн. атрибутов и класификации при соответствующей операции в таблице
+
+//  копирование 
+ Function CopyAll (_wTableFrom: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+//  копирование в другую таблицу
+ Function CopyAllEx (_wTableFrom: word; _cRecFrom: comp; _wTableTo: word; _cRecTo: comp): boolean;
+
+// удаление всех значений (при удалении записи в таблице)
+ Function DeleteAll (_wTable: word; _cRec: comp) : boolean;
+
+// перенос от старой записи к новой (откуда-куда)
+ Function MoveAll (_wTable: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+
+
+!------------------------------------------------------------------------------
+!   Набор функций для показа ошибки
+
+ // Установить требование автоматического выдачи сообщения при ошибке; Возвращает предыдущее значение
+  Function SetNeedMessage ( _NeedMessage : boolean ) : boolean;
+ // Выдать сообщение об ошибке
+  Procedure ShowError (_err : word);      // ShowError(LastError) - выдаст последнюю ошибку  
+ // получить номер последней ошибки
+  Function LastError : word ;
+
+End;
+
+VipInterface iExtAttrClass implements objExtAttrClass
+#ifdef ATL51     
+  licensed (FREE)    
+#end     
+;
+
+#end

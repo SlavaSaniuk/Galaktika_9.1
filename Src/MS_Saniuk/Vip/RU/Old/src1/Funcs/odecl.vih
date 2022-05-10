@@ -1,0 +1,103 @@
+ /*
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                                 корпорация ГАЛАКТИКА                      ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Управление персоналом                                     ║
+ ║ Версия        : 5.85                                                      ║
+ ║ Назначение    :  Объектный интерфейс для склонения фамилий                ║
+ ║ Ответственный : Артамонов Дмитрий Сергеевич                               ║
+ ║ 19 августа 2003 г.                                                        ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+*/
+#ifdef ComponentVersion
+#component "z_Staff"
+#end
+
+#doc
+Объектный интерфейс для склонения фамилий
+#end
+objinterface odeclension;
+
+#doc
+Склонение фамилии или ее части</brief>
+NCase- падеж /2- 6/
+NPart- часть фамилии 1- первая или фамилия целиком; 2- вторая часть
+gender- 0- род определен программой 1- женский 2- мужской
+#end
+function SurNameDeclension(LName: string; gender: word; NCase: word; NPart: byte): string;
+
+#doc
+Склонение имени
+#end
+function NameDeclension(FName: string; gender: word; NCase: word): string;
+
+#doc
+Склонение отчества
+#end
+function PatronDeclension(PName: string; gender: word; NCase: word): string;
+
+#doc
+Склонение ФИО целиком
+#end
+function FIODeclension(cpersons: comp; Infinitive: string; NCase: word): string;
+
+#doc
+Добавление записи в словарь исключений</brief>
+0 -удачное добавление
+1- есть дубликат
+2- произошли ошибки на этапе вставки
+#end
+function AddSimpleException(Target: string; ExceptType: byte): word;
+
+#doc
+Окно ввода параметров исключения
+#end
+procedure RunSimpleExceptionWindow;
+
+#doc
+Поиск исключения по персоне
+#end
+function fndpersonsException(cpersons: comp; nCase: word): string;
+
+#doc
+Добавление записи в словарь персональных исключений </brief>
+0 -удачное добавление
+1- есть дубликат
+2- произошли ошибки на этапе вставки
+#end
+function AddPersonalException(cpersons: comp; Target: string; nCase: word): word;
+
+#doc
+Удаление записи из словаря персональных исключений </brief>
+0 -удачное удаление
+1- нет такой записи
+2- произошли ошибки на этапе удаления
+#end
+function DeletePersonalException(cpersons: comp; nCase: word): word;
+
+#doc
+Корректировка записи в словаре персональных исключений </brief>
+0 -удачная корректировка
+1- нет такой записи
+2- произошли ошибки на этапе корректировки
+#end
+function UpdatePersonalException(cpersons: comp; Target: string; nCase: word): word;
+end;
+
+#doc
+#end
+objinterface odeclension1;
+
+#doc
+Проверка пола по ФИО
+#end
+function VerifyGender(target: string): word;
+
+end;
+
+vipinterface declension implements odeclension, odeclension1
+
+#ifdef ATL51
+Licensed (free)
+#end
+;

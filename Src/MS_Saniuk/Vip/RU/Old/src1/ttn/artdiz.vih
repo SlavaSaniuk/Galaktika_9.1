@@ -1,0 +1,32 @@
+
+#ifdef ComponentVersion
+#component "L_PrnSopr"
+#end
+
+#doc
+Объектный интерфейс описывает методы реализации группировки спецификации накладной по внешнему классификатору
+#end
+ObjInterface objArtDiz1;
+ #doc
+ Группировка спецификации
+ #end
+ function QueryGroup(_cKatSopr: comp): word;
+ //******************************************************************************
+ #doc
+ Возращает информацию
+ #end
+ function retGroup(var _Name      : String[80];
+                   var _GroupName : String[80];
+                   var _kol       : double;
+                   var _Summa     : double;
+                   var _NDS       : double;
+                   var _AllSumma  : double;
+                        cSpSopr   : comp): boolean;
+end;
+
+VipInterface ArtDiz1 implements objArtDiz1
+#ifdef ATL51
+licensed (FREE)
+Parameters (__ClassCode: word)
+#end
+;

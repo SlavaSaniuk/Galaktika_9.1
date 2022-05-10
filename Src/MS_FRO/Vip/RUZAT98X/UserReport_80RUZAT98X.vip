@@ -1,0 +1,38 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_80RUZAT98X Implements IUserReport;
+Interface UserReport_80RUZAT98X;
+create view;
+
+procedure Run;
+begin
+  RunInterface(MS80RUZAT98X::Imp_98X);
+end;
+
+function GetReportName: String;
+begin
+GetReportName := 'Загрузка бух. справок 984 и 988';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Раздельный учет';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 3;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := 'B_FINANS';
+ end;
+end;
+end.

@@ -1,0 +1,70 @@
+.function KolAddInStr(var Str:String;LengthStr:word;UpdateStr:boolean):word;
+  var iLine,KolSpace:byte;
+  var TempStr : string;
+!Первый параметр - поле, второй длинна поля (в RTF- формате использовать шрифт Courier New)
+!Третий параметр - изменяить или нет Str
+!Ставит пробел в строке Str ч.з. каждые LtngthStr+1 символов (при печати этот пробел 'съедается' редактором
+Begin
+
+    TempStr := Str;
+
+    If length(str)>LengthStr
+       {
+        iLine := LengthStr+1;
+        KolSpace := 0;
+         do
+          {
+           if SubStr(str, iLine, 1) <>' '
+             str := SubStr(str, 1, iLine-1) + ' ' + SubStr(str, iLine, length(str));
+
+           KolSpace := KolSpace + 1;//подсчитаем к-во пробелов
+           iLine := iLine + LengthStr + 1;
+          }
+         while length(str) >= iLine //ставит в конце каждой строке пробел
+!length(str) >iLine - можно написать и так,тогда последнее слово в строке
+!будет переходить на новую строку. Это не повлияет на подсчет строк...
+        KolAddInStr := ((length(str)-1-KolSpace) div LengthStr);// к-во доп. строк в наим. МЦ
+       }
+    else KolAddInStr := 0;
+
+    if not UpdateStr Str := TempStr;
+
+end.
+!Фунция удаляет из строки Str повторяющуюся подстроку dblStr
+!isDel - удалять dblStr в начале и конце строки Str
+.function DelDblStr(Str, dblStr: string; isDel: boolean): string;
+var
+  iPos,iLine: byte;
+begin
+  iLine := length(dblStr);
+  iPos  := InStr(dblStr+dblStr, Str);
+  while (iPos > 0) do
+  {
+    iPos  := iPos + iLine;
+    Str   := SubStr(Str,1,iPos-1) + SubStr(Str,iPos+iLine,length(Str)-iPos-iLine+1);
+    iPos  := InStr(dblStr+dblStr, Str);
+  }
+  if isDel  
+  {
+     if SubStr(Str,1,iline) = dblStr
+       Str := SubStr(Str,iLine+1,length(Str)-iLine); 
+     if SubStr(Str,length(Str)-iLine+1,iline) = dblStr
+       Str := SubStr(Str,1,length(Str)-iLine); 
+  }
+  DelDblStr := Str;
+end.
+!Декоративная функция
+!расставляет пробелы после каждого символа строки Str, кроме последнего
+!после пробела ставится 2 дополнительных пробела
+.function InsAfterAllSimbol(Str: string): string;
+var
+  i: byte;
+begin
+  if (length(Str) > 0)
+  {
+    Replace(Str, ' ', '  ');
+    for (i := 1; i < length(Str); i := i + 2)
+      Str := SubStr(Str,1,i) + ' ' + SubStr(Str,i+1,length(Str)-i);
+  }
+  InsAfterAllSimbol := Str;
+end. 

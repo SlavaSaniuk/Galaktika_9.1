@@ -1,0 +1,18 @@
+.begin
+  CountPoz     := CountPoz     + 1;
+  MassaBrItog  := MassaBrItog  + Round((МассаМЦ + МассаТарыМЦ) * КолУч / 1000, wRoundMass2) * 1000;
+  MassaNetItog := MassaNetItog + Round(МассаМЦ * КолУч / 1000, wRoundMass2) * 1000;
+  АСтНацСН     := АСтНацСН
+
+#ifdef _IN_VAL_DOC_
+  + СтНакСН;
+#else
+  + СтНацСН0;
+#end
+  АСТНац2     := АСТНац2   + СтНац;
+  if (bAutoGrM)
+    CountKolF := CountKolF + if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КОЛ_ГРУЗОВЫХ_МЕСТ)
+  else
+    CountKolF := CountKolF + if (КОЛ_ГРУЗОВЫХ_МЕСТ <> 0, КОЛ_ГРУЗОВЫХ_МЕСТ,
+                               if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КолФ));
+end.

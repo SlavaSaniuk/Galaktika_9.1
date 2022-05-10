@@ -1,0 +1,93 @@
+.declare
+#include ExtClass.Vih
+#include ExtAttr.Vih
+#include PrnSoprFun.vih
+
+.enddeclare
+.var
+  oPrnSoprFun : iPrnSoprFun;
+  PrUsl: word;
+.endvar
+.begin
+
+  PrUsl := 1 + 100 * wGetTune('Doc.SD.PrnNakl.PrnUsl');
+end.
+.create view nnn
+from
+  katsopr,
+  spsopr
+where
+((
+  ≠†™´†§≠†Ô_≠‡•™ == KatSopr.nRec
+))
+;
+.create view FORKATSOPR
+var pNrec:comp;
+from
+  katsopr,
+  Dover,
+  KatOrg
+where
+((
+  pNRec          == KatSopr.NRec  and
+  KatSopr.cDover == Dover.NRec    and
+  Dover.cPost    == KatOrg.NRec
+))
+;
+.create view FROMKATMC
+var pNrec:comp;
+from
+  SpSopr,
+  KatMc,
+  KatUsl,
+  KatParty,
+  KatEd,
+  KatOtpEd,
+  KatOtpEd KatEdGr
+
+where
+((
+  pNrec         == SpSopr.NRec   and
+  SpSopr.cMCUSL == KatMC.NRec    and
+  SpSopr.cMCUSL == KatUsl.NRec   and
+  SpSopr.cParty == KatParty.NRec and
+  SpSopr.cOtpEd == KatOtpEd.NRec
+))
+;
+.create view FASTREPORT
+from
+  KatSopr, SpSopr, KatMC
+;
+#ifdef _TTN_GR_INFO_
+.create view FOR_DOCOFGOODS
+from
+  TuneDef,
+  ExClassName
+where
+((
+   trim(Upcase('Doc.FastReport')) ==  TuneDef.code        and
+   coTuneDef                      ==  ExClassName.wTable  and
+   'ë Éêìáéå ëãÖÑìûí ÑéäìåÖçíõ'   ==  ExClassName.Name
+))
+;
+#end
+.create view PRN_DOPINFO
+var
+  wTable: word;
+  pNRec : comp;
+from
+  ExClassName, ExClassVal, ExClassSeg
+where
+((
+  wTable                          ==  ExClassName.wTable   and
+  'ÑéèéãçàíÖãúçÄü àçîéêåÄñàü åñ'  ==  ExClassName.Name     and
+  pNRec                           ==  ExClassVal.cRec      and
+  ExClassName.ClassCode           ==  ExClassVal.ClassCode and
+  ExClassVal.cClassSeg            ==  ExClassSeg.NRec
+))
+;
+.var
+  stroka, strokaR, strokaV : string;
+  Summa, SummR, SummV : double;
+  CodeOtpEd, CodeEd: string;
+.endvar

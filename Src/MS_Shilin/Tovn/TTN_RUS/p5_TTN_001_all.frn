@@ -1,0 +1,20 @@
+.begin
+  MassaBrItog  := MassaBrItog  + Round((МассаМЦ + МассаТарыМЦ) * КолУч / 1000, wRoundMass2) * 1000;
+  MassaNetItog := MassaNetItog + Round(МассаМЦ * КолУч / 1000, wRoundMass2) * 1000;
+
+  if iStrname<=15
+  {
+    if (Length(strname[iStrname] + if (Название <> '', Название + ', ', '')) < 255)
+      strname[iStrname] += if (Название <> '', Название + ', ', '')
+    else
+    {
+      strname[iStrname+1] += if (Название <> '', Название + ', ', '');
+      iStrname++;
+    }
+  }
+  if (bAutoGrM)
+    CountKolF := CountKolF + if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КОЛ_ГРУЗОВЫХ_МЕСТ)
+  else
+    CountKolF := CountKolF + if (КОЛ_ГРУЗОВЫХ_МЕСТ <> 0, КОЛ_ГРУЗОВЫХ_МЕСТ,
+                               if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ = 'н/у', 0, КолФ));
+end.

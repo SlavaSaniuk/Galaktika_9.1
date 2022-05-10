@@ -1,0 +1,76 @@
+.fields
+#OrgFields(Получатель)
+Получатель_ОКПО
+Склад_Пол
+Получатель_ОКОНХ
+Директор_Должность
+DateToStr(Cur_Date, 'DD/MM/YYYY')
+Директор
+
+ТТН_ПунктР_Адрес
+#OrgFields(Грузоотправитель)
+#OrgFields(Поставщик)
+Номер_Договора
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'DD'), '     ')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'mon'), '')
+if (LongInt(Дата_Договора) <> LongInt(0), DateToStr(Дата_Договора, 'YYYY'), '')
+Номер
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'DD'), '     ')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'mon'), '')
+if (LongInt(Дата) <> LongInt(0), DateToStr(Дата, 'YYYY'), '')
+ТТН_Авто_Марка
+ТТН_Авто_НомерТС
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'DD'), '     ')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'mon'), '')
+if (LongInt(ТТН_ПунктП_Дата_По) <> LongInt(0), DateToStr(ТТН_ПунктП_Дата_По, 'YYYY'), '')
+
+if (LongInt(ТТН_ПунктР_Дата_С) <> LongInt(0),   DateToStr(ТТН_ПунктР_Дата_По, 'DD/MM/YYYY'), '')
+if (LongInt(ТТН_ПунктР_Время_С) <> LongInt(0),  DateToStr(ТТН_ПунктР_Дата_По, ' в HH:MM'), '')
+if (LongInt(ТТН_ПунктР_Дата_По) <> LongInt(0),  DateToStr(ТТН_ПунктР_Дата_По, 'DD/MM/YYYY'), '')
+if (LongInt(ТТН_ПунктР_Время_По) <> LongInt(0), DateToStr(ТТН_ПунктР_Дата_По, ' в HH:MM'), '')
+
+Название
+КодМЦ
+ОтпЕд
+CodeEd
+DoubleToStr(ЦНацБН                         , Cena_PrR)
+DoubleToStr(КолУч / КолФ                   , Kol_Pr)
+DoubleToStr(КолФ                           , Kol_Pr)
+DoubleToStr((МассаМЦ + МассаТарыМЦ) * КолУч, Massa_Kg)
+DoubleToStr(МассаМЦ * КолУч                , Massa_Kg)
+DoubleToStr(СтНацБН0                       , Cena_PrR)
+
+Номер_сертификата
+DoubleToStr(DocMesta , Kol_Pr)
+DoubleToStr(DocBrutto, Massa_Kg)
+DoubleToStr(DocNetto , Massa_Kg)
+DoubleToStr(DocSum   , Cena_PrR)
+
+DoubleToStr(КолУч2 / КолОпл2                                    , Kol_Pr)
+DoubleToStr(КолОпл2                                             , Kol_Pr)
+DoubleToStr((МассаМЦ2 + МассаТарыМЦ2) * КолУч2 / КолФ2 * КолОпл2, Massa_Kg)
+DoubleToStr(МассаМЦ2 * КолУч2 / КолФ2 * КолОпл2                 , Massa_Kg)
+DoubleToStr(СтНацБНОпл2                                         , Cena_PrR)
+DoubleToStr(СтНацCН2                                            , Cena_PrR)
+ПрНДС2
+ЦНДСНац2
+
+DoubleToStr(КолУч2 / (КолФ2 - КолОпл2)                                  , Kol_Pr)
+DoubleToStr(КолФ2 - КолОпл2                                             , Kol_Pr)
+DoubleToStr(((МассаМЦ2 + МассаТарыМЦ2) * КолУч2) * (1 - КолОпл2 / КолФ2), Massa_Kg)
+DoubleToStr((МассаМЦ2 * КолУч2) * (1 - КолОпл2 / КолФ2)                 , Massa_Kg)
+DoubleToStr(СтНацБН2 - СтНацБНОпл2                                      , Cena_PrR)
+
+DoubleToStr(FactMesta , Kol_Pr)
+DoubleToStr(FactBrutto, Massa_Kg)
+DoubleToStr(FactNetto , Massa_Kg)
+DoubleToStr(FactSum   , Cena_PrR)
+DoubleToStr(SumSNDS   , Cena_PrR)
+DoubleToStr(NDS       , Cena_PrR)
+DoubleToStr(RashMesta , Kol_Pr)
+DoubleToStr(RashBrutto, Massa_Kg)
+DoubleToStr(RashNetto , Massa_Kg)
+DoubleToStr(RashSum   , Cena_PrR)
+
+Главный_Бухгалтер
+.endfields

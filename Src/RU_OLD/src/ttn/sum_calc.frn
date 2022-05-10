@@ -1,0 +1,29 @@
+.begin
+  nnn.getfirst katsopr;
+
+  summa := 0;
+  SummR := 0;
+  SummV := 0;
+
+  nnn._LOOP SpSopr where (( KatSopr.nRec == SpSopr.cSopr
+                        and PrUsl       >>= SpSopr.PrMc))
+    {
+      summa := summa + if(nnn.KatSopr.cVal = 0,
+                          nnn.SpSopr.Price  * nnn.SpSopr.KolOpl + if(nnn.KatSopr.VhodNal = 1, 0, nnn.SpSopr.SumNDS),
+                          nnn.SpSopr.vPrice * nnn.SpSopr.KolOpl + if(nnn.KatSopr.VhodNal = 1, 0, nnn.SpSopr.SumVNDS));
+
+      summR := summR + nnn.SpSopr.Price  * nnn.SpSopr.KolOpl + if(nnn.KatSopr.VhodNal = 1, 0, nnn.SpSopr.SumNDS);
+
+      summV := summV + nnn.SpSopr.vPrice * nnn.SpSopr.KolOpl + if(nnn.KatSopr.VhodNal = 1, 0, nnn.SpSopr.SumVNDS);
+    }
+
+  stroka := doubleToString(if(nnn.KatSopr.cVal=0,0,nnn.KatSopr.cValut),round(summa,
+            if (nnn.KatSopr.cVal = 0, GetPrecisionGroup('brForSopr_Price'),
+                                      GetPrecisionGroup('brForSopr_VPrice'))));
+
+  SummR := Round(SummR, GetPrecisionGroup('brForSopr_Price'));
+  SummV := Round(SummV, GetPrecisionGroup('brForSopr_VPrice'));
+
+  strokaR := doubleToString(0,SummR);
+  strokaV := doubleToString(nnn.KatSopr.cValut,SummV);
+end.

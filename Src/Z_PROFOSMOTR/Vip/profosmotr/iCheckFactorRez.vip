@@ -1,0 +1,165 @@
+#doc
+Вспомогательный интерфейс для проверок(Белтелеком)
+#end
+
+
+#include iCheckFactorRez.vih
+
+Interface iCheckFactorRez 'Вспомогательный интерфейс для проверок' Gray, EscClose;
+
+var
+coNrecFactorPers:comp;
+
+Create view
+as select
+*
+from
+ DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnabor  (ReadOnly)
+
+,DISTDOCHIERARCHY (ReadOnly)
+,SPALLSTAFF   (ReadOnly)
+,SPALLSTAFF SPALLSTAFFfactor (ReadOnly)
+
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnaborcheck  (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorcheck  (ReadOnly)
+Where
+((
+    coNrecFactorPers                   == DISTDOCHIERARCHYfactorPers.nrec
+
+and DISTDOCHIERARCHYfactorPers.CANVAL1 == DISTDOCHIERARCHYnabor.nrec  //набор
+
+and constRecFact                       == SPALLSTAFFfactor.WNOCON        //нижняя панель
+and DISTDOCHIERARCHYfactorPers.CPARENT == SPALLSTAFFfactor.CBASET         //ссылка на сотрудника
+and DISTDOCHIERARCHYfactorPers.nrec    == SPALLSTAFFfactor.RESCOMP[1](noindex)
+and (SPALLSTAFFfactor.RESWORD[1]<>0 and SPALLSTAFFfactor.RESDATE[2]<>date(0,0,0))    //только с заполненными результатами
+
+and SPALLSTAFFfactor.CLINKT            == SPALLSTAFF.nrec            //средняя панель
+
+and SPALLSTAFF.CLINKT                  == DISTDOCHIERARCHY.nrec      //верхняя панель
+and(DISTDOCHIERARCHY.WDOCNORM=1 or DISTDOCHIERARCHY.WDOCNORM=2)    //обрабатываем графики только с видом периодический и предварительный
+))
+;
+
+public function FactorInclude (coFactorPers:comp; wYear:word): boolean;
+{
+ FactorInclude:=true;
+ set coNrecFactorPers:=coFactorPers;
+
+  if(getfirst DISTDOCHIERARCHYfactorPers=tsok)
+    {
+     if(Year(DISTDOCHIERARCHYfactorPers.DTCALC)>wYear or DISTDOCHIERARCHYfactorPers.DTCALC=date(0,0,0))  //если год даты открытия фактора больше планируемого года то фактор не включаем или если дата открытия вообще не заполнена
+       {
+         FactorInclude:=false;
+         exit;
+       }
+     if(getfirst DISTDOCHIERARCHYnabor=tsok)
+       {
+         _loop SPALLSTAFFfactor
+           {
+             if(getfirst SPALLSTAFF = tsok)
+               {
+                if(getfirst DISTDOCHIERARCHY = tsok)    //обрабатываем графики только с видом периодический и предварительный
+                  {
+                    if((Year(SPALLSTAFFfactor.RESDATE[2])+DISTDOCHIERARCHYnabor.WKODGRKAU1)>wYear)
+                       {
+                         FactorInclude:=false;
+                       }
+                  }
+               }
+           }
+       }
+    }
+}
+
+Public Function StrValueNabor(stipField:string;coNrecRec:comp):string;
+{
+ StrValueNabor:='';
+ if(getfirst DISTDOCHIERARCHYnaborcheck where (( coNrecRec == DISTDOCHIERARCHYnaborcheck.nrec))=tsok)
+   {
+     case stipField of
+       'Factor':
+              {
+                if(getfirst DISTDOCHIERARCHYfactorcheck where ((DISTDOCHIERARCHYnaborcheck.CUSERID==DISTDOCHIERARCHYfactorcheck.nrec))=tsok)
+                  {
+                    StrValueNabor:=DISTDOCHIERARCHYfactorcheck.sName;
+                  }
+              }
+       'Klass' :
+              {
+                case DISTDOCHIERARCHYnaborcheck.WKOLNORM of
+                   0: StrValueNabor:=' '
+                   1: StrValueNabor:='класс 1'
+                   2: StrValueNabor:='класс 2'
+                   3: StrValueNabor:='класс 3.1'
+                   4: StrValueNabor:='класс 3.2'
+                   5: StrValueNabor:='класс 3.3'
+                   6: StrValueNabor:='класс 3.4'
+                   7: StrValueNabor:='класс 4'
+                 end;
+              }
+       'Period':
+              {
+                 case DISTDOCHIERARCHYnaborcheck.WKODGRKAU1 of
+                    0: StrValueNabor:=' '
+                    1: StrValueNabor:='1 раз в год'
+                    2: StrValueNabor:='1 раз в 2 года'
+                    3: StrValueNabor:='1 раз в 3 года'
+                    4: StrValueNabor:='1 раз в 4 года'
+                    5: StrValueNabor:='1 раз в 5 лет'
+                 end;
+              }
+     end;
+   }
+}
+Public Function GetStajFactor(dCurDat:date;coNrecRec:comp):word;
+{
+  GetStajFactor:=0;
+  set coNrecFactorPers:=coNrecRec;
+  if(getfirst DISTDOCHIERARCHYfactorPers=tsok)
+    {
+      GetStajFactor:=Months_Between(DISTDOCHIERARCHYfactorPers.DTCALC, dCurDat);
+    }
+}
+
+Public Function DateLastOsmotr(coNrecRec:comp):date;
+{
+  DateLastOsmotr:=date(0,0,0);
+  set coNrecFactorPers:=coNrecRec;
+  if(getfirst DISTDOCHIERARCHYfactorPers=tsok)
+    {
+       _loop SPALLSTAFFfactor
+        {
+         if(getfirst SPALLSTAFF = tsok)
+           {
+            if(getfirst DISTDOCHIERARCHY = tsok and (DISTDOCHIERARCHY.WDOCNORM=1 or DISTDOCHIERARCHY.WDOCNORM=2))    //обрабатываем графики только с видом периодический и предварительный
+              {
+               if(SPALLSTAFFfactor.RESDATE[2]>DateLastOsmotr)
+                 {
+                   DateLastOsmotr:=SPALLSTAFFfactor.RESDATE[2];
+                 }
+              }
+           }
+        }
+    }
+}
+
+Public Function DatePlanOsmotr(coNrecRec:comp):date;
+var
+datLastOsm:date;
+{
+  DatePlanOsmotr:=date(0,0,0);
+  datLastOsm:=DateLastOsmotr(coNrecRec);
+
+  set coNrecFactorPers:=coNrecRec;
+
+  if(getfirst DISTDOCHIERARCHYfactorPers=tsok)
+    {
+     if(getfirst DISTDOCHIERARCHYnabor=tsok)
+       {
+         DatePlanOsmotr:= Add_months(datLastOsm,12*DISTDOCHIERARCHYnabor.WKODGRKAU1);
+       }
+    }
+}
+
+end.

@@ -1,0 +1,42 @@
+.begin
+  StrNN    := 1;
+  KolAdd   := 0;
+  KolPage  := 0;
+  NomFull  := 0;
+  Nom      := 0;
+  KolSpSopr:= 0;
+  NextPage := false;
+
+  KolItogFull     := 0;
+  MassaBrItogFull := 0;
+  MassaNetItogFull:= 0;
+  Sum1ItogFull    := 0;
+  Sum2ItogFull    := 0;
+  Sum3ItogFull    := 0;
+
+  KolItog         := 0;
+  MassaBrItog     := 0;
+  MassaNetItog    := 0;
+  Sum1Itog        := 0;
+  Sum2Itog        := 0;
+  Sum3Itog        := 0;
+
+  if not readmydsk(breakPage, 'OptionsTorg13L', false) breakPage := 1;
+  if not readmydsk(MainKol  , 'MainKolTorg13L', false) MainKol   := 29;
+  if not readmydsk(FixKol   , 'FixKolTorg13L' , false) FixKol    := 55;
+
+  FixKolPage := MainKol;
+#ifdef _IN_VAL_DOC_
+  Cena_Pr0 := Cena_Pr;
+#else
+  Cena_Pr0 := Cena_PrR;
+#end
+  strEmpty := '';
+!Автоматический расчет количества грузовых мест
+  bAutoGrM := boGetTune('OPER.SELL.NAKL.CALCGRM');
+!Выводить в названиях графы и копейки
+  НацСимвол := 'руб.коп.';
+!Адрес грузополучателя заполнять адресом пункта разгрузки
+  if boGetTune('Doc.SD.PrnNakl.AdrPunktRazgr')
+    Грузополучатель_Адрес:= if(ТТН_ПунктР_Адрес<>'' and ТТН_ПунктР_Имя<>'', ТТН_ПунктР_Адрес, Грузополучатель_Адрес);
+end.

@@ -1,0 +1,57 @@
+#doc
+Интерфейс для создания записи в отчетах пользователя для работы с профосмотром(Белтелеком)
+#end
+
+
+#include UserReport.vih
+
+VipInterface UserReport_ProfMedOsmotr  Implements IUserReport;
+
+Interface UserReport_ProfMedOsmotr;
+
+create view;
+
+!-------------------------------------------------------------------------------
+procedure Run;
+begin
+  RunInterface(iMainProfosmotr);
+end;
+// Наименование отчета в списке
+function GetReportName: String;
+begin
+  GetReportName := 'Медосмотр';
+end;
+!-------------------------------------------------------------------------------
+// Наименования групп, в которые входит отчет
+// Группа n+1 делается подчиненной группе n
+// В данном случае будет иерархия:
+// [+] Группа 1
+//     [+] Группа 2
+//         Отчет 1
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName :='';
+  case Level of
+!    1 : GetGroupName := 'Драгметаллы';
+!    2 : GetGroupName := 'Группа 2';
+  end;
+end;
+!-------------------------------------------------------------------------------
+// Приоритет отчета - сортировка внутри группы выполняется сначала
+// по приоритету, а затем по наименованию
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+!-------------------------------------------------------------------------------
+// ModuleID модулей, в которых будет виден отчет
+// '*' - отчет будет виден в любом модуле
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := '*';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end. // interface

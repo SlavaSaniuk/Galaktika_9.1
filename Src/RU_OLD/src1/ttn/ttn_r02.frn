@@ -1,0 +1,102 @@
+.begin
+  TtnDrag.pNrec := спецификацияМЦ_нрек;
+
+  isNalDrag := FALSE;
+
+  var i: integer;
+
+  for (i := 1; i <= 10; i := i + 1)
+  {
+    ДрагМетНазв[i] := '';
+    ДрагМетКол[i]  := '';
+    ДрагМетЕд[i]   := '';
+  }
+
+  i := 1;
+
+  if TtnDrag.GetFirst SpSopr = tsOk
+    if TtnDrag.GetFirst KatMC = tsOk
+      TtnDrag._Loop NalDrag
+      {
+        if TtnDrag.GetFirst KatDrag = tsOk
+        {
+          isNalDrag := TRUE;
+          kounter   := kounter + 1;
+          ДрагМетНазв[i] := TtnDrag.KatDrag.Name;
+          ДрагМетКол[i]  := DoubleToStr(TtnDrag.NalDrag.Kol, '\9p666.899999999');
+
+          ДрагМетЕд[i] := TtnDrag.KatEd.Abbr
+                          + ' ('
+                          + if (TtnDrag.NalDrag.VidDrag = 0, 'Паспорт',
+                              if (TtnDrag.NalDrag.VidDrag = 1, 'Комиссионно', 'Справочник'))
+
+                          + ')';
+        }
+
+        i := i + 1;
+      }
+
+  // добавить в конце строки
+  if (isNalDrag)
+    if (Trim(ДрагМетНазв[i-1]) <> '')
+      ДрагМетЕд[i-1] := ДрагМетЕд[i-1] + ' - в 1 ед.';
+
+  // позиционирование на спецификацию розничной накладной
+  if TtnDrag.GetFirst RzSpDoc = tsOk
+  {
+    Завод_цена4  := if (TtnDrag.SpSopr.cParty <> 0, TtnDrag.KatParty.CenaZav, TtnDrag.KatMC.CenaMC);
+
+    if (Завод_Цена4 = 0)
+      Завод_цена4 := TtnDrag.RzSpDoc.Price;
+
+    Надбавка5    := ((TtnDrag.RzSpDoc.Price / TtnDrag.RzSpDoc.fPrice) - 1) * 100 + TtnDrag.RzSpDoc.pNacen;
+    Стоимость6   := (TtnDrag.RzSpDoc.Price + TtnDrag.RzSpDoc.sNacen) * TtnDrag.RzSpDoc.Kol;
+    СтавкаНДС7   := TtnDrag.NalNDS.Nalog;
+    СуммаНДС8    := (TtnDrag.RzSpDoc.rPrice - TtnDrag.RzSpDoc.Price - TtnDrag.RzSpDoc.sNacen) * TtnDrag.RzSpDoc.Kol;
+    ВсегоНДС9    := TtnDrag.RzSpDoc.rPrice * TtnDrag.RzSpDoc.Kol;
+    СтавкаНП10   := TtnDrag.NalNP.Nalog;
+    СуммаНП11    := TtnDrag.RzSpDoc.sNalog * TtnDrag.RzSpDoc.Kol;
+    ВсегоНДСНП12 := TtnDrag.RzSpDoc.pPrice * TtnDrag.RzSpDoc.Kol;
+    РознЦена13   := TtnDrag.RzSpDoc.pPrice;
+
+    var Delta: double;
+    var DeltaNP: double;
+    var DeltaNDS: double;
+    var DeltaPrice: double;
+
+    Delta := (TtnDrag.RzSpDoc.pPrice - TtnDrag.RzSpDoc.rPrice - TtnDrag.RzSpDoc.sNalog) * TtnDrag.RzSpDoc.Kol;
+
+    if (Delta < 0)
+    {
+      DeltaNP   := Delta * СтавкаНП10 / (100 + СтавкаНП10);
+      СуммаНП11 := СуммаНП11 + DeltaNP;
+
+      DeltaNDS  := (Delta - DeltaNP) * СтавкаНДС7 / (100 + СтавкаНДС7);
+      СуммаНДС8 := СуммаНДС8 + DeltaNDS;
+
+      DeltaPrice := Delta - DeltaNP - DeltaNDS;
+      Стоимость6 := Стоимость6 + DeltaPrice;
+
+      ВсегоНДС9  := ВсегоНДС9 + DeltaPrice + DeltaNDS;
+
+    }
+
+    if (Delta > 0)
+    {
+      if (СтавкаНП10 = 0)
+      {
+        СуммаНДС8  := СуммаНДС8 + Delta;
+        ВсегоНДС9  := ВсегоНДС9 + Delta;
+      }
+      else
+        СуммаНП11 := СуммаНП11 + Delta;
+    }
+
+    АСтоимость6   := АСтоимость6   + Стоимость6;
+    АСуммаНДС8    := АСуммаНДС8    + СуммаНДС8;
+    АВсегоНДС9    := АВсегоНДС9    + ВсегоНДС9;
+    АСуммаНП11    := АСуммаНП11    + СуммаНП11;
+    АВсегоНДСНП12 := АВсегоНДСНП12 + ВсегоНДСНП12;
+  }
+
+end.

@@ -1,0 +1,17 @@
+Zamena Dialog
+Fields
+  w1   : double;
+  w2   : double;
+  w3   : double;
+Buttons
+  cmOk,Default,, 'Подтверждение ввода' ,,;
+  cmCancel,,, 'Отмена' ,,;
+<<'Введите данные '
+`           вид оплаты для замены %`   .@@@@
+`           процент                `   .@@@
+`           расчетный месяц        `   .@@@
+
+
+                      <. ~O~K .>  <. ~Cansel .>
+
+>>

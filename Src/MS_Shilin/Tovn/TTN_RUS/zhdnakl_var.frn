@@ -1,0 +1,11 @@
+.var
+  KolItog,           // итоговые суммы по страницам
+  MassaBrItog,
+  MassaNetItog  : double;
+.endvar
+.begin
+
+  // инициализация переменных
+  oPrnSoprFun.Init(0, 0, wRoundMass2, false, false,
+                   false, Massa_Tn, Massa_Kg, Massa_Gr, Cena_Pr, Cena_PrR, NDS_St, RoundGrm);
+end.

@@ -1,0 +1,502 @@
+#Component "F_MS"
+//#include recoborot.vih
+
+table struct ruz_os
+(
+  nrec       : comp,
+  tidk       : word,
+  podr       : string,
+  tabn       : longint,
+  innum      : string,
+  name       : string,
+  err        : string,
+  nach_sch   : string,
+  vidopl     : longint,
+  vidper     : word,
+  sum        : double,
+  sum_izn    : double,
+  kol        : decimal(31.15),
+  datek      : date,
+  srokisp    : decimal(31.15),
+  poprkoef   : decimal(31.15),
+  kp         : string,
+  os         : string,
+  sch        : string,
+  sp         : string,
+  KAU1Title  : string
+)
+with index
+(
+  ruz01  = nRec (surrogate, unique),
+  ruz02  = tidk + innum
+);
+const
+  cg_ru_kp = 'КР_9.00.00.0.00.0.0';
+end;
+
+Interface  RU_main 'Формирование данных по РУ' /*DoAccept, Cyan,*/ EscClose;
+  show at (0,0,170,32);
+Var
+  _Filial : word;
+  sFilePath, sPlanSch, sSch, kr_Param, sSubSchet : string;
+  b : boolean;
+  dop : word;
+  //iRecOb : RecOborot;
+const
+  REP_NONE      = 0;
+  REP_NACH      = 1;
+  REP_STRAH     = 2;
+  REP_FSZ       = 4;
+  REP_OTP       = 8;
+  REP_OTP_STRAH = 16;
+  REP_OTP_FSZ   = 32;
+end;
+
+
+Create view
+Var
+  _yearn        : word;
+  _mesn         : word;
+  _cPlanSsch    : comp;
+  _sSch         : string;
+  _bdate, _edate: date
+As select
+  *
+From
+  planssch            (readonly)
+ ,oborot              (readonly)
+// ,katkau katkau1      (readonly)
+ ,spkau spkau1        (readonly)
+// ,katkau katkau2      (readonly)
+ ,spkau spkau2        (readonly)
+// ,katkau katkau3      (readonly)
+ ,spkau spkau3        (readonly)
+// ,katkau katkau4      (readonly)
+ ,spkau spkau4        (readonly)
+ ,ruz_os
+ ,ruz_os ruz_os_oborot
+ ,ruz_os ruz_os_err
+where
+((
+      _cPlanSsch           == planssch.nrec
+
+  and _ssch                == oborot.scheto
+//  and sSubSchet            == oborot.SubOsSch
+  and _bdate               <<= oborot.datob
+  and _edate               >>= oborot.datob
+  and oborot.kauos[1]      == spkau1.nrec
+  and oborot.kauos[2]      == spkau2.nrec
+  and oborot.kauos[3]      == spkau3.nrec
+  and oborot.kauos[4]      == spkau4.nrec
+
+  and oborot.tidkgal       == katdoc.tidkgal
+
+  and 0                     == ruz_os_oborot.tidk
+
+  and 99                    == ruz_os_err.tidk
+))
+//and
+// katos.datek <= _edate and katos.datv = Date(0,0,0)
+order by ruz_os.innum
+;
+file f1, f2;
+//Form frmReportRUZar ('repRUOS.OUT', 'repRUOS') with NoVisual;
+
+procedure FillRU;
+{
+  var fillKAU : integer;
+  delete all ruz_OS_oborot;
+  StartNewVisual(vtNumericVisual, vfTimer, ''#3'Формирование данных из проводок'#13#3, 0);
+  _loop oborot
+  {
+    fillKau := 0;
+    ClearBuffer(#ruz_os_oborot);
+    ruz_os_oborot.tidk     := 0;
+    ruz_os_oborot.nach_sch := sSch;
+    ruz_os_oborot.sum      := oborot.sumob;
+    ruz_os_oborot.podr     := DateToStr(oborot.datob, 'DD/MM/YYYY');
+    if(getfirst katdoc = tsOK)
+    {
+      ruz_os_oborot.innum:= katdoc.name;
+    }
+    else
+    {
+      ruz_os_oborot.innum:='';
+    }
+    ruz_os_oborot.name     := oborot.nodok;
+    if ((getfirst spkau1 = tsOK) and (oborot.tblos[1] = 505))
+    {
+      ruz_os_oborot.kp := spkau1.name;
+      fillKAU++;
+    }
+    if ((getfirst spkau1 = tsOK) and (oborot.tblos[1] = 501))
+    {
+      ruz_os_oborot.kp := spkau1.code;
+      fillKAU++;
+    }
+    if ((getfirst spkau2 = tsOK) and (oborot.tblos[2] = 502))
+    {
+      ruz_os_oborot.os := spkau2.code;
+      fillKAU++;
+    }
+    if ((getfirst spkau3 = tsOK) and (oborot.tblos[3] = 503))
+    {
+      ruz_os_oborot.sch := spkau3.code;
+      fillKAU++;
+    }
+    if ((getfirst spkau4 = tsOK) and (oborot.tblos[4] = 504))
+    {
+      ruz_os_oborot.sp := spkau4.code;
+      fillKAU++;
+    }
+    if ((((dop and 1) > 0) and (oborot.nodok != '^^984') and (oborot.nodok != '^^988')) or (dop and 1) = 0)
+    {
+      if (fillKAU != 4)
+      {
+        ClearBuffer(#ruz_os_err);
+        ruz_os_err.tidk  := 99;
+        ruz_os_err.innum := if(ruz_os_oborot.innum!= '', ruz_os_oborot.innum, 'Документ') + ' ' + oborot.nodok + ' от ' + DateToStr(oborot.datob, 'DD/MM/YYYY');
+        ruz_os_err.err   := 'Заполнены не все уровни КАУ';
+        ruz_os_err.kp    := ruz_os_oborot.kp;
+        ruz_os_err.os    := ruz_os_oborot.os;
+        ruz_os_err.sch   := ruz_os_oborot.sch;
+        ruz_os_err.sp    := ruz_os_oborot.sp;
+        ruz_os_err.sum   := ruz_os_oborot.sum;
+        insert current ruz_os_err;
+      }
+      insert current ruz_os_oborot;
+    }
+    NextVisual;
+  }
+   StopVisual;
+   Message('Выгрузка завершена');
+}
+
+Procedure PrintReportRU;
+{
+    var fname1, fname2, st, st1, prefix : string;
+    var sum : double;
+    var str_kol : integer;
+    case sSch of
+      'RU': prefix := 'ZT';
+      'RUOS': prefix := 'OC';
+      'RUZAR': prefix := 'PE';
+      else
+      {
+        Message(''#3'Ошибка при выборе счета по раздельному учету!' + chr(13) + ''#3'Счетами по РУ считаются RU, RUOS и RUZAR' + chr(13) + ''#3'Выгрузка невозможна!');
+        exit;
+      }
+    end;
+    fname1:= sFilePath + '\' + prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt';
+    fname2:= sFilePath + '\' + prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.r';
+    sum := 0;
+    str_kol := 0;
+    if (getfirst ruz_os != tsOK)
+    {
+      message('Нет данных.'#13'Выберите параметры и нажмите кнопку <Сформировать>');
+      Exit;
+    }
+    if (f1.OpenFile( fname1, stCreate) = true and f2.OpenFile( fname2, stCreate) = true)
+    {
+      StartNewVisual(vtNumericVisual, vfTimer, 'Формирование файла для РУ из ' + RecordsInTable(#ruz_os) + ' записей:', 0);
+      _loop ruz_os where ((0 == ruz_os.tidk))
+      {
+        st := string(ruz_os.sum) + ';' + if(sSch = 'RU' , substr(ruz_os.kp, 1, 27), ruz_os.kp) + ';' + ruz_os.os + ';' + ruz_os.sch + ';' + ruz_os.sp;
+        f1.WriteLn(DocBasFn866To1251(st));
+        sum += round(ruz_os.sum, 2);
+        str_kol++;
+        NextVisual;
+      }
+      StopVisual;
+    }
+    st1 := prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt' + ';' + Trim(DoubleToStr(str_kol,'777777'))+ ';'+Trim(DoubleToStr(sum,'666666666666.88'));
+    f2.WriteLn(DocBasFn866To1251(st1));
+    f1.close;
+    f2.close;
+    Message('Файлы экспортированы в директорию ' + chr(13) + sFilePath + chr(13) + 'с именем ' + '<' + prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn)  + '>');
+};
+
+//panel pRU_Options;
+//window wRU_Options;
+TabbedSheet Top tshRU_main_Options;
+   Show at (,,,);
+
+Screen sRUMain 'Параметры' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_os; ///perech2;
+/* bevel b01 {1, 4,   53, 10, bsRaised, bsFrame};
+ bevel b01 {52, 4,  63, 10, bsRaised, bsFrame};
+ bevel b01 {62, 4, 118, 10, bsRaised, bsFrame};
+
+ bevel b01 {1,  9,  53, 15, bsRaised, bsFrame};
+ bevel b01 {52, 9,  63, 15, bsRaised, bsFrame};
+ bevel b01 {62, 9, 118, 15, bsRaised, bsFrame};
+
+ bevel b01 {1, 14, 118, 17, bsRaised, bsFrame};
+*/
+Fields
+  _Filial ('Номер филиала') :
+                    [LIST
+                      1000 '1000 - Междугородняя связь',
+                      900  '900  - Головной офис',
+                      700  '700  - Филиал МГТС',
+                      600  '600  - Могилевский филиал',
+                      500  '500  - Минский филиал',
+                      400  '400  - Гродненский филиал',
+                      300  '300  - Гомельский филиал',
+                      200  '200  - Витебский филиал',
+                      100  '100  - Брестский филиал'
+                      ], protect;
+  _mesn ('Месяц'):
+                    [LIST
+                      1 'Январь',
+                      2 'Февраль',
+                      3 'Март',
+                      4 'Апрель',
+                      5 'Май',
+                      6 'Июнь',
+                      7 'Июль',
+                      8 'Август',
+                      9 'Сентябрь',
+                      10 'Октябрь',
+                      11 'Ноябрь',
+                      12 'Декабрь'
+                      ], protect;
+  _yearn ('Год'):NoProtect, SpinButton [1,2000,2100];
+
+  sPlanSch ('План счетов') : pickbutton, Protect;
+  sSch ('Счет RU') : pickbutton, Protect, {Font = {BackColor = if(sSch = '', ColorNeed, 0)}};
+//  kr_param ('Параметр КР') : NoProtect, PickButton, {Font = {BackColor = if(kr_param = '', ColorNeed, 0)}};
+  dop : NoProtect;
+  sFilePath ('Файл'): Protect, PickButton
+            , {Font = {BackColor = if(sFilePath = '', ColorNeed, 0)}};
+buttons
+  cmOk, default,, 'Формирование';
+  cmDelResults,,, 'Очистить данные';
+  cmExport,,, 'Создать файл';
+  cmCancel,,, 'Отмена';
+
+<<
+
+  Филиал .@@@@@@@@@@@@@@@@@@@@@@@@@@  Месяц .@@@@@@@@@@ Год .@@@@@@
+  План счетов  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Счет .@@@@@@@@@@@
+  Дополнительные параметры
+  [.] Исключить проводки по справкам 98х`
+
+  Путь на папку обмена .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  Данные по проводкам собираются по дебету счета, указанному в данном окне.
+  Собираются данные по четырем пользовательским аналитикам с кодами
+  1. 501 (для счета RUOS, RUZAR) - Классификатор ресурса; 505 (для RU) - Классификатор бизнес-процессов
+  2. 502 - Классификатор оргструктуры
+  3. 503 - Классификатор затрат
+  4. 504 - Подразделения для РУ
+
+  При выбранном параметре "Исключать проводки по справкам 98х" в выгрузку не попадут проводки по
+  бухсправкам с номерами ^^984 и ^^988
+
+  <.~Ф~ормировать.>       <.~У~далить.>         <.~E~xport.>              <.  ~О~тмена  .>
+>>
+end; //screen
+
+Browse brRU 'Проводки' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_os_oborot;
+Fields
+  ruz_os_oborot.podr          #3'Дата' ('Дата проводки',,) : [4], Protect;
+  ruz_os_oborot.innum         #3'Тип документа' ('Тип документа',,) : [6], Protect;
+  ruz_os_oborot.name          #3'Номер документа' ('Номер документа',,) : [6], Protect;
+  ruz_os_oborot.kp            #3'Бизнес-процесс' ('Бизнес-процесс',,) : [20], Protect;
+  ruz_os_oborot.os            #3'Код структуры' ('Организационная структура',,) : [8], Protect;
+  ruz_os_oborot.sch           #3'Затр.сч.' ('Затр.сч.',,) : [6], Protect;
+  ruz_os_oborot.sp            #3'Подр.РУ' ('Подразделение РУ',,) : [6], Protect;
+  ruz_os_oborot.sum           #3'Сумма' ('Сумма',,) : [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+end; //screen
+
+Browse brRUOS_err 'Ошибки' ('',,sci178Esc);
+  show at(,,,)
+  table ruz_os_err;
+Fields
+  ruz_os_err.innum         #3'Номер док-та и дата проводки' ('Инвентарный номер',,) : [10], Protect;
+  ruz_os_err.err           #3'Описание' ('Описание ошибки',,) : [12], Protect;
+  ruz_os_err.kp            #3'Бизнес-процесс' ('Бизнес-процесс',,) : [20], Protect, {Font = {BackColor = if(ruz_os_err.kp = '', ColorNeed, 0)}};
+  ruz_os_err.os            #3'Код структуры' ('Организационная структура',,) : [8], Protect, {Font = {BackColor = if(ruz_os_err.os = '', ColorNeed, 0)}};
+  ruz_os_err.sch           #3'Затр.сч.' ('Затр.сч.',,) : [6], Protect, {Font = {BackColor = if(ruz_os_err.sch = '', ColorNeed, 0)}};
+  ruz_os_err.sp            #3'Подр.РУ' ('Подразделение РУ',,) : [6], Protect, {Font = {BackColor = if(ruz_os_err.sp = '', ColorNeed, 0)}};
+  ruz_os_err.sum           #3'Сумма' ('Сумма',,) : [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+end; //screen
+
+end; //Tabbed sheet
+
+Procedure SetKAU1Title;
+{
+  if (getfirst buhschet where ((_sSch == buhschet.schet)) = tsOK) {};
+  if (buhschet.kodtable[1] = 505)
+  {
+    SetColumnTitle(brRU, #ruz_os_oborot.kp, ''#3 + 'Бизнес-процесс');
+  }
+  else
+  {
+    SetColumnTitle(brRU, #ruz_os_oborot.kp, ''#3 + 'Код ресурса');
+  }
+}
+
+Procedure SaveDsk;
+{
+  SaveMyDsk(kr_param,      'kr_param_RU_main');
+
+  SaveMyDsk(_Filial,       '_Filial_RU_main');
+  SaveMyDsk(_cPlanSsch, '_cPlanSsch_RU_main');
+  SaveMyDsk(sSch,           'sSch_RU_main');
+  SaveMyDsk(_mesn,           '_mesn_RU_main');
+  SaveMyDsk(sFilePath,   'sFilePath_RU_main');
+}
+
+procedure SetTabTitle;
+{
+  if(getfirst ruz_OS_oborot = tsOK)
+  {
+    SetTabbedSheetTitle(brRU, '* Проводки')
+  }
+  else
+  {
+    SetTabbedSheetTitle(brRU, 'Проводки')
+  }
+  if (getfirst ruz_os_err = tsOK)
+  {
+   SetTabbedSheetVisible(brRUOS_err, true);
+  }
+  else
+  {
+   SetTabbedSheetVisible(brRUOS_err, false);
+  }
+
+
+}
+
+HandleEvent
+cmInit :
+{
+  //////////Screen 1
+  _yearn := Year(dGetTune('DAT_M_OT'));
+  if not ReadMyDsk(_mesn,'_mesn_RU_main', b) _mesn  := Month(dGetTune('DAT_M_OT'));
+  _bdate := Date(01, _mesn, _yearn);
+  _edate := Date(Last_Day(Date(01, _mesn, _yearn)), _mesn, _yearn);
+  if not ReadMyDsk(kr_param,'kr_param_RU_main', b)    kr_param := 'КР_9.00.00.0.00.0.0';
+
+  if not ReadMyDsk(_Filial,'_Filial_RU_main', b)      _Filial := 1000;
+  if not ReadMyDsk(_cPlanSsch,'_cPlanSsch_RU_main', b) _cplanssch:= coGetTune('FIN.USER.CPLANSSCH');
+  if (getfirst planssch = tsOK)
+  {
+    sPlanSch:= planssch.code + ', ' + planssch.name;
+  }
+  else
+  {
+    sPlanSch:= '';
+  }
+  if not ReadMyDsk(sSch,'sSch_RU_main', b)      sSch := 'RU';
+  _sSch := planssch.code + sSch;
+
+  if not ReadMyDsk(sFilePath,'sFilePath_RU_main', b)  sFilePath := 'D:\';
+
+  SetKAU1Title;
+  SetTabbedSheetVisible(brRUOS_err, false);
+}
+cmPick :
+case Curfield of
+  #kr_param:
+  {
+    set kr_param := 'КР_9.00.00.0.00.0.0';
+  }
+
+  #sPlanSch:
+  {
+     Runinterface(F_PlansSch::GetPlansSch, _cplanssch);
+     if (getfirst planssch = tsOK)
+     {
+       sPlanSch:= planssch.code + ', ' + planssch.name;
+     }
+  }
+
+  #sSch:
+  {
+
+    RunInterface(F_BuhSchet::GetBuhSchet, 0, _cPlanSsch, _sSch, sSubSchet);
+//    set _sSch := sSch;
+//    message('_sSch = ' + _sSch);
+    set sSch := SubStr(_sSch,2, length(_sSch));
+    if (SubStr(sSch,1,2) != 'RU')
+    {
+      message('Счет не является счетом РУ! Устанавливаю счет по умолчанию.');
+      set sSch := 'RU';
+      set _sSch := planssch.code + sSch;
+    }
+    SetKAU1Title;
+  }
+
+  #sFilePath:
+  {
+     set sFilePath:=GetDirName('Выберете путь для сохранения файлов', sFilePath);
+  }
+
+end;
+
+cmCheckField:
+{
+  case CurField of
+  #_mesn:
+  {
+    _bdate := Date(01, _mesn, _yearn);
+    _edate := Date(Last_Day(Date(01, _mesn, _yearn)), _mesn, _yearn);
+  }
+  #_yearn:
+  {
+    _bdate := Date(01, _mesn, _yearn);
+    _edate := Date(Last_Day(Date(01, _mesn, _yearn)), _mesn, _yearn);
+  }
+  end;
+}
+
+cmDone:
+{
+  SaveDsk;
+}
+cmOK:
+{
+  delete all ruz_OS_err;
+  FillRU;
+  SetTabTitle;
+  SaveDsk;
+  if (getfirst ruz_os_err = tsOK)
+  {
+    Message('Обнаружены ошибки при выгрузке!' + chr(13) + ' Проверьте закладку "Ошибки"');
+  }
+  //CloseInterface(cmOK);
+}
+cmDefault:
+{
+
+   // Message('cmDefault');
+}
+
+cmDelResults:
+{
+  if (message('Удалить данные для экспорта?', Warning + okCancel) = cmOK)
+  {
+    delete all ruz_OS;
+    SetTabTitle;
+  }
+}
+
+cmExport:
+{
+  SaveDsk;
+  PrintReportRU;
+}
+
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+end; //HandleEvent;
+End.

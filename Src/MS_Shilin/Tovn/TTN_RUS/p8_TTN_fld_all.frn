@@ -1,0 +1,119 @@
+!Поля приложения 8 к Правилам перевозок грузов автомобильным транспортом (p8_TTN.rtf)
+.fields
+!Шапка накладной
+  Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+ // if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+  Номер
+
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2)
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2)
+  Грузоотправитель_Адрес
+  Грузополучатель_Адрес
+
+  отпуск_разрешил_должность
+  отпуск_разрешил
+  сдал_отправитель_должность
+  сдал_отправитель
+
+!Спецификация
+  strname[1]
+  strname[2]
+  strname[3]
+  strname[4]
+  strname[5]
+  strname[6]
+  strname[7]
+  strname[8]
+  strname[9]
+  strname[10]
+  strname[11]
+  strname[12]
+  strname[13]
+  strname[14]
+  strname[15]
+
+  DoubleToStr (Round(CountKolF, KolZn), RoundGrm)
+
+  DoubleToStr (MassaNetItog, Massa_Kg)
+  DoubleToStr (MassaBrItog, Massa_Kg)
+
+  oPrnSoprFun.GetVagon(накладная_нрек, 2)
+  If(ТТН_ПунктП_Дата_С = Date(0,0,0),'', DateToStr(ТТН_ПунктП_Дата_С,'DD/MM/YY'))
+  if (ТТН_ПунктП_Время_С <>'00:00', ТТН_ПунктП_Время_С,'')
+  If(ТТН_ПунктП_Дата_По = Date(0,0,0),'', DateToStr(ТТН_ПунктП_Дата_По,'DD/MM/YY'))
+  if (ТТН_ПунктП_Время_По <>'00:00', ТТН_ПунктП_Время_По,'')
+  If(ТТН_ПунктР_Дата_С = Date(0,0,0),'', DateToStr(ТТН_ПунктР_Дата_С,'DD/MM/YY'))
+  if (ТТН_ПунктР_Время_С <>'00:00', ТТН_ПунктР_Время_С,'')
+  If(ТТН_ПунктР_Дата_По = Date(0,0,0),'', DateToStr(ТТН_ПунктР_Дата_По,'DD/MM/YY'))
+  if (ТТН_ПунктР_Время_По <>'00:00', ТТН_ПунктР_Время_По,'')
+
+//  #ifdef _IN_VAL_DOC_
+//     DoubleToStr(АСтНацСН,Cena_Pr)
+//     НакСимвол
+//  #else
+//     DoubleToStr(АСтНацСН,Cena_PrR)
+//     НацСимвол
+//  #end
+
+!Валюта прописью
+/*#ifdef _IN_VAL_DOC_
+  DoubleToStr(АСтНацСН,Cena_Pr)
+  НакСимвол
+  DoubleToString(Валюта_нрек, Round(АСтНацСН, GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+  DoubleToStr(АСтНацСН,Cena_PrR)
+  НацСимвол
+  DoubleToString(comp(0), Round(АСтНацСН, GetPrecisionGroup('brForSopr_Price')))
+#end      */
+
+
+  oPrnSoprFun.GetPunktFields(ТТН_ПунктП_Имя, ТТН_ПунктП_СТРАНА_ИМЯ, ТТН_ПунктП_ГОРОД_ИМЯ, ТТН_ПунктП_Адрес)
+  oPrnSoprFun.GetPunktFields(ТТН_ПунктР_Имя, ТТН_ПунктР_СТРАНА_ИМЯ, ТТН_ПунктР_ГОРОД_ИМЯ, ТТН_ПунктР_Адрес)
+
+  If(ТТН_ПунктП_Дата_С = Date(0,0,0),'', DateToStr(ТТН_ПунктП_Дата_С,'DD/MM/YY'))
+  if (ТТН_ПунктП_Время_С <>'00:00', ТТН_ПунктП_Время_С,'')
+  If(ТТН_ПунктР_Дата_С = Date(0,0,0),'', DateToStr(ТТН_ПунктР_Дата_С,'DD/MM/YY'))
+  if (ТТН_ПунктР_Время_С <>'00:00', ТТН_ПунктР_Время_С,'')
+  If(ТТН_ПунктП_Дата_По = Date(0,0,0),'', DateToStr(ТТН_ПунктП_Дата_По,'DD/MM/YY'))
+  if (ТТН_ПунктП_Время_По <>'00:00', ТТН_ПунктП_Время_По,'')
+  If(ТТН_ПунктР_Дата_По = Date(0,0,0),'', DateToStr(ТТН_ПунктР_Дата_По,'DD/MM/YY'))
+  if (ТТН_ПунктР_Время_По <>'00:00', ТТН_ПунктР_Время_По,'')
+
+  if (DoubleToStr (MassaBrItog, Massa_Kg) <>'', 'Масса брутто - '+MassaInWords (MassaBrItog, wRoundMass2), '')
+  if (DoubleToStr (Round(CountKolF, KolZn), strDr) <>'', ', грузовых мест - ' +DoubleToStr (Round(CountKolF, KolZn), strDr), '')
+
+  if (DoubleToStr (MassaBrItog, Massa_Kg) <>'', 'Масса брутто - '+MassaInWords (MassaBrItog, wRoundMass2), '')
+  if (DoubleToStr (Round(CountKolF, KolZn), strDr) <>'', ', грузовых мест - ' +DoubleToStr (Round(CountKolF, KolZn), strDr), '')
+
+  отпуск_разрешил
+  if (Trim(ТТН_Водитель_НомерУдост) <> '', ТТН_Водитель_Имя , водитель)
+  сдал_отправитель
+  if (Trim(ТТН_Водитель_НомерУдост) <> '', ТТН_Водитель_Имя , водитель)
+
+!Товарно-транспортная информация
+  ТТН_АвтоОрг_Имя
+  if (Trim(ТТН_Водитель_НомерУдост) <> '', ТТН_Водитель_Имя , водитель)
+  ТТН_АвтоОрг_Адрес
+
+  ТТН_Номер_ПЛист
+
+  if (Trim(ТТН_Авто_Номер) <> '', 'Автомобиль - ' + ТТН_Авто_Марка, 'Автомобиль -' + автомобиль)
+  if (ТТН_Прицеп1_Марка <> '', ', прицеп - ' + ТТН_Прицеп1_Марка, '')
+  if (ТТН_Прицеп2_Марка <> '', ', прицеп - ' + ТТН_Прицеп2_Марка, '')
+  if (ТТН_Авто_Груз <> '', ', грузоподъемность - ' + String(Round(Double(ТТН_Авто_Груз),2))+'т.', '')
+
+  if (Trim(ТТН_Авто_Номер) <> '', 'Номер автомобиля - ' +ТТН_Авто_Номер, '')
+  if (ТТН_Прицеп1_Номер <> '', ', номер прицепа - ' + ТТН_Прицеп1_Номер, '')
+  if (ТТН_Прицеп2_Номер <> '', ', номер прицепа - ' + ТТН_Прицеп2_Номер, '')
+
+  Грузоотправитель
+  if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+  отпуск_разрешил
+  ТТН_АвтоОрг_Имя
+  if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+  Грузополучатель
+  if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD/MM/YYYY'))
+  сдал_отправитель
+
+  СпецСимвол
+.endfields

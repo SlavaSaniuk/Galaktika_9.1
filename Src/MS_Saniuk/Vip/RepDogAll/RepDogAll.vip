@@ -1,0 +1,2026 @@
+#doc
+Отчет по исполнению договорных обязательств(Минскоблтелеком)
+#end
+
+#include pMarkFun.vih
+#include ClndrFnc.vih
+
+const
+ constNrep            = 10101;    //код отчета в Userdescrep
+ constLstDogovor      = 10102;    // фильтр по договорам
+ constNumColumn       = 31;       //кол-во колонок в отчете
+ constStrShablonStart = 4;        //стр;ока начала отчета
+ constKolZnakSrav     = 4;        //разряд округления для сравнения сумм
+ constColorGray       = 0D3D3D3h; //серый цвет
+ constColorBlue       = 0FACE87h; //синий цвет
+ constColorRed        = 0FFh;     //красный цвет
+ constColorYellow     = 000080h;  //красно-коричневый цвет
+ constColorGreen      = 71CB03h;  //зеленый цвет
+ constDeltaRound      = 0.01;     //допустимая погрешность при сравнении суммы договора и ТПКП созданных к нему
+end
+
+Interface RepDogAll 'Выбор настройки отчета' (,,) EscClose, Cyan;
+ Show at (10,2,80,21);
+
+var
+wNrep : Word;       //код отчета
+iMarkFun : pMarkFun; //объект для работы с маркерами
+oAiExt:iExtAttr; //объект для работы с внешними атрибутами
+ifuncCalend : CalendarFunctions;
+
+#include TablStr.vpp
+
+Create View
+
+Var
+returnNrecDog, returnOwn: comp;    //возвращаемые значения договора
+dDaterep:date;       //дата формирования отчета
+fldDog, fldShablon:string;
+NumPick:longint;    //кол-во выбранных договор
+tmpDog: comp;       //нрек выбранного договора, одиночный выбор
+shablonDSKRepDogAll:string;
+n:word;
+doControlSumPlat, doControlSumDo:double;
+fldtip:word;
+
+
+As Select *
+From
+ UserDeskRep
+,PickRep
+,tmpDog
+,tmpTPKP
+,tmpDO
+,tmpFPKP
+,tmpPlat
+,tmpGroupVid
+,tmpGroupOrg
+,tmpNakl
+,Dogovor (ReadOnly)
+,Dogovor fldDogovor (ReadOnly)
+,Dogovor dogovorDop (ReadOnly)
+,CALPLAN (ReadOnly)
+,KATVIDD (ReadOnly)
+,KATNOTES (ReadOnly)
+,Katorg (ReadOnly)
+,ATTRDOG  (ReadOnly)
+,klval  (ReadOnly)
+,cursval (ReadOnly)
+,cursval cursvalDog (ReadOnly)
+,PLATDOG  (ReadOnly)
+,Basedoc  (ReadOnly)
+,basedoc basedocPlat (ReadOnly)
+,Stepdoc  (ReadOnly)
+,CALPLAN CALPLAN_DO (ReadOnly)
+,BASEFIN (ReadOnly)
+,CALPLAN CALPLANfin (ReadOnly)
+,CALPLAN CALPLANfinPlat (ReadOnly)
+,USERSDOC (ReadOnly)
+,Plpor (ReadOnly)
+,CALENDAR (ReadOnly)
+,katsopr katsoprDog (ReadOnly)
+,katsopr katsoprDO (ReadOnly)
+,PLANPAYS (ReadOnly)
+,PLANPAYS PLANPAYSfin(ReadOnly)
+,tmpTPKP tmpTPKPAvans
+where
+((
+    UserName              == UserDeskRep.OwnName                //видим только свои отчеты
+and wNrep                 == UserDeskRep.nRep                   //видим только отчеты указанного вида
+
+and UserDeskRep.ResComp[1]== fldDogovor.nrec
+
+and UserName              == PickRep.OwnName
+and UserDeskRep.nRec      == PickRep.cUserDeskRep
+
+and dogovor.nrec          == dogovorDop.cdogovor       //для уточняющих соглашений
+
+and dogovor.CVIDDOG       == KATVIDD.nrec
+
+and dogovor.CNOTE         == KATNOTES.nrec
+
+and dogovor.CORG          == Katorg.nrec
+
+and dogovor.nrec          == ATTRDOG.CDOGOVOR
+
+and dogovor.nrec          == PLATDOG.CDOGOVOR            //бюджетные средства
+and word(1)               == PLATDOG.NPP
+
+and PLATDOG.CFINSOURCE    == SPKAU.nrec              //наименование бюджетных средств
+
+and dogovor.cval          == klval.nrec
+
+and dogovor.nrec          == CALPLAN.cdogovor         //товарные ПКП и авансовые ФПКП
+
+and ((CALPLAN.DIRECTMC     = word(2))
+or  (CALPLAN.DIRECTPLAT    = word(2) and CALPLAN.TERMDEFBY = word(0)))
+
+and CALPLAN.nrec          == PLANPAYS.CCALPLAN         //различные платежи по пунктам плана
+
+and dogovor.nrec          == basedoc.cdogovor
+
+and basedoc.nrec          == stepdoc.cbasedoc
+
+and basedoc.CCALPLAN      == CALPLAN_DO.nrec
+and dogovor.nrec          == CALPLAN_DO.cdogovor(noindex)      //для отсечения ПКП созданным по уточняющим соглашениям, в случае, если это ПКП созданное по уточняющему соглашению док попадет группу с неопределенным ПКП
+
+and CALPLAN_DO.nrec       == CALPLANfin.CPREDPLAN            //фактические ФПКП
+
+and CALPLANfin.nrec       == PLANPAYSfin.CCALPLAN               //различные платежи по пунктам плана
+
+and (CALPLANfin.DIRECTPLAT = word(2) and CALPLANfin.TERMDEFBY = word(1))
+
+and dogovor.nrec          == BASEFIN.CDOGOVOR
+and word(2)               == basefin.Direct(noindex)    //только платежи от нас
+
+and Basefin.tidkgal       == USERSDOC.tipgal
+and Basefin.TIPDOC        == USERSDOC.TIPUSERS
+
+and Basefin.cplpor        == Plpor.nrec
+
+and Basefin.Ckatsopr      == CALPLANfinPlat.nrec
+and dogovor.nrec          == CALPLANfinPlat.cdogovor(noindex)     //для отсечения ПКП созданным по уточняющим соглашениям, в случае, если это ПКП созданное по уточняющему соглашению док попадет группу с неопределенным ПКП
+
+and Basefin.cbasedoc      == basedocPlat.nrec
+
+and Dogovor.nrec          == katsoprDog.cdogovor
+))
+Bounds pickDog = UserDeskRep.ResWord[1] == PickRep.wList          //множественный фильтр по договорам
+           and          Dogovor.nrec   /== PickRep.crec
+
+Bounds edDog   = UserDeskRep.ResComp[1] == Dogovor.nrec          //одиночный фильтр по договорам
+;
+
+Function calcDay(datPlan:date;datFact:date; sCalen:string):double;
+{
+ calcDay:=0;
+
+ if(sCalen<>'' and getfirst CALENDAR where ((sCalen==CALENDAR.CODE))=tsok)
+   {
+     if(datPlan<datFact)
+       {
+          calcDay:=ifuncCalend.WorkDaysBetween(CALENDAR.nrec,datPlan,datFact)-1;
+       }
+     else
+       {
+          calcDay:=-(ifuncCalend.WorkDaysBetween(CALENDAR.nrec,datFact,datPlan)-1);
+       }
+   }
+ else
+   {
+    if(datPlan<datFact)
+      {
+        calcDay:=CalcDaysBetweenDates(datPlan,datFact,false)-1;
+      }
+    else
+      {
+        calcDay:=-(CalcDaysBetweenDates(datFact,datPlan,false)-1);
+      }
+   }
+}
+
+Function calcVal(sum:double;datcurs:date;val:comp):double;
+{
+  calcVal:=0;
+  if(UserDeskRep.ResWord[2]=0)      //если пересчет в НДЕ
+    {
+     if(val=0)         //если уже в НДЕ
+       {
+         calcVal:=sum;
+       }
+     else             //если в другой валюте
+       {
+       if(getlast cursval where ((val      == cursval.KODVALUT and
+                                 datcurs >>= cursval.DATVAL))=tsok)
+          {
+            calcVal:=sum*cursval.SUMRUBL;
+          }
+       }
+    }
+  else          //пересчет в валюте договора
+    {
+      if(val=dogovor.cval)       //если в валюте договора, то пересчитывать не надо
+        {
+          calcVal:=sum;
+        }
+      else
+        {
+          if(val=0)         //если в НДЕ
+            {
+             if(getlast cursvalDog where ((dogovor.cval == cursvalDog.KODVALUT and
+                                            datcurs >>= cursvalDog.DATVAL))=tsok)
+               {
+                calcVal:=sum/cursvalDog.SUMRUBL;
+               }
+            }
+          else     //в другой валюте
+            {
+             if(getlast cursval where ((val      == cursval.KODVALUT and
+                                        datcurs >>= cursval.DATVAL))=tsok)
+               {
+                 calcVal:=sum*cursval.SUMRUBL;
+                 if(getlast cursvalDog where ((dogovor.cval == cursvalDog.KODVALUT and
+                                            datcurs     >>= cursvalDog.DATVAL))=tsok)
+                   {
+                     calcVal:=calcVal/cursvalDog.SUMRUBL;
+                   }
+               }
+            }
+        }
+    }
+  calcVal:=round(calcVal,2);
+}
+
+Function tipPlat(tip:word):string;
+{
+  case tip of
+  1:
+  {
+    tipPlat:='ПП №'
+  }
+  10:
+  {
+    tipPlat:='бух. справка №'
+  }
+  else
+  {
+    tipPlat:='документ №'
+  }
+  end;
+}
+
+Procedure CreateProtokol;
+{
+ OpenMessageLog(GetDefaultUserPath+'RepDogAll.log',mfLog2Stream+mfNoTimeStamp);
+}
+
+Procedure CloseProtokol;
+{
+ CloseMessageLog;
+ processText(GetDefaultUserPath+'RepDogAll.log',vfEscable+vfMacroSize,'Лог формирования отчета');
+}
+
+Procedure InserttmpNakl;      //наполнение таблицы с накладными договоров, для сверки
+{
+  _loop KatsoprDog
+   {
+      ClearBuffer(#tmpNakl);
+      tmpNakl.NrecSopr     := KatsoprDog.nrec;
+      tmpNakl.NomerDatSopr := KatsoprDog.Nsopr+' от '+KatsoprDog.DSOPR;
+      tmpNakl.summa        := KatsoprDog.summa;
+      insert current tmpNakl;
+   }
+}
+
+Procedure InserttmpPlat;
+{
+ _loop Basefin
+  {
+  if(getfirst Plpor=tsok)
+   {
+    ClearBuffer(#tmpPlat);
+    tmpPlat.coDog        :=Basefin.cDogovor;
+    tmpPlat.coCALPLAN    :=Basefin.CCALPLAN;
+    tmpPlat.coCALPLANfin :=Basefin.CKATSOPR;
+    if(getfirst BasedocPlat=tsok)
+      {
+        tmpPlat.coBasedoc    :=Basefin.CBASEDOC;
+
+        if(getfirst CALPLANfinPlat=tsok)
+          {
+            if(CALPLANfinPlat.TERMDEFBY = word(0))
+              {
+                tmpPlat.wtip:=word(0); //авансовые ФПКП
+              }
+            else
+              {
+                tmpPlat.wtip:=word(1); //фактические ФПКП
+              }
+          }
+        else
+          {
+            tmpPlat.wtip:=word(2); //без ФПКП, но со ссылкой на ДО
+          }
+
+      }
+    else
+      {
+        if(getfirst CALPLANfinPlat=tsok)
+          {
+            if(CALPLANfinPlat.TERMDEFBY = word(0))
+              {
+                tmpPlat.wtip:=word(0); //авансовые ФПКП
+              }
+            else
+              {
+                tmpPlat.wtip:=word(3); // не определенные, ссылка ФПКП есть, но нет ДО. Так быть не должно
+              }
+          }
+        else
+          {
+            tmpPlat.wtip:=word(3);    //  не определенные, нет ссылок, не на ДО не на ФПКП
+          }
+      }
+    tmpPlat.coBasefin    :=Basefin.nrec;
+    tmpPlat.sName        :=tipPlat(Basefin.TIPDOC)+Basefin.NODOC;
+    if(getfirst USERSDOC =tsok)
+      {
+        tmpPlat.sIstok   :=USERSDOC.Name;
+      }
+
+     if(Plpor.DATOB<>date(0,0,0))
+       {
+         tmpPlat.dDate:=Plpor.DATOB;
+       }
+     else
+       {
+         tmpPlat.dDate:=Plpor.DATVIP;
+       }
+     tmpPlat.dDatOB   :=Plpor.DATOB;    //дата оплаты
+     tmpPlat.sPrim    :=Plpor.NamePl1+' '+Plpor.NamePl2+' '+Plpor.NamePl3+' '+Plpor.NamePl4;
+
+     tmpPlat.dosumFact    :=Basefin.SUMMA;
+     tmpPlat.dosumFactrep :=calcVal(Basefin.SUMMA,Plpor.DATVIP,Plpor.CVAL);
+
+     if(insert current tmpPlat=tsok)
+      {
+        doControlSumPlat:=doControlSumPlat+tmpPlat.dosumFactrep;
+      }
+
+    }
+  }
+}
+
+Procedure InserttmpFPKP;  //предварительно создаем записи по условиям фактических оплат
+{
+var datGran, datPodpis:date;
+var codCalendFPKP: string;
+
+   codCalendFPKP:='';
+
+   ClearBuffer(#tmpFPKP);            //Фактические платежа
+   tmpFPKP.coDog       := Dogovor.nrec;
+   tmpFPKP.coCALPLAN   := CALPLAN.Nrec;
+   tmpFPKP.coCALPLANfin:= CALPLANfin.Nrec;
+   tmpFPKP.coBasedoc   := Basedoc.nrec;
+   tmpFPKP.dokoldnFact := CALPLANfin.NDAYS;
+   tmpFPKP.sNomer      := CALPLANfin.NODOC;
+   if(getfirst PLANPAYSfin=tsok)
+     {
+      tmpFPKP.sDopField   := PLANPAYSfin.ADDTERMS;
+     }
+   tmpFPKP.doproc      := round(CALPLANfin.SUMMA/CALPLAN_DO.SUMMASPEC*100,0); // процент в чистом виде нигде не хранится;
+   tmpFPKP.dosumPlan   := round((Basedoc.TOTAL-tmpDO.dosumAvansrep)/100*tmpFPKP.doproc,2);
+   tmpFPKP.dosumPlanrep:= calcVal(tmpFPKP.dosumPlan,Basedoc.DDOC,Basedoc.CVAL);
+
+   codCalendFPKP:=oAiExt.sGetAttr(coCALPLANfin,CALPLANfin.nrec,'Календарь');
+   tmpFPKP.scodCalendFPKP:=codCalendFPKP;
+   datPodpis:=oAiExt.dGetAttr(coBasedoc,Basedoc.nrec,'Дата подписания');
+   if(datPodpis=date(0,0,0))
+     {
+       datPodpis:=Basedoc.DDOC;
+     }
+
+   if(codCalendFPKP<>'' and getfirst Calendar where ((codCalendFPKP==Calendar.code))=tsok)
+     {
+          datGran:= ifuncCalend.DateAfterWorkDay(Calendar.nrec, datPodpis, CALPLANfin.NDAYS);
+     }
+   else
+     {
+          datGran:= add_day(datPodpis,CALPLANfin.NDAYS);
+     }
+   tmpFPKP.dDatPlan:=datGran;
+   tmpFPKP.doProsr:= calcDay(datGran,dDaterep,codCalendFPKP);
+   insert current tmpFPKP;
+}
+
+Procedure InserttmpTPKP;         //вставка календарных планов товарных и авансовых финансовых
+{
+var codCalendTPKP: string;
+  _loop CALPLAN
+  {
+
+     codCalendTPKP:='';
+     ClearBuffer(#tmpTPKP);
+     tmpTPKP.coDog        := CALPLAN.CDOGOVOR;
+     tmpTPKP.coCALPLAN    := CALPLAN.Nrec;
+     tmpTPKP.ddate        := CALPLAN.DINPUT;
+     codCalendTPKP        := oAiExt.sGetAttr(coCALPLAN,CALPLAN.nrec,'Календарь');
+     tmpTPKP.scodCalendTPKP:=codCalendTPKP;
+
+     if(CALPLAN.DIRECTMC=2)    //товарные
+       {
+     tmpTPKP.wTip         := word(0);
+     tmpTPKP.sname        := 'ТКП №'+CALPLAN.NODOC_EXT;
+     tmpTPKP.dosumPlan    := CALPLAN.SUMMASPEC;
+     tmpTPKP.dosumPlanrep := calcVal(CALPLAN.SUMMASPEC,dDaterep,CALPLAN.CVAL);
+     tmpTPKP.dosumBudj    := oAiExt.sGetAttr(coCALPLAN,CALPLAN.nrec,'Бюджет');
+     tmpTPKP.dosumBudjrep := calcVal(tmpTPKP.dosumBudj,dDaterep,0);
+        if(CALPLAN.TERMDEFBY=0)
+          {
+            tmpTPKP.dsrok  := CALPLAN.DTO;     //если срок предопределен
+            tmpTPKP.wtipIspoln:=word(0);
+            tmpTPKP.kolDn:=0;
+          }
+        else
+          {
+            tmpTPKP.kolDn:=CALPLAN.NDAYS;
+            tmpTPKP.coCALPLANfin:=CALPLAN.CPREDPLAN;
+            tmpTPKP.wtipIspoln:=word(1);
+            if(codCalendTPKP<>'' and getfirst Calendar where ((codCalendTPKP==Calendar.code))=tsok)
+              {
+                   tmpTPKP.dsrok:= ifuncCalend.DateAfterWorkDay(Calendar.nrec, dDaterep, CALPLAN.NDAYS);
+              }
+            else
+              {
+                   tmpTPKP.dsrok:= add_day(dDaterep,CALPLAN.NDAYS);
+              }
+          }
+       }
+     else          //авансовые
+       {
+         if(getfirst PLANPAYS=tsok)
+            {
+              tmpTPKP.sDopField   := PLANPAYS.ADDTERMS;
+            }
+     tmpTPKP.wTip         := word(1);
+     tmpTPKP.sname        := 'авансовый ФКП №'+CALPLAN.NODOC_EXT;
+     tmpTPKP.dosumPlan    := CALPLAN.SUMMA;
+     tmpTPKP.dosumPlanrep := calcVal(tmpTPKP.dosumPlan,dDaterep,CALPLAN.CVAL);
+     tmpTPKP.dsrok        := CALPLAN.DTO;
+       }
+
+     insert current tmpTPKP;
+  }
+}
+
+Procedure CheckNaklDoFalse;    // проверка суммы ДО с суммой накладных
+{
+  _loop tmpNakl where ((word(0)==tmpNakl.DoTrue))
+    {
+      writeMessageLog('ОШИБКА! Обнаружен акт(накладная) который не попал в отчет. Вероятнее всего не создано ДО!');
+      writeMessageLog('         Реквизиты документа '+tmpNakl.NomerDatSopr);
+    }
+}
+
+Procedure CheckSummDoNakl;    // сверка суммы ДО с суммой накладных
+{
+var allsummaNakl:double;
+
+   allsummaNakl:=0
+   _loop katsoprDo where ((tmpdo.costepdoc == katsoprDO.cstepdoc))
+   {
+     allsummaNakl:=allsummaNakl+katsoprDo.SUMMA;
+     if(getfirst TmpNakl where ((katsoprDo.nrec==TmpNakl.nrecSopr))=tsok)
+       {
+         TmpNakl.DoTrue:=word(1);
+         update current TmpNakl;
+       }
+   }
+  if(round(allsummaNakl,constKolZnakSrav)<>round(tmpDO.dosumFact,constKolZnakSrav))
+    {
+      writeMessageLog('ОШИБКА! '+tmpDog.scontr+' '+tmpDog.sname+'. В '+tmpDO.sname+' сумма отличается от суммы подвязанных актов(накладных).');
+      writeMessageLog('           Сумма ДО '+tmpDO.dosumFact+           ' Сумма актов(накладных) '+allsummaNakl);
+    }
+  else
+    {
+      writeMessageLog('УСПЕШНО! '+tmpDog.scontr+' '+tmpDog.sname+'. В '+tmpDO.sname+' сумма равна сумме подвязанных актов(накладных).');
+    }
+}
+Procedure InserttmptmpDO;
+{
+  _loop Basedoc
+  {
+     ClearBuffer(#tmpDO);
+     tmpDO.coDog         :=Basedoc.CDOGOVOR;
+     tmpDO.coBasedoc    :=Basedoc.Nrec;
+     if(getfirst stepdoc =tsok)
+       {
+         tmpDO.coStepdoc:=stepdoc.nrec;
+       }
+     tmpDO.sname        :='ДО №'+Basedoc.NODOC;
+     tmpDO.ddate        :=Basedoc.DDOC;
+     if(oAiExt.dGetAttr(coBasedoc,Basedoc.nrec,'Дата подписания')<>date(0,0,0))
+       {
+        tmpDO.ddatePodpis  :=oAiExt.dGetAttr(coBasedoc,Basedoc.nrec,'Дата подписания');
+       }
+     tmpDO.dosumBudj    :=oAiExt.doGetAttr(coBasedoc,Basedoc.nrec,'Бюджет');
+     tmpDO.dosumBudjrep :=calcVal(tmpDO.dosumBudj,Basedoc.DDOC,0);
+     tmpDO.dosumFact    :=Basedoc.TOTAL;
+     tmpDO.dosumFactrep :=calcVal(Basedoc.TOTAL,Basedoc.DDOC,Basedoc.CVAL);
+     tmpDO.dosumAvans   :=oAiExt.doGetAttr(coBasedoc,Basedoc.nrec,'Аванс');
+     tmpDO.dosumAvansrep:=calcVal(tmpDO.dosumAvans,Basedoc.DDOC,0);
+     tmpDO.wprovodki    :=word(0);
+     if(getfirst CALPLAN_DO=tsok)
+       {
+         tmpDO.wtip          :=word(0);      //с ссылкой на товарные ПКП
+         tmpDO.coCALPLAN     :=CALPLAN_DO.nrec;
+
+         _loop CALPLANfin      //создаем записи для факта по оплате
+           {
+              InserttmpFPKP;
+           }
+       }
+     else
+       {
+         tmpDO.wtip          :=word(2);    //без ссылки на товарные ПКП
+       }
+     if(insert current tmpDO=tsok)
+       {
+         doControlSumDo:=doControlSumDo+tmpDO.dosumFactrep;
+       }
+  }
+}
+
+Function checkDogFiltr(boLogTrue:boolean):boolean;
+{
+  checkDogFiltr:=true;
+  if(dogovor.status = word(3))       //не обрабатываем договора в статусе "расторгнутый"
+    {
+      if(boLogTrue)
+        {
+          writeMessageLog('ПРЕДУПРЕЖДЕНИЕ! Договор '+DOGOVOR.NODOC_EXT+ ' от '+DOGOVOR.DINPUT+' пропущен. Статус "Расторгнутый".') ;
+        }
+      checkDogFiltr:=false;
+    }
+  if(Dogovor.cdogovor <> comp(0))       //не обрабатываем уточняющие соглашения
+    {
+      if(boLogTrue)
+        {
+      writeMessageLog('ПРЕДУПРЕЖДЕНИЕ! Договор '+DOGOVOR.NODOC_EXT+ ' от '+DOGOVOR.DINPUT+' пропущен. Тип "Уточняющее соглашение".') ;
+        }
+      checkDogFiltr:=false;
+    }
+  if(dogovor.Direct <> word(2))       //не обрабатываем договора отличные от направления "закупка"
+    {
+      if(boLogTrue)
+        {
+      writeMessageLog('ПРЕДУПРЕЖДЕНИЕ! Договор '+DOGOVOR.NODOC_EXT+ ' от '+DOGOVOR.DINPUT+' пропущен. Направление отличное от "2->1". ') ;
+        }
+      checkDogFiltr:=false;
+    }
+  if(getfirst DogovorDop=tsok)       // если по договору созданы уточняющие соглашения. Работаем только с отменяющими соглашениями
+    {
+      if(boLogTrue)
+        {
+      writeMessageLog('ПРЕДУПРЕЖДЕНИЕ! Договор '+DOGOVOR.NODOC_EXT+ ' от '+DOGOVOR.DINPUT+' пропущен. По договору созданы "Уточняющие соглашения". Можно создавать только "Отменяющие соглашения"');
+        }
+      checkDogFiltr:=false;
+    }
+}
+Procedure Inserttmp;      //вставка договоров
+{
+ writeMessageLog('Информация о пропущенных договорах:') ;
+ writeMessageLog(' ') ;
+  _loop Dogovor     //наполнение таблицы с договорами
+   {
+      if(not checkDogFiltr(true))
+        {
+         continue;
+        }
+      ClearBuffer(#tmpDog);
+      tmpDog.coDog:=Dogovor.nrec;
+      tmpDog.dosumPlan:=DOGOVOR.Summa;
+      tmpDog.dosumPlanrep:=calcVal(DOGOVOR.Summa,dDaterep,DOGOVOR.CVAL);
+      if(getfirst KATVIDD=tsok)
+        {
+      tmpDog.svidDog   := KATVIDD.name;
+        }
+      if(getfirst KATNOTES=tsok)
+        {
+      tmpDog.sstatus   := KATNOTES.SNAME;
+        }
+      if(getfirst Katorg=tsok)
+        {
+      tmpDog.scontr    := Katorg.name;
+        }
+      if(getfirst ATTRDOG=tsok)
+        {
+      tmpDog.sname     := 'договор №'+DOGOVOR.NODOC_EXT+' '+ATTRDOG.SUBJECT1;
+      tmpDog.sOtv      := ATTRDOG.OTV_MY_FIO;
+        }
+      tmpDog.ddate     := DOGOVOR.DINPUT;
+      if(getfirst klval=tsok)
+        {
+      tmpDog.sval      := klval.SIMVOLV
+        }
+      if(getfirst PLATDOG=tsok)
+        {
+         if(getfirst SPKAU=tsok)
+           {
+              tmpDog.snameBudj:=SPKAU.Name;
+              tmpDog.dosumBudj:=PLATDOG.SUMMA;
+              tmpDog.dosumBudjrep:=calcVal(tmpDog.dosumBudj,dDaterep,PLATDOG.CVAL);
+           }
+        }
+      if(insert current tmpDog=tsok)
+        {
+          InserttmpTPKP;
+          InserttmptmpDO;
+          InserttmpPlat;
+          InserttmpNakl;
+        }
+   }
+ writeMessageLog('_______________________________________________________') ;
+}
+
+Procedure InserttmpGroup;   //процедура для заполнения таблиц группировки
+{
+
+var oldsviddog, oldscontr:string;
+
+  oldsviddog:='Первый вход';
+  oldscontr :='Первый вход';
+  _loop tmpDog ordered by index tmpDog02
+   {
+     if(tmpDog.svidDog=oldsviddog and tmpDog.scontr=oldscontr)
+       {
+         continue;
+       }
+
+     if(tmpDog.svidDog<>oldsviddog)
+       {
+        ClearBuffer(#tmpGroupVid);
+        tmpGroupVid.svidDog:=tmpDog.svidDog;
+        insert current tmpGroupVid;
+       }
+
+     ClearBuffer(#tmpGroupOrg);
+     tmpGroupOrg.svidDog:=tmpDog.svidDog;
+     tmpGroupOrg.scontr:=tmpDog.scontr;
+     insert current tmpGroupOrg;
+
+     oldsviddog:=tmpDog.svidDog;
+     oldscontr :=tmpDog.scontr;
+   }
+}
+
+Procedure UpdateSrokTPKP;    //для обновления срока отгрузки в случае, если предшествующий ФПКП выполнен на 100%
+{
+  var checkSumAvans:double;
+  var datPlLast: date;
+  checkSumAvans:=0;
+ _loop tmpTPKP where ((word(0)==tmpTPKP.wTip and
+                       word(1)==tmpTPKP.wtipIspoln))
+  {
+     if(getfirst tmpTPKPAvans where ((tmpTPKP.coCALPLANfin==tmpTPKPAvans.coCALPLAN))=tsok)
+       {
+          _loop tmpPlat where ((tmpTPKPAvans.coCALPLAN    == tmpPlat.coCALPLANfin))
+            {
+              checkSumAvans:=checkSumAvans+tmpPlat.dosumFactrep;
+              datPlLast:=tmpPlat.dDate;      //дата последней платежки
+            }
+
+          if(round(tmpTPKPAvans.dosumPlanrep,constKolZnakSrav)<=round(checkSumAvans,constKolZnakSrav))
+            {
+             if(tmpTPKP.scodCalendTPKP<>'' and getfirst Calendar where ((tmpTPKP.scodCalendTPKP==Calendar.code))=tsok)
+               {
+                   tmpTPKP.dsrok:= ifuncCalend.DateAfterWorkDay(Calendar.nrec, datPlLast, tmpTPKP.kolDn);
+               }
+             else
+               {
+                   tmpTPKP.dsrok:= add_day(datPlLast,tmpTPKP.kolDn);
+               }
+              Update current tmpTPKP;
+            }
+       }
+  }
+}
+
+Procedure doneBounds;
+{
+  if ( BoundActive( tbedDog ) )
+     {
+        SubBounds(tbedDog);
+     }
+  if ( BoundActive( tbpickDog ) )
+     {
+        SubBounds(tbpickDog);
+     }
+}
+
+Procedure initBounds;
+{
+  if(UserDeskRep.ResComp[1]<>0)
+    {
+    if (not BoundActive( tbedDog ) )
+      {
+      addBounds(tbedDog);
+      }
+    }
+  else
+    {
+     if(UserDeskRep.ResWord[1]<>0)
+       {
+        if (not BoundActive( tbpickDog ) )
+           {
+         addBounds(tbpickDog);
+           }
+       }
+    }
+}
+
+Procedure ClearAllRep;              //очистка данных после формирования отчета
+{
+  doneBounds;
+
+  delete all tmpDog;
+  delete all tmpTPKP;
+  delete all tmpDO;
+  delete all tmpFPKP;
+  delete all tmpPlat;
+  delete all tmpGroupVid;
+  delete all tmpGroupOrg;
+  delete all tmpNakl;
+
+  doControlSumDo:=0;
+  doControlSumPlat:=0;
+}
+
+Function CountPickRep(wListSour : word) : word;     // Пересчет выбранных элементов в PickRep
+{
+  result := 0;
+  _LOOP PickRep where (( UserName         == PickRep.OwnName      and
+                         UserDeskRep.nRec == PickRep.cUserDeskRep and
+                         wListSour        == PickRep.wList ))
+   {
+    result++;
+   }
+}
+
+Procedure Report_SetField(nField: integer);        // отображение значения фильтра на экране
+{
+  case nField of
+    #fldDog:
+    {
+      fldDog:= if (UserDeskRep.ResComp[1] <> 0, 'Договор №' + fldDogovor.noDoc,
+               if (UserDeskRep.ResWord[1] <> 0, 'Множественный выбор (' + CountPickRep(UserDeskRep.ResWord[1]) + ')', ''));
+    }
+  end;
+}
+
+procedure MyReport_SetFields;              //отображение значения фильтра на экране
+{
+  Report_SetField(#fldDog);
+}
+
+Function CheckDate: boolean;                 //проверка даты формирования отчета
+{
+ CheckDate:=true;
+ if(UserDeskRep.RESDATE[1]<>date(0,0,0))
+   {
+     dDaterep:=UserDeskRep.RESDATE[1];
+   }
+ else
+   {
+     message('Не указана дата формирования отчета!');
+     CheckDate:=false;
+   }
+}
+
+Function CheckShablon :boolean;
+{
+  CheckShablon:=true;
+  if(fldshablon='')
+    {
+      message('Не выбран шаблон!');
+      CheckShablon:=false;
+    }
+  else
+    {
+      if(not xlCreateExcelWithTemplate(fldshablon,true))
+        {
+          message('По указанному пути шаблон не обнаружен!');
+          CheckShablon:=false;
+        }
+    }
+}
+
+Function checkDogovor:boolean;
+{
+  checkDogovor:=false;
+
+  if(fldDog='')    //если фильтр по договорам не задан
+    {
+      exit;
+    }
+
+  _loop Dogovor
+   {
+     if(not checkDogFiltr(false))
+        {
+         continue;
+        }
+
+     checkDogovor:=true;    //если до сюда дошли, значит еже есть договора подходящие под фильтр, можно обрывать дальнейшую проверку
+     break;
+   }
+}
+
+Procedure InsertValue_AG(allcolumn:string);
+{
+var i:word;
+var column:string;
+
+xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+xlThin, 0, 0, n, 1, n, constNumColumn);
+
+for(i:=1;i<=length(allcolumn);i:=i+1)
+   {
+   column:=substr(allcolumn,i,1);
+     case column of
+     'a':
+       {
+         xlSetFontColor(constColorGray,n,1,n,1);
+         xlSetCellStringValue(tmpGroupVid.sviddog,n,1,n,1);
+       }
+     'A':
+       {
+         xlSetFontStyle(1,n,1,n,constNumColumn);
+         xlSetCellStringValue(tmpGroupVid.sviddog,n,1,n,1);
+       }
+     'b':
+       {
+         xlSetFontColor(constColorGray,n,2,n,2);
+         xlSetCellStringValue(tmpDog.sstatus,n,2,n,2);
+       }
+     'B':
+       {
+         xlSetCellStringValue(tmpDog.sstatus,n,2,n,2);
+       }
+     'c':
+       {
+         xlSetFontColor(constColorGray,n,3,n,3);
+         xlSetCellStringValue(tmpGroupOrg.scontr,n,3,n,3);
+       }
+     'C':
+       {
+         xlSetFontStyle(1,n,3,n,constNumColumn);
+         xlSetCellStringValue(tmpGroupOrg.scontr,n,3,n,3);
+       }
+     'd':
+       {
+         xlSetFontColor(constColorGray,n,4,n,4);
+         xlSetCellStringValue(tmpDog.sname,n,4,n,4);
+       }
+     'D':
+       {
+         xlSetFontStyle(1,n,4,n,constNumColumn);
+         xlSetCellStringValue(tmpDog.sname,n,4,n,4);
+         xlSetCellDateValue(tmpDog.ddate,n,7,n,7);
+       }
+     'e':
+       {
+            xlSetFontColor(constColorGray,n,5,n,5);
+            xlSetCellStringValue(tmpTPKP.sname,n,5,n,5);
+       }
+     'E':
+       {
+            xlSetCellStringValue(tmpTPKP.sname,n,5,n,5);
+            xlSetCellDateValue(tmpTPKP.ddate,n,7,n,7);
+       }
+     'f':
+       {
+         xlSetFontColor(constColorGray,n,6,n,7);
+         xlSetCellStringValue(tmpDO.sname,n,6,n,6);
+         xlSetCellDateValue(tmpDO.ddate,n,7,n,7);
+       }
+     'F':
+       {
+         xlSetCellStringValue(tmpDO.sname,n,6,n,6);
+         xlSetCellDateValue(tmpDO.ddate,n,7,n,7);
+       }
+     end;
+   }
+n++;
+}
+
+Procedure CreateRepExcel;
+{
+var NotTPKP, NotFPKP, NotPlatFPKP:boolean;
+var doSumAvansDo, doSumFactFPKP, doSumPlanAllFPKP, doSumFactNoFPKP,
+doControlSum, doSumFactAvansFPKP,doSumPlanTPKP, doSumFactUnknowFPKP,doSumFactFPKPall: double;
+var nItogDO, doSumFactPlatItogDO, doSumDolgPlatItogDO, doSumProsrPlatItogDo,doSumDolgPlatAvansTPKP,
+doSumProsrPlatItogAvansTPKP: double;
+var nItogTPKP, doSumFactItogTPKP,doSumAvansItogTPKP: double;
+var nItogDog, doSumFactItogDog, doSumAvansItogDog, doSumFactPlatItogDog,doSumDolgPlatItogDog,
+doSumDolgProsrPlatItogDog: double;
+var nItogOrg, doSumPlanItogOrg, doSumBujItogOrg, doSumFactItogOrg, doSumAvansItogOrg,
+doSumFactPlatItogOrg, doSumDolgPlatItogOrg, doSumDolgPlatAvansTPKPOrg, doSumDolgProsrPlatItogOrg:double;
+var nItogGr, doSumPlanItogGr, doSumBujItogGr, doSumFactItogGr, doSumAvansItogGr,
+doSumFactPlatItogGr, doSumDolgPlatItogGr, doSumDolgPlatAvansTPKPGr, doSumDolgProsrPlatItogGr:double;
+var nItogMain, doSumPlanItogMain, doSumBujItogMain, doSumFactItogMain, doSumAvansItogMain,
+doSumFactPlatItogMain, doSumDolgPlatItogMain, doSumDolgPlatAvansTPKPMain, doSumDolgProsrPlatItogMain:double;
+
+ writeMessageLog(' Сверка ДО и накладных(сверяется сумма в валюте документа):') ;
+ writeMessageLog(' ') ;
+
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm,
+                'Формирование отчета', 1);
+  n:=constStrShablonStart;
+  nItogMain:=n;
+  doSumPlanItogMain:=0;
+  doSumBujItogMain:=0;
+  doSumFactItogMain:=0;
+  doSumAvansItogMain:=0;
+  doSumFactPlatItogMain:=0;
+  doSumDolgPlatItogMain:=0;
+  doSumDolgPlatAvansTPKPMain:=0;
+  doSumDolgProsrPlatItogMain:=0;
+
+  xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+  xlThin, 0, 0, n, 1, n, constNumColumn);
+  xlSetFontStyle(1,n,1,n,constNumColumn);
+  xlSetCellDateValue(ddaterep,2,4,2,4);
+  xlSetCellStringValue('ИТОГО по отчету',n,1,n,1);
+  n++;
+
+  _Loop tmpGroupVid ordered by index tmpGroupVid01      //вывод уровня вид
+   {
+      nItogGr:=n;
+      doSumPlanItogGr:=0;
+      doSumBujItogGr:=0;
+      doSumFactItogGr:=0;
+      doSumAvansItogGr:=0;
+      doSumFactPlatItogGr:=0;
+      doSumDolgPlatItogGr:=0;
+      doSumDolgPlatAvansTPKPGr:=0;
+      doSumDolgProsrPlatItogGr:=0;
+
+      InsertValue_AG('A');
+     _loop tmpGroupOrg where ((tmpGroupVid.sviddog == tmpGroupOrg.sviddog))     //вывод уровня организация
+      {
+         nItogOrg:=n;
+         doSumPlanItogOrg:=0;
+         doSumBujItogOrg:=0;
+         doSumFactItogOrg:=0;
+         doSumAvansItogOrg:=0;
+         doSumFactPlatItogOrg:=0;
+         doSumDolgPlatItogOrg:=0;
+         doSumDolgPlatAvansTPKPOrg:=0;
+         doSumDolgProsrPlatItogOrg:=0;
+
+         InsertValue_AG('aC');
+        _loop tmpDog where ((tmpGroupOrg.sviddog == tmpDog.sviddog       //вывод договоров
+                         and tmpGroupOrg.scontr  == tmpDog.scontr  ))
+         {
+            nItogDog:=n;
+            doSumPlanTPKP:=0;
+            doSumFactItogDog:=0;
+            doSumAvansItogDog:=0;
+            doSumFactPlatItogDog:=0;
+            doSumDolgPlatItogDog:=0;
+            doSumDolgProsrPlatItogDog:=0;
+            xlSetCellStringValue(tmpDog.sval,n,9,n,9);
+            xlSetCellStringValue(tmpDog.dosumPlanrep,n,10,n,10);
+            xlSetCellStringValue(tmpDog.dosumBudjrep,n,11,n,11);
+            xlSetCellStringValue(tmpDog.snameBudj,n,12,n,12);
+            InsertValue_AG('aBcD');
+
+           _loop tmpTPKP where ((word(0)      == tmpTPKP.wTip
+                             and tmpDog.coDog == tmpTPKP.coDog ))     //вывод товарных ТПКП
+                {
+                    nItogTPKP:=n;
+                    doSumFactItogTPKP:=0;
+                    doSumAvansItogTPKP:=0;
+                    xlSetCellStringValue(tmpDog.sval,n,9,n,9);
+                    xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,10,n,10);
+                    xlSetCellStringValue(tmpTPKP.dosumBudjrep,n,11,n,11);
+                    xlSetFontColor(constColorGray,n,12,n,12);
+                    xlSetCellStringValue(tmpDog.snameBudj,n,12,n,12);
+                    xlSetCellDateValue(tmpTPKP.dsrok,n,16,n,16);
+                    InsertValue_AG('abcdE');
+                   _Loop tmpDO where ((word(0)       ==tmpDO.wtip
+                              and      tmpTPKP.coDog ==tmpDO.coDog
+                              and  tmpTPKP.coCALPLAN ==tmpDO.coCALPLAN))     //вывод ДО с ТПКП
+                        {
+                          nItogDO:=n;
+                          doSumFactPlatItogDO:=0;
+                          doSumDolgPlatItogDO:=0;
+                          doSumProsrPlatItogDo:=0;
+
+                          xlSetBackColor(constColorBlue,n,6,n,constNumColumn);
+                          if(tmpDO.ddatePodpis<>date(0,0,0))
+                            {
+                          xlSetCellDateValue(tmpDO.ddatePodpis,n,8,n,8);
+                            }
+                          xlSetCellStringValue(tmpDog.sval,n,9,n,9);
+                          xlSetCellStringValue(tmpDO.dosumBudjrep,n,11,n,11);
+                          xlSetFontColor(constColorGray,n,12,n,12);
+                          xlSetCellStringValue(tmpDog.snameBudj,n,12,n,12);
+                          xlSetCellStringValue(tmpDO.dosumFactrep,n,13,n,13);
+                          xlSetCellStringValue(tmpDO.dosumAvansrep,n,14,n,14);
+                          xlSetCellStringValue(tmpDO.dosumFactrep-tmpDO.dosumAvansrep,n,15,n,15);
+                          if(tmpDO.ddatePodpis<>date(0,0,0))
+                            {
+                              xlSetCellStringValue(calcDay(tmpTPKP.dsrok,tmpDO.ddatePodpis,tmpTPKP.scodCalendTPKP),n,17,n,17);
+                              if(calcDay(tmpTPKP.dsrok,tmpDO.ddatePodpis,tmpTPKP.scodCalendTPKP)>0)
+                               {
+                                 xlSetFontColor(constColorRed,n,17,n,17);
+                                }
+                            }
+                          else
+                            {
+                              xlSetCellStringValue(calcDay(tmpTPKP.dsrok,tmpDO.ddate,tmpTPKP.scodCalendTPKP),n,17,n,17);
+                              if(calcDay(tmpTPKP.dsrok,tmpDO.ddate,tmpTPKP.scodCalendTPKP)>0)
+                               {
+                                 xlSetFontColor(constColorRed,n,17,n,17);
+                               }
+                            }
+
+                          InsertValue_AG('abcdeF');
+                           ////////////////////////////вывод авансовых платежей по ДО
+                           doSumAvansDo:=0;
+
+                          _loop tmpPlat where ((word(0)             == tmpPlat.wtip             //вывод авансовых платежей
+                                          and   tmpDO.coBasedoc     == tmpPlat.coBasedoc))
+                                {
+                                 if(tmpPlat.dDatOB=date(0,0,0))      //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                 xlSetBackColor(constColorGreen,n,23,n,26);
+                                 xlSetCellStringValue('а',n,20,n,20);
+                                 xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                 xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                 xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                 xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                 xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                 InsertValue_AG('abcdef');
+                                 tmpPlat.insertTrue:=word(1);
+                                 Update current tmpPlat;
+                                 doSumAvansDo:=doSumAvansDo+tmpPlat.dosumFactrep;
+                                }
+
+                            if(round(tmpDO.dosumAvansrep-doSumAvansDo,constKolZnakSrav)<>0)     //вывод разницы между оплатой аванса и значением аванса из атрибута
+                                {
+                                 if(tmpDO.dosumAvansrep-doSumAvansDo>0)
+                                   {
+                                    xlSetCellStringValue('не распределен аванс',n,20,n,20);
+                                    xlSetCellStringValue(tmpDO.dosumAvansrep-doSumAvansDo,n,26,n,26);
+                                   }
+                                 else
+                                   {
+                                    xlSetCellStringValue('ПРЕВЫШЕНИЕ РАСПРЕДЕЛЕННОГО АВАНСА!',n,20,n,20);
+                                    xlSetCellStringValue(tmpDO.dosumAvansrep-doSumAvansDo,n,26,n,26);
+                                   }
+                                 xlSetFontColor(constColorRed,n,20,n,20);
+                                 xlSetBackColor(constColorGreen,n,23,n,26);
+                                 InsertValue_AG('abcdef');
+                                }
+                           //////////////////////////////////////
+
+                           ////////////////////////////вывод фактических платежей по ДО
+                           doSumPlanAllFPKP:=0;
+                           doSumFactFPKPall:=0;
+                          _Loop tmpFPKP where ((tmpDO.coBasedoc == tmpFPKP.coBasedoc)) //вывод условие по фактическим платежам
+                               {
+                                 NotPlatFPKP:=false;
+                                 doSumFactFPKP:=0;
+                                 doSumPlanAllFPKP:=doSumPlanAllFPKP+tmpFPKP.dosumPlanrep;
+
+                                 _loop tmpPlat where ((word(1)             ==tmpPlat.wtip       //вывод платежей по фактическим ФПКП
+                                          and          tmpFPKP.coBasedoc   ==tmpPlat.coBasedoc
+                                          and          tmpFPKP.coCALPLANfin==tmpPlat.coCALPLANfin))
+                                  {
+                                   if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                   if(NotPlatFPKP=false)
+                                     {
+                                      xlSetCellDateValue(tmpFPKP.dDatPlan,n,19,n,19);
+                                      xlSetCellStringValue(tmpFPKP.sDopField,n,20,n,20);
+                                      xlSetCellStringValue(tmpFPKP.dosumPlanrep,n,21,n,21);
+                                      NotPlatFPKP:=true;
+                                     }
+                                   xlSetCellStringValue(calcDay(tmpFPKP.dDatPlan,tmpPlat.dDate,tmpFPKP.scodCalendFPKP),n,22,n,22);
+                                   if(calcDay(tmpFPKP.dDatPlan,tmpPlat.dDate,tmpFPKP.scodCalendFPKP)>0)
+                                     {
+                                      xlSetFontColor(constColorRed,n,22,n,22);
+                                     }
+                                   xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                   xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                   xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                   xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                   xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                   InsertValue_AG('abcdef');
+                                   tmpPlat.insertTrue:=word(1);
+                                   doSumFactFPKP:=doSumFactFPKP+tmpPlat.dosumFactrep;
+                                   Update current tmpPlat;
+                                  }
+
+                                if(NotPlatFPKP=false)   //если платежей по фактическим ФПКП нет
+                                  {
+                                    if(tmpFPKP.doProsr>0)
+                                      {
+                                       xlSetFontColor(constColorRed,n,22,n,22);
+                                       xlSetCellStringValue(tmpFPKP.dosumPlanrep,n,29,n,29);
+                                       doSumProsrPlatItogDo:=doSumProsrPlatItogDo+tmpFPKP.dosumPlanrep;
+                                      }
+                                    xlSetCellDateValue(tmpFPKP.dDatPlan,n,19,n,19);
+                                    xlSetCellStringValue(tmpFPKP.sDopField,n,20,n,20);
+                                    xlSetCellStringValue(tmpFPKP.dosumPlanrep,n,21,n,21);
+                                    xlSetCellStringValue(tmpFPKP.doProsr,n,22,n,22);
+                                    xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                    xlSetCellStringValue(tmpFPKP.dosumPlanrep,n,27,n,27);
+                                    InsertValue_AG('abcdef');
+                                    doSumDolgPlatItogDO:=doSumDolgPlatItogDO+tmpFPKP.dosumPlanrep;
+                                  }
+                                else
+                                  {
+                                    if(round(tmpFPKP.dosumPlanrep-doSumFactFPKP,constKolZnakSrav)<>0)
+                                      {
+                                        if(tmpFPKP.dosumPlanrep-doSumFactFPKP>0)
+                                          {
+                                            if(tmpFPKP.doProsr>0)
+                                              {
+                                                xlSetFontColor(constColorRed,n,22,n,22);
+                                                xlSetCellStringValue(tmpFPKP.dosumPlanrep-doSumFactFPKP,n,29,n,29);
+                                                doSumProsrPlatItogDo:=doSumProsrPlatItogDo+tmpFPKP.dosumPlanrep-doSumFactFPKP;
+                                              }
+                                            xlSetCellDateValue(tmpFPKP.dDatPlan,n,19,n,19);
+                                            xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                            xlSetCellStringValue(tmpFPKP.doProsr,n,22,n,22);
+                                            xlSetCellStringValue(tmpFPKP.dosumPlanrep-doSumFactFPKP,n,27,n,27);
+                                            InsertValue_AG('abcdef');
+                                          }
+                                        else
+                                          {
+                                            xlSetCellDateValue(tmpFPKP.dDatPlan,n,19,n,19);
+                                            xlSetCellStringValue('ПРЕВЫШЕНИЕ ФПКП!',n,23,n,23);
+                                            xlSetCellStringValue(tmpFPKP.dosumPlanrep-doSumFactFPKP,n,27,n,27);
+                                            InsertValue_AG('abcdef');
+                                          }
+                                        doSumDolgPlatItogDO:=doSumDolgPlatItogDO+tmpFPKP.dosumPlanrep-doSumFactFPKP;
+                                      }
+                                  }
+                                 doSumFactFPKPall:=doSumFactFPKPall+doSumFactFPKP;
+                               }
+                            //////////////////////////////////////////////
+
+                            //////////////////////////////////////////////вывод платежей с неопределенным ФПКП
+                           doSumFactUnknowFPKP:=0;
+                          _loop tmpPlat where ((word(1)             ==tmpPlat.wtip                //вывод платежей с неправильным ФПКП
+                                          and   tmpDO.coBasedoc     ==tmpPlat.coBasedoc
+                                          and   word(0)             ==tmpPlat.insertTrue))
+                                {
+                                 if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                  xlSetFontColor(constColorRed,n,20,n,20);
+                                  xlSetCellStringValue('НЕВЕРНЫЙ ФПКП!',n,20,n,20);
+                                  xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                  xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                  xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                  xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                  xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                  InsertValue_AG('abcdef');
+                                  tmpPlat.insertTrue:=word(1);
+                                  doSumFactUnknowFPKP:=doSumFactUnknowFPKP+tmpPlat.dosumFactrep;
+                                  Update current tmpPlat;
+                                }
+                           ////////////////////////////////////////////////////////////
+
+                           ///////////////////////////////////////////вывод платежей без ФПКП
+                           doSumFactNoFPKP:=0;
+
+                          _loop tmpPlat where ((word(2)             ==tmpPlat.wtip                //вывод платежей без ФПКП
+                                          and   tmpDO.coBasedoc     ==tmpPlat.coBasedoc))
+                                {
+                                 if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                  xlSetFontColor(constColorRed,n,20,n,20);
+                                  xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                  xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                  xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                  xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                  xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                  xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                  InsertValue_AG('abcdef');
+                                  tmpPlat.insertTrue:=word(1);
+                                  doSumFactNoFPKP:=doSumFactNoFPKP+tmpPlat.dosumFactrep;
+                                  Update current tmpPlat;
+                                }
+
+                           doControlSum:=tmpDO.dosumFactrep-tmpDO.dosumAvansrep-doSumPlanAllFPKP-doSumFactUnknowFPKP-doSumFactNoFPKP;
+                           if(round(doControlSum,constKolZnakSrav)<>0)
+                              {
+                                if(doControlSum>0)
+                                   {
+                                     xlSetFontColor(constColorRed,n,20,n,20);
+                                     xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                     xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                     xlSetCellStringValue(doControlSum,n,27,n,27);
+                                     InsertValue_AG('abcdef');
+                                   }
+                                else
+                                   {
+                                     xlSetFontColor(constColorRed,n,20,n,20);
+                                     xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                     xlSetCellStringValue('ПРЕВЫШЕНИЕ СУММЫ ПЛАНОВЫХ И ФАКТИЧЕСКИХ ПЛАТЕЖЕЙ ПО ОТГРУЗКЕ!',n,23,n,23);
+                                     xlSetCellStringValue(doControlSum,n,27,n,27);
+                                     InsertValue_AG('abcdef');
+                                   }
+                                doSumDolgPlatItogDO:=doSumDolgPlatItogDO+doControlSum;
+                                doControlSum:=0;
+                              }
+                          //////////////////////////////////////////////////////
+
+                           /////////////////вывод итоговых сумм на уровне ДО
+                         doSumFactPlatItogDO:=doSumAvansDo+doSumFactFPKPall+doSumFactUnknowFPKP+doSumFactNoFPKP;
+                         xlSetCellStringValue(doSumFactPlatItogDO,nItogDO,26,nItogDO,26);
+                         xlSetCellStringValue(doSumDolgPlatItogDO,nItogDO,27,nItogDO,27);
+                         xlSetCellStringValue(doSumProsrPlatItogDo,nItogDO,29,nItogDO,29);
+                         ////////////////////////////////////////////
+                         doSumFactItogTPKP:=doSumFactItogTPKP+tmpDO.dosumFactrep;
+                         doSumAvansItogTPKP:=doSumAvansItogTPKP+doSumAvansDo;
+                         doSumFactItogDog:=doSumFactItogDog+tmpDO.dosumFactrep;
+                         doSumAvansItogDog:=doSumAvansItogDog+doSumAvansDo;
+                         doSumFactPlatItogDog:=doSumFactPlatItogDog+doSumFactPlatItogDO;
+                         doSumDolgPlatItogDog:=doSumDolgPlatItogDog+doSumDolgPlatItogDO;
+                         doSumDolgProsrPlatItogDog:=doSumDolgProsrPlatItogDog+doSumProsrPlatItogDo;
+
+                         CheckSummDoNakl; //сверка суммы накладных и ДО
+                        }
+                  //////////////////////////////////вывод итогов по ТПКП
+                  xlSetCellStringValue(doSumFactItogTPKP,nItogTPKP,13,nItogTPKP,13);
+                  xlSetCellStringValue(doSumAvansItogTPKP,nItogTPKP,14,nItogTPKP,14);
+                  if(round(tmpTPKP.dosumPlanrep-doSumFactItogTPKP,constKolZnakSrav)<>0)
+                     {
+                      if((tmpTPKP.dosumPlanrep-doSumFactItogTPKP)>0)
+                        {
+                            xlSetCellDateValue(tmpTPKP.dsrok,nItogTPKP,16,nItogTPKP,16);
+                            xlSetCellStringValue(calcDay(tmpTPKP.dsrok,ddaterep,tmpTPKP.scodCalendTPKP),nItogTPKP,17,nItogTPKP,17);
+                            xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactItogTPKP,nItogTPKP,18,nItogTPKP,18);
+                            if(calcDay(tmpTPKP.dsrok,ddaterep,tmpTPKP.scodCalendTPKP)>0)
+                              {
+                                xlSetFontColor(constColorRed,n,17,n,17);
+                              }
+                        }
+                      else
+                        {
+                            xlSetCellDateValue(tmpTPKP.dsrok,nItogTPKP,16,nItogTPKP,16);
+                            xlSetCellStringValue(calcDay(tmpTPKP.dsrok,ddaterep,tmpTPKP.scodCalendTPKP),nItogTPKP,17,nItogTPKP,17);
+                            xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactItogTPKP,nItogTPKP,18,nItogTPKP,18);
+                        }
+                     }
+                  /////////////////////////////////////////////////////
+
+                  doSumPlanTPKP:=doSumPlanTPKP+tmpTPKP.dosumPlanrep;         //подсчет общей суммы всех ТПК
+                }
+             ///////////////////////////////////////вывод авансовых ФПКП
+            doSumDolgPlatAvansTPKP:=0;
+            doSumProsrPlatItogAvansTPKP:=0;
+           _loop tmpTPKP where ((word(1)      == tmpTPKP.wTip
+                             and tmpDog.coDog == tmpTPKP.coDog ))     //вывод авансовых ФПКП
+                {
+                          NotTPKP:=false;
+                          doSumFactAvansFPKP:=0;
+                          xlSetCellStringValue(tmpDog.sval,n,9,n,9);
+                         _loop tmpPlat where ((word(0)             == tmpPlat.wTip
+                                       and     tmpTPKP.coCALPLAN   == tmpPlat.coCALPLANfin))
+                             {
+                              if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                               if(NotTPKP=false)
+                                 {
+                                   xlSetCellDateValue(tmpTPKP.dsrok,n,19,n,19);
+                                   xlSetCellStringValue(tmpTPKP.sDopField,n,20,n,20);
+                                   xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,21,n,21);
+                                   xlSetCellStringValue(calcDay(tmpTPKP.dsrok,tmpPlat.dDate,tmpTPKP.scodCalendTPKP),n,22,n,22);
+                                   if(calcDay(tmpTPKP.dsrok,tmpPlat.dDate,tmpTPKP.scodCalendTPKP)>0)
+                                     {
+                                       xlSetFontColor(constColorRed,n,22,n,22);
+                                     }
+                                   xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                   xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                   xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                   xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                   xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                   tmpPlat.insertTrue:=word(1);
+                                   NotTPKP:=true;
+                                   Update current tmpPlat;
+                                   InsertValue_AG('abcdE');
+                                 }
+                               else
+                                 {
+                                   xlSetCellDateValue(tmpTPKP.dsrok,n,19,n,19);
+                                   xlSetCellStringValue(tmpTPKP.sDopField,n,20,n,20);
+                                   xlSetCellStringValue(calcDay(tmpTPKP.dsrok,tmpPlat.dDate,tmpTPKP.scodCalendTPKP),n,22,n,22);
+                                   if(calcDay(tmpTPKP.dsrok,tmpPlat.dDate,tmpTPKP.scodCalendTPKP)>0)
+                                     {
+                                       xlSetFontColor(constColorRed,n,22,n,22);
+                                     }
+                                   xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                   xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                   xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                   xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                   xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                   tmpPlat.insertTrue:=word(1);
+                                   Update current tmpPlat;
+                                   InsertValue_AG('abcde');
+                                 }
+                               doSumFactAvansFPKP:=doSumFactAvansFPKP+tmpPlat.dosumFactrep;
+                             }
+
+                          if(NotTPKP=false)
+                            {
+                                   xlSetCellDateValue(tmpTPKP.dsrok,n,19,n,19);
+                                   xlSetCellStringValue(tmpTPKP.sDopField,n,20,n,20);
+                                   xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,21,n,21);
+                                   xlSetCellStringValue(calcDay(tmpTPKP.dsrok,dDaterep,tmpTPKP.scodCalendTPKP),n,22,n,22);
+                                   if((calcDay(tmpTPKP.dsrok,dDaterep,tmpTPKP.scodCalendTPKP))>0)
+                                     {
+                                       xlSetFontColor(constColorRed,n,22,n,22);
+                                       xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,29,n,29);
+                                       doSumProsrPlatItogAvansTPKP:=doSumProsrPlatItogAvansTPKP+tmpTPKP.dosumPlanrep;
+                                     }
+                                   xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                   xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,27,n,27);
+                                   xlSetCellStringValue(tmpTPKP.dosumPlanrep,n,28,n,28);
+                                   InsertValue_AG('abcdE');
+
+                                   doSumDolgPlatAvansTPKP:=doSumDolgPlatAvansTPKP+tmpTPKP.dosumPlanrep;
+                            }
+                          else
+                            {
+                              if(round(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,constKolZnakSrav)<>0)
+                                {
+                                  if(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP>0)
+                                    {
+                                      xlSetCellDateValue(tmpTPKP.dsrok,n,19,n,19);
+                                      xlSetCellStringValue(tmpTPKP.sDopField,n,20,n,20);
+                                      xlSetCellStringValue(calcDay(tmpTPKP.dsrok,dDaterep,tmpTPKP.scodCalendTPKP),n,22,n,22);
+                                      if((calcDay(tmpTPKP.dsrok,dDaterep,tmpTPKP.scodCalendTPKP))>0)
+                                        {
+                                          xlSetFontColor(constColorRed,n,22,n,22);
+                                          xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,n,29,n,29);
+                                          doSumProsrPlatItogAvansTPKP:=doSumProsrPlatItogAvansTPKP+tmpTPKP.dosumPlanrep-doSumFactAvansFPKP;
+                                        }
+                                      xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                      xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,n,27,n,27);
+                                      xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,n,28,n,28);
+                                      InsertValue_AG('abcde');
+
+                                      doSumDolgPlatAvansTPKP:=doSumDolgPlatAvansTPKP+tmpTPKP.dosumPlanrep-doSumFactAvansFPKP;
+
+                                    }
+                                  else
+                                    {
+                                      xlSetCellDateValue(tmpTPKP.dsrok,n,19,n,19);
+                                      xlSetCellStringValue(tmpTPKP.sDopField,n,20,n,20);
+                                      xlSetCellStringValue('ПРЕВЫШЕНИЕ АВАНСОВОГО ФПКП!',n,23,n,23);
+                                      xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,n,27,n,27);
+                                      xlSetCellStringValue(tmpTPKP.dosumPlanrep-doSumFactAvansFPKP,n,28,n,28);
+                                      InsertValue_AG('abcde');
+
+                                      doSumDolgPlatAvansTPKP:=doSumDolgPlatAvansTPKP+tmpTPKP.dosumPlanrep-doSumFactAvansFPKP;
+
+                                    }
+                                }
+                            }
+                }
+            doSumDolgPlatItogDog:=doSumDolgPlatItogDog+doSumDolgPlatAvansTPKP;
+            doSumDolgProsrPlatItogDog:=doSumDolgProsrPlatItogDog+doSumProsrPlatItogAvansTPKP;
+            ////////////////////////////////////////////////
+
+            ////////////////////////////////////////////////вывод ДО без ТПКП
+           _Loop tmpDO where ((word(2)       == tmpDO.wtip        //вывод ДО без ТПКП
+                           and tmpDog.coDog  == tmpDO.coDog))
+            {
+              doSumAvansDo:=0;
+              doSumFactFPKP:=0;
+              doSumPlanAllFPKP:=0;
+              doSumFactFPKPall:=0;
+
+              nItogDO:=n;
+              doSumFactPlatItogDO:=0;
+              doSumDolgPlatItogDO:=0;
+              doSumProsrPlatItogDo:=0;
+
+              xlSetBackColor(constColorBlue,n,6,n,constNumColumn);
+              if(tmpDO.ddatePodpis<>date(0,0,0))
+                {
+              xlSetCellDateValue(tmpDO.ddatePodpis,n,8,n,8);
+                }
+              xlSetCellStringValue(tmpDog.sval,n,9,n,9);
+              xlSetCellStringValue(tmpDO.dosumBudjrep,n,11,n,11);
+              xlSetFontColor(constColorGray,n,12,n,12);
+              xlSetCellStringValue(tmpDog.snameBudj,n,12,n,12);
+              xlSetCellStringValue(tmpDO.dosumFactrep,n,13,n,13);
+              xlSetCellStringValue(tmpDO.dosumAvansrep,n,14,n,14);
+              xlSetCellStringValue(tmpDO.dosumFactrep-tmpDO.dosumAvansrep,n,15,n,15);
+
+               xlSetFontColor(constColorRed,n,5,n,5);
+               xlSetCellStringValue('не определено ТКП',n,5,n,5);
+               InsertValue_AG('abcdF');
+
+                           ///////////////////////////////////вывод авансовых платежей
+                          _loop tmpPlat where ((word(0)             == tmpPlat.wtip             //вывод авансовых платежей
+                                          and   tmpDO.coBasedoc     == tmpPlat.coBasedoc))
+                                {
+                                 if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                 xlSetBackColor(constColorGreen,n,23,n,26);
+                                 xlSetCellStringValue('а',n,20,n,20);
+                                 xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                 xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                 xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                 xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                 xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                 xlSetFontColor(constColorRed,n,5,n,5);
+                                 xlSetCellStringValue('не определено ТКП',n,5,n,5);
+                                 InsertValue_AG('abcdf');
+                                 tmpPlat.insertTrue:=word(1);
+                                 Update current tmpPlat;
+                                 doSumAvansDo:=doSumAvansDo+tmpPlat.dosumFactrep;
+                                }
+
+                            if(round(tmpDO.dosumAvansrep-doSumAvansDo,constKolZnakSrav)<>0)     //вывод разницы между оплатой аванса и значением аванса из атрибута
+                                {
+                                 if(tmpDO.dosumAvansrep-doSumAvansDo>0)
+                                   {
+                                    xlSetCellStringValue('не распределен аванс',n,20,n,20);
+                                    xlSetCellStringValue(tmpDO.dosumAvansrep-doSumAvansDo,n,26,n,26);
+                                   }
+                                 else
+                                   {
+                                    xlSetCellStringValue('ПРЕВЫШЕНИЕ РАСПРЕДЕЛЕННОГО АВАНСА!',n,20,n,20);
+                                    xlSetCellStringValue(tmpDO.dosumAvansrep-doSumAvansDo,n,26,n,26);
+                                   }
+                                 xlSetFontColor(constColorRed,n,5,n,5);
+                                 xlSetFontColor(constColorRed,n,20,n,20);
+                                 xlSetBackColor(constColorGreen,n,23,n,26);
+                                 xlSetCellStringValue('не определено ТКП',n,5,n,5);
+                                 InsertValue_AG('abcdf');
+                                }
+                          //////////////////////////////////////////////
+
+                          ///////////////////////////////////////////////вывод платежей с неизвестным ФПКП
+                          doSumFactUnknowFPKP:=0;
+                          _loop tmpPlat where ((word(1)             ==tmpPlat.wtip                //вывод платежей с неправильным ФПКП
+                                          and   tmpDO.coBasedoc     ==tmpPlat.coBasedoc
+                                          and   word(0)             ==tmpPlat.insertTrue))
+                                {
+                                if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                  xlSetFontColor(constColorRed,n,20,n,20);
+                                  xlSetCellStringValue('НЕВЕРНЫЙ ФПКП!',n,20,n,20);
+                                  xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                  xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                  xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                  xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                  xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                  InsertValue_AG('abcdef');
+                                  tmpPlat.insertTrue:=word(1);
+                                  doSumFactUnknowFPKP:=doSumFactUnknowFPKP+tmpPlat.dosumFactrep;
+                                  Update current tmpPlat;
+                                }
+                          /////////////////////////////////////////////////////
+
+                          /////////////////////////////////////////////////вывод платежей без ФПКП
+                          doSumFactNoFPKP:=0;
+
+                          _loop tmpPlat where ((word(2)             ==tmpPlat.wtip                //вывод платежей без ФПКП
+                                          and   tmpDO.coBasedoc     ==tmpPlat.coBasedoc))
+                                {
+                                if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                                   {
+                                     xlSetFontColor(constColorYellow,n,23,n,26);
+                                   }
+                                  xlSetFontColor(constColorRed,n,20,n,20);
+                                  xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                  xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                                  xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                                  xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                                  xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                                  xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                                  InsertValue_AG('abcdef');
+                                  tmpPlat.insertTrue:=word(1);
+                                  doSumFactNoFPKP:=doSumFactNoFPKP+tmpPlat.dosumFactrep;
+                                  Update current tmpPlat;
+                                }
+
+                           doControlSum:=tmpDO.dosumFactrep-if(tmpDO.dosumAvansrep>doSumAvansDo,tmpDO.dosumAvansrep,doSumAvansDo)-doSumPlanAllFPKP-doSumFactUnknowFPKP-doSumFactNoFPKP;
+                           if(round(doControlSum,constKolZnakSrav)<>0)
+                              {
+                                if(doControlSum>0)
+                                   {
+                                     xlSetFontColor(constColorRed,n,20,n,20);
+                                     xlSetFontColor(constColorRed,n,23,n,23);
+                                     xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                     xlSetCellStringValue('нет оплаты',n,23,n,23);
+                                     xlSetCellStringValue(doControlSum,n,27,n,27);
+                                     xlSetCellStringValue(doControlSum,n,29,n,29);
+                                     InsertValue_AG('abcdef');
+                                     doSumDolgPlatItogDO:=doSumDolgPlatItogDO+doControlSum;
+                                     doSumProsrPlatItogDo:=doSumProsrPlatItogDo+doControlSum;
+                                   }
+                                else
+                                   {
+                                     xlSetFontColor(constColorRed,n,20,n,20);
+                                     xlSetFontColor(constColorRed,n,23,n,23);
+                                     xlSetCellStringValue('не определено ФКП',n,20,n,20);
+                                     xlSetCellStringValue('ПРЕВЫШЕНИЕ ФПКП!',n,23,n,23);
+                                     xlSetCellStringValue(doControlSum,n,27,n,27);
+                                     InsertValue_AG('abcdef');
+                                     doSumDolgPlatItogDO:=doSumDolgPlatItogDO+doControlSum;
+                                   }
+                                doControlSum:=0;
+                              }
+                   /////////////////////////////////////////
+                 ///////////////////вывод итоговых сумм по ДО
+                         doSumFactPlatItogDO:=doSumAvansDo+doSumFactFPKPall+doSumFactUnknowFPKP+doSumFactNoFPKP;
+                         xlSetCellStringValue(doSumFactPlatItogDO,nItogDO,26,nItogDO,26);
+                         xlSetCellStringValue(doSumDolgPlatItogDO,nItogDO,27,nItogDO,27);
+                         xlSetCellStringValue(doSumProsrPlatItogDo,nItogDO,29,nItogDO,29);
+                ///////////////////////////////////////////////////////
+
+                doSumFactItogDog:=doSumFactItogDog+tmpDO.dosumFactrep;
+                doSumAvansItogDog:=doSumAvansItogDog+doSumAvansDo;
+                doSumFactPlatItogDog:=doSumFactPlatItogDog+doSumFactPlatItogDO;
+                doSumDolgPlatItogDog:=doSumDolgPlatItogDog+doSumDolgPlatItogDO;
+                doSumDolgProsrPlatItogDog:=doSumDolgProsrPlatItogDog+doSumProsrPlatItogDo;
+
+                CheckSummDoNakl; //сверка суммы накладных и ДО
+              }
+
+              ////////////////////////////////////вывод информации о разности сумм ТПКП и договором
+                 if(abs(round(tmpDog.dosumPlanrep-doSumPlanTPKP,constKolZnakSrav))>constDeltaRound)
+                   {
+                     if((tmpDog.dosumPlanrep-doSumPlanTPKP)>0)
+                       {
+                         xlSetFontColor(constColorRed,n,5,n,5);
+                         xlSetFontStyle(1,n,5,n,5);
+                         xlSetCellStringValue('всего не определено ТКП',n,5,n,5);
+                         xlSetCellStringValue(tmpDog.dosumPlanrep-doSumPlanTPKP,n,10,n,10);
+                       }
+                     else
+                       {
+                         xlSetFontColor(constColorRed,n,5,n,5);
+                         xlSetCellStringValue('ПРЕВЫШЕНИЕ ТПКП!',n,5,n,5);
+                         xlSetCellStringValue(tmpDog.dosumPlanrep-doSumPlanTPKP,n,10,n,10);
+                       }
+                     InsertValue_AG('abcd');
+                   }
+              ///////////////////////////////////////////////////////////////
+
+              /////////////////////////////////////////////////вывод нераспределенных платежей
+                 NotFPKP:=false;
+                _loop tmpPlat where ((tmpDog.coDog   == tmpPlat.coDog         //вывод платежей не выведенных
+                              and           word(0)  == tmpPlat.insertTrue))
+                  {
+                   if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                     {
+                       xlSetFontColor(constColorYellow,n,23,n,26);
+                     }
+                     if(NotFPKP=false)
+                       {
+                         xlSetFontColor(constColorRed,n,20,n,20);
+                         xlSetCellStringValue('не распределены платежи',n,20,n,20);
+                         xlSetFontColor(constColorRed,n,23,n,26);
+                         xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                         xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                         xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                         xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                         xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                         InsertValue_AG('abcd');
+                         tmpPlat.insertTrue:=word(1);
+                         Update current tmpPlat;
+                         NotFPKP:=true;
+                       }
+                      else
+                       {
+                         xlSetFontColor(constColorRed,n,23,n,26);
+                         xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                         xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                         xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                         xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                         xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                         InsertValue_AG('abcd');
+                         tmpPlat.insertTrue:=word(1);
+                         Update current tmpPlat;
+                       }
+                     doSumFactPlatItogDog:=doSumFactPlatItogDog+tmpPlat.dosumFactrep;
+                  }
+
+                _loop tmpPlat where ((tmpDog.coDog   == tmpPlat.coDog         //вывод авансовых не распределенных платежей
+                              and           comp(0)  == tmpPlat.coBasedoc
+                              and           word(0)  == tmpPlat.wtip))
+                  {
+                    if(tmpPlat.dDatOB=date(0,0,0))   //выделяем желтым цветом платежи без оплаты
+                      {
+                         xlSetFontColor(constColorYellow,n,23,n,26);
+                      }
+
+                    xlSetFontColor(constColorRed,n,20,n,20);
+                    xlSetCellStringValue('не распределены авансовые платежи',n,20,n,20);
+                    xlSetFontColor(constColorRed,n,23,n,26);
+                    xlSetCellStringValue(tmpPlat.sName,n,23,n,23);
+                    xlSetCellStringValue(tmpPlat.sIstok,n,24,n,24);
+                    xlSetCellDateValue(tmpPlat.dDate,n,25,n,25);
+                    xlSetCellStringValue(tmpPlat.dosumFactrep,n,26,n,26);
+                    xlSetCellStringValue(tmpPlat.sPrim,n,31,n,31);
+                    InsertValue_AG('abcd');
+                    tmpPlat.insertTrue:=word(1);
+                    Update current tmpPlat;
+
+                    doSumFactPlatItogDog:=doSumFactPlatItogDog+tmpPlat.dosumFactrep;
+                  }
+            //////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////вывод итогов по договорам
+            xlSetCellStringValue(doSumFactItogDog,nItogDog,13,nItogDog,13);
+            xlSetCellStringValue(doSumAvansItogDog,nItogDog,14,nItogDog,14);
+            xlSetCellStringValue(doSumFactItogDog-doSumAvansItogDog,nItogDog,15,nItogDog,15);
+            xlSetCellStringValue(tmpDog.dosumPlanrep-doSumFactItogDog,nItogDog,18,nItogDog,18);
+            xlSetCellStringValue(doSumFactPlatItogDog,nItogDog,26,nItogDog,26);
+            xlSetCellStringValue(doSumDolgPlatItogDog,nItogDog,27,nItogDog,27);
+            xlSetCellStringValue(doSumDolgPlatAvansTPKP,nItogDog,28,nItogDog,28);
+            xlSetCellStringValue(doSumDolgProsrPlatItogDog,nItogDog,29,nItogDog,29);
+            xlSetCellStringValue(tmpDog.sOtv,nItogDog,30,nItogDog,30);
+                        /////////////////////////////////////////
+            doSumPlanItogOrg:=doSumPlanItogOrg+tmpDog.dosumPlanrep;
+            doSumBujItogOrg:=doSumBujItogOrg+tmpDog.dosumBudjrep;
+            doSumFactItogOrg:=doSumFactItogOrg+doSumFactItogDog;
+            doSumAvansItogOrg:=doSumAvansItogOrg+doSumAvansItogDog;
+            doSumFactPlatItogOrg:=doSumFactPlatItogOrg+doSumFactPlatItogDog;
+            doSumDolgPlatItogOrg:=doSumDolgPlatItogOrg+doSumDolgPlatItogDog;
+            doSumDolgPlatAvansTPKPOrg:=doSumDolgPlatAvansTPKPOrg+doSumDolgPlatAvansTPKP;
+            doSumDolgProsrPlatItogOrg:=doSumDolgProsrPlatItogOrg+doSumDolgProsrPlatItogDog;
+
+         }
+       //////////////////////////////////вывод итогов по организациям
+        if(fldtip=0)
+          {
+        xlSetCellStringValue(doSumPlanItogOrg,nItogOrg,10,nItogOrg,10);
+        xlSetCellStringValue(doSumBujItogOrg,nItogOrg,11,nItogOrg,11);
+        xlSetCellStringValue(doSumFactItogOrg,nItogOrg,13,nItogOrg,13);
+        xlSetCellStringValue(doSumAvansItogOrg,nItogOrg,14,nItogOrg,14);
+        xlSetCellStringValue(doSumFactItogOrg-doSumAvansItogOrg,nItogOrg,15,nItogOrg,15);
+        xlSetCellStringValue(doSumPlanItogOrg-doSumFactItogOrg,nItogOrg,18,nItogOrg,18);
+        xlSetCellStringValue(doSumFactPlatItogOrg,nItogOrg,26,nItogOrg,26);
+        xlSetCellStringValue(doSumDolgPlatItogOrg,nItogOrg,27,nItogOrg,27);
+        xlSetCellStringValue(doSumDolgPlatAvansTPKPOrg,nItogOrg,28,nItogOrg,28);
+        xlSetCellStringValue(doSumDolgProsrPlatItogOrg,nItogOrg,29,nItogOrg,29);
+          }
+        //////////////////////////////////////////////////////
+
+        doSumPlanItogGr:=doSumPlanItogGr+doSumPlanItogOrg;
+        doSumBujItogGr:=doSumBujItogGr+doSumBujItogOrg;
+        doSumFactItogGr:=doSumFactItogGr+doSumFactItogOrg;
+        doSumAvansItogGr:=doSumAvansItogGr+doSumAvansItogOrg;
+        doSumFactPlatItogGr:=doSumFactPlatItogGr+doSumFactPlatItogOrg;
+        doSumDolgPlatItogGr:=doSumDolgPlatItogGr+doSumDolgPlatItogOrg;
+        doSumDolgPlatAvansTPKPGr:=doSumDolgPlatAvansTPKPGr+doSumDolgPlatAvansTPKPOrg;
+        doSumDolgProsrPlatItogGr:=doSumDolgProsrPlatItogGr+doSumDolgProsrPlatItogOrg;
+      }
+           //////////////////////////////////вывод итогов по группе
+     if(fldtip=0)
+       {
+     xlSetCellStringValue(doSumPlanItogGr,nItogGr,10,nItogGr,10);
+     xlSetCellStringValue(doSumBujItogGr,nItogGr,11,nItogGr,11);
+     xlSetCellStringValue(doSumFactItogGr,nItogGr,13,nItogGr,13);
+     xlSetCellStringValue(doSumAvansItogGr,nItogGr,14,nItogGr,14);
+     xlSetCellStringValue(doSumFactItogGr-doSumAvansItogGr,nItogGr,15,nItogGr,15);
+     xlSetCellStringValue(doSumPlanItogGr-doSumFactItogGr,nItogGr,18,nItogGr,18);
+     xlSetCellStringValue(doSumFactPlatItogGr,nItogGr,26,nItogGr,26);
+     xlSetCellStringValue(doSumDolgPlatItogGr,nItogGr,27,nItogGr,27);
+     xlSetCellStringValue(doSumDolgPlatAvansTPKPGr,nItogGr,28,nItogGr,28);
+     xlSetCellStringValue(doSumDolgProsrPlatItogGr,nItogGr,29,nItogGr,29);
+       }
+        //////////////////////////////////////////////////////
+
+     doSumPlanItogMain:=doSumPlanItogMain+doSumPlanItogGr;
+     doSumBujItogMain:=doSumBujItogMain+doSumBujItogGr;
+     doSumFactItogMain:=doSumFactItogMain+doSumFactItogGr;
+     doSumAvansItogMain:=doSumAvansItogMain+doSumAvansItogGr;
+     doSumFactPlatItogMain:=doSumFactPlatItogMain+doSumFactPlatItogGr;
+     doSumDolgPlatItogMain:=doSumDolgPlatItogMain+doSumDolgPlatItogGr;
+     doSumDolgPlatAvansTPKPMain:=doSumDolgPlatAvansTPKPMain+doSumDolgPlatAvansTPKPGr;
+     doSumDolgProsrPlatItogMain:=doSumDolgProsrPlatItogMain+doSumDolgProsrPlatItogGr;
+   }
+  ////////////////////////////////////////вывод главного ИТОГА
+  if(fldtip=0)
+    {
+  xlSetCellStringValue(doSumPlanItogMain,nItogMain,10,nItogMain,10);
+  xlSetCellStringValue(doSumBujItogMain,nItogMain,11,nItogMain,11);
+  xlSetCellStringValue(doSumFactItogMain,nItogMain,13,nItogMain,13);
+  xlSetCellStringValue(doSumAvansItogMain,nItogMain,14,nItogMain,14);
+  xlSetCellStringValue(doSumFactItogMain-doSumAvansItogMain,nItogMain,15,nItogMain,15);
+  xlSetCellStringValue(doSumPlanItogMain-doSumFactItogMain,nItogMain,18,nItogMain,18);
+  xlSetCellStringValue(doSumFactPlatItogMain,nItogMain,26,nItogMain,26);
+  xlSetCellStringValue(doSumDolgPlatItogMain,nItogMain,27,nItogMain,27);
+  xlSetCellStringValue(doSumDolgPlatAvansTPKPMain,nItogMain,28,nItogMain,28);
+  xlSetCellStringValue(doSumDolgProsrPlatItogMain,nItogMain,29,nItogMain,29);
+    }
+  ///////////////////////////////////////
+
+  /////////////////////////////////////// контроль итоговых сумм
+  writeMessageLog('_____________________________________________________________________________');
+  writeMessageLog('Сверка итоговых сумм:') ;
+  writeMessageLog(' ');
+  if(round(doControlSumPlat,constKolZnakSrav)<>round(doSumFactPlatItogMain,constKolZnakSrav))
+    {
+      writeMessageLog('ОШИБКА! Итоговая сумма фактических платежей в отчете('+doSumFactPlatItogMain+') не равна сумме реальных платежей('+doControlSumPlat+')!') ;
+    }
+  else
+    {
+      writeMessageLog('УСПЕШНО! Итоговая сумма фактических платежей в отчете('+doSumFactPlatItogMain+') равна сумме реальных платежей('+doControlSumPlat+')!') ;
+    }
+  if(round(doControlSumDo,constKolZnakSrav)<>round(doSumFactItogMain,constKolZnakSrav))
+    {
+      writeMessageLog('ОШИБКА! Итоговая сумма фактических отгрузок в отчете('+doSumFactItogMain+') не равна сумме реальных отгрузок('+doControlSumDo+')!') ;
+    }
+  else
+    {
+      writeMessageLog('УСПЕШНО! Итоговая сумма фактических отгрузок в отчете('+doSumFactItogMain+') равна сумме реальных отгрузок('+doControlSumDo+')!') ;
+    }
+  ///////////////////////////////////////
+
+  xlRunMacro('GroupStr');       //создание группировки по строка, 1-й уровень
+  xlRunMacro('GroupStr2');      //создание группировки по строка, 2-й уровень
+  xlRunMacro('GroupStr3');      //создание группировки по строка, 3-й уровень
+  xlKillExcel;
+  StopVisual('', 0);
+}
+Procedure RunRepDogAll;           //формирование отчета
+{
+  fldtip:=UserDeskRep.ResWord[2];
+
+  if(not CheckDate)
+    {
+       exit;
+    }
+
+  initBounds;   //установка ограничений
+
+  if(not checkDogovor)
+    {
+      message('Нет данных для формирования отчета!');
+      ClearAllRep;
+      exit;
+    }
+
+  if(not CheckShablon)
+    {
+      ClearAllRep;
+      exit;
+    }
+
+  CreateProtokol;
+
+  Inserttmp;
+
+  InserttmpGroup;
+
+  UpdateSrokTPKP;
+
+  CreateRepExcel;
+
+  ClearAllRep;
+
+  CheckNaklDoFalse;
+
+  CloseProtokol;
+}
+
+Window wNastrEdit '' (,, sci178Esc) EscClose, gray;        //окно с настройками отчета
+  Show at (,,85,20);
+
+Screen scNastrEdit 'Параметры' (,,sci178Esc);
+ Show at (,,,16);
+  Table UserDeskRep;
+  Fields
+   UserDeskRep.RepName  ('Наименование настройки') : NoProtect;
+   UserDeskRep.RESDATE[1] ('Дата формирования отчета') :['DD/MM/YYYY'], NoProtect;
+   UserDeskRep.ResWord[2]   ('Выбор денежной единицы для сумм',,) :
+      [List 'НДЕ', 'Валюта договора'], Protect;
+   fldDog   ('Договора'): Protect, PickButton;
+   fldShablon ('Шаблон для отчета'): Protect, PickButton;
+<<
+`Наименование`              .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+`Дата формирования отчета`  .@@@@@@@@@@@@@
+
+`Денежная единица отчета:`.@@@@@@@@@@@@@@@
+
+`Договор` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+`Шаблон` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+>>
+end;
+
+Screen scRun('',, sci1Esc);
+  Show at (,17,,);
+Buttons
+  cmRunDoc,,,    'Формирование отчета по текущей настройке',, sci1Esc;
+<<
+
+                                  <.Сформировать.>
+>>
+End;
+
+HandleEvent
+cmDone:
+{
+  if (not UpdateTable)
+     {
+       abort;
+     }
+}
+cmRunDoc:
+{
+  RunRepDogAll;
+}
+End;
+End;
+
+Browse brNastrEdit('Enter - сформировать отчет',, sci1478EnEsc);        //первый Browse
+ Show  at (,,,15);
+ Table UserDeskRep;
+  Fields
+   UserDeskRep.RepName #3'Наименование отчета'     :[45], Protect;
+   UserDeskRep.dRep    #3'Дата создания настройки' :[12,'DD/MM/YYYY'], Protect, NoAutoSize, Centered;
+ end; // browse
+
+Screen scNastrEditBut('',, sci1Esc);
+  Show at (,16,,);
+Buttons
+  cmSetupReport,,, 'Редактирование настройки',, sci1Esc;
+  cmCancel,,,      'Выход',, sci1Esc;
+
+<<
+
+                  <. Настройка .>      <.   Отмена   .>
+>>
+End;
+
+TableEvent  Table UserDeskRep;
+cmSetDefault:
+{
+       ClearBuffer(#UserDeskRep);
+       UserDeskRep.NRec  := GetNextNRec(#UserDeskRep,0);
+       UserDeskRep.RepName := 'Без имени';                          //наименование настройки
+       UserDeskRep.dRep    := Cur_Date;                             //дата настройки отчета                            //владелец отчета
+       UserDeskRep.RESDATE[1] := cur_date;                          //дата формирования отчета
+       UserDeskRep.OwnName := UserName;                             //владелец отчета
+
+       PutCommand(cmSetupReport);
+
+       MyReport_SetFields;
+}
+cmInsertRecord :
+{
+  Insert Current UserDeskRep;
+}
+cmDeleteRecord :
+{
+  if (Message('Удалить текущую настройку ?', YesNo) = Yes)
+    {
+
+      Delete PickRep Where (( UserID           == PickRep.cUser        and
+                              UserDeskRep.nRec == PickRep.cUserDeskRep ));
+      delete current UserDeskRep;
+    }
+}
+cmUpdateRecord :
+{
+  set UserDeskRep.OwnName := UserName;
+  Update Current UserDeskRep;
+}
+cmPick:
+{
+  Case (CurField) of
+   #fldDog:
+    {
+      if ( RunInterface('GetSomeDogovor',
+            0,
+            2,
+            2,
+            0,
+            true,
+            returnNrecDog,
+            true,
+            returnOwn) <> cmCancel)
+          {
+            iMarkFun.DelPickRep(constLstDogovor, UserDeskRep.nRec);
+            iMarkFun.Marker2PickRep('MDogovor', constLstDogovor, tmpDog, NumPick, UserDeskRep.nRec);
+
+            if(NumPick>1)
+              {
+                set UserDeskRep.ResWord[1]:=constLstDogovor;
+                set UserDeskRep.ResComp[1]:=tmpDog;
+                fldDog:='Множественный выбор (' + NumPick + ')';
+              }
+            else
+              {
+                set UserDeskRep.ResWord[1]:=0;
+                set UserDeskRep.ResComp[1]:=tmpDog;
+                fldDog := 'Договор №' + fldDogovor.noDoc;
+              }
+          }
+    }
+   #fldShablon:
+    {
+      fldShablon:=GetFileName('*.xltm','Выберите шаблон для формирования отчета:');
+      SaveMyDsk (fldShablon, shablonDSKRepDogAll);
+    }
+  end;
+  RescanPanel(#UserDeskRep);
+}
+cmDelOnProtect:
+{
+  Case (CurField) of
+   #fldDog:
+    {
+      if (fldDog<>'')
+          {
+            iMarkFun.DelPickRep(constLstDogovor, UserDeskRep.nRec);
+
+            set UserDeskRep.ResComp[1] := 0;
+            set UserDeskRep.ResWord[1] := 0;
+            fldDog:='';
+          }
+      Stop;
+    }
+   #fldShablon:
+    {
+      fldShablon:='';
+      SaveMyDsk (fldShablon, shablonDSKRepDogAll);
+    }
+  end;
+  RescanPanel(#UserDeskRep);
+}
+cmPositionChanged:
+{
+  case CurTable of
+    #UserDeskRep:
+    {
+     MyReport_SetFields;          //при навигации по настройкам обновлять их
+    }
+  end;
+}
+end;
+
+HandleEvent
+cmInit :
+{
+ wNrep:=constNrep;
+ ReadMyDsk(fldshablon,shablonDSKRepDogAll,false);
+ if (GetFirst UserDeskRep <> tsOk)
+    {
+    if (message('У Вас нет собственных настроек отчета.'#13 +
+                'Создать новую?'#3, YesNo + Confirmation) <> cmYes)
+      {
+        abort;
+        exit;
+      }
+    else
+      {
+        PutCommand(cmInsert);
+      }
+    }
+ SelectField(#UserDeskRep.RepName);
+}
+cmDefault:
+{
+  PutCommand(cmEdit);
+}
+cmEdit:
+{
+ if (isValid(#UserDeskRep))
+    {
+      PutCommand(cmSetupReport);
+    }
+ else
+    {
+      PutCommand(cmInsert);
+    }
+}
+cmSetupReport :
+{
+ if (CurWindow <> wNastrEdit)
+     {
+    RunWindow(wNastrEdit);
+     }
+}
+cmInsert :
+{
+  PutCommand(cmSetupReport);
+}
+end;
+end.

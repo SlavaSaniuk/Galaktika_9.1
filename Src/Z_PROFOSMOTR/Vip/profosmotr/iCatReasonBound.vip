@@ -1,0 +1,201 @@
+#doc
+Справочник ограничений профпригодности(Белтелеком)
+Значения справочника хранятся в таблице DISTDOCHIERARCHY,
+((
+and constTypeCatBound == DISTDOCHIERARCHY.WDOCTYPE
+))
+DISTDOCHIERARCHY.Sname ---- наименование ограничения
+#end
+
+Interface iCatReasonBound 'Справочник ограничений профпригодности' EscClose, Cyan, DoAccept;
+  Show at (7,3,73,19);
+
+var
+wIntMode   : word;
+coBound    : comp;
+
+Create view
+as select
+*
+from
+ DISTDOCHIERARCHY
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers
+,DISTDOCHIERARCHY DISTDOCHIERARCHYcheck
+Where
+((
+    constTypeCatBound     == DISTDOCHIERARCHY.WDOCTYPE
+
+and constFactorPers       == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and DISTDOCHIERARCHY.nrec == DISTDOCHIERARCHYfactorPers.CDOCBOUND(noindex)
+))
+;
+
+Parameters
+ wIntMode   //0(cgiNo) - обычный режим, 1(cgiPick) - режим выбора
+,coBound;  //нрек фактора
+
+Procedure DISTDOCHIERARCHY_SetDefault;
+{
+  ClearBuffer(#DISTDOCHIERARCHY);
+  RescanPanel(#DISTDOCHIERARCHY);
+
+  DISTDOCHIERARCHY.nRec       := GetNextNRec(#DISTDOCHIERARCHY, 0);;
+  DISTDOCHIERARCHY.WDOCTYPE   := constTypeCatBound;
+}
+
+Function DISTDOCHIERARCHY_CheckRecord:boolean;
+{
+   DISTDOCHIERARCHY_CheckRecord:=false;
+
+   DISTDOCHIERARCHY.Sname:= trim(DISTDOCHIERARCHY.Sname);
+
+   if (DISTDOCHIERARCHY.Sname = '')
+     {
+      message('Задайте наименование ограничения или удалите запись',CancelButton);
+      SelectField(#DISTDOCHIERARCHY.Sname);
+      exit;
+     }
+   if (RecordExists DISTDOCHIERARCHYcheck where ((constTypeCatBound      == DISTDOCHIERARCHYcheck.WDOCTYPE
+                                            and   DISTDOCHIERARCHY.Sname == DISTDOCHIERARCHYcheck.sname(noindex)
+                                            and  (DISTDOCHIERARCHY.nrec  <>DISTDOCHIERARCHYcheck.nrec)))=tsok)
+      {
+       message('Такое ограничение уже существует. Переименуйте либо удалите запись!',CancelButton);
+       SelectField(#DISTDOCHIERARCHY.Sname);
+       exit;
+      }
+
+   DISTDOCHIERARCHY_CheckRecord:=true;
+}
+
+Function DISTDOCHIERARCHY_DeleteRecord:boolean;
+{
+  DISTDOCHIERARCHY_DeleteRecord:=false;
+  if(RecordExists DISTDOCHIERARCHYfactorPers = tsok)
+    {
+       message('Удалять существующую запись из каталога нельзя.'#13+
+       'В факторах условий труда сотрудников существуют записи ссылающиеся на нее!"',Warning);
+       exit;
+    }
+  else
+    {
+        if (message('Удалить текущую запись?',YesNo)=yes)
+           {
+             delete current DISTDOCHIERARCHY;
+           }
+        else
+           {
+             exit;
+           }
+    }
+  DISTDOCHIERARCHY_DeleteRecord:=true;
+}
+
+Window wCatReasonBound 'Редактирование справочника ограничений профпригодности' EscClose;
+  show at (7,3,73,20);
+Panel panCatReasonBound;
+ table DISTDOCHIERARCHY;
+  Browse brCatCatReasonBound;
+   Fields
+     DISTDOCHIERARCHY.Sname     #3'Наименование' ('Наименование ограничения',, sci178Esc):[28];
+  end;
+
+HandleEvent
+cmSetDefault:
+{
+  DISTDOCHIERARCHY_SetDefault;
+  SelectField(#DISTDOCHIERARCHY.Sname);
+  PutCommand(cmEdit);
+}
+cmCheckRecord:
+{
+ if (not DISTDOCHIERARCHY_CheckRecord)
+    {
+      Abort;
+    }
+}
+cmInsertRecord:
+{
+  insert current DISTDOCHIERARCHY;
+}
+cmUpdaterecord:
+{
+  update current DISTDOCHIERARCHY;
+}
+cmDeleteRecord:
+{
+  if (not DISTDOCHIERARCHY_DeleteRecord)
+    {
+      Abort;
+    }
+}
+end;
+end;
+
+HandleEvent
+cmDone:
+{
+  if(not UpDateTable)
+    {
+      abort;
+    }
+}
+end;
+end;
+
+Panel panCatReasonBound;
+  table DISTDOCHIERARCHY;
+    browse brCatReasonBound (,,sci147EnEsc);
+      fields
+        DISTDOCHIERARCHY.SNAME      #3'Наименование' ('Наименование ограничения'):[28],protect;
+    end;
+end;
+
+Handleevent
+cmInit:
+{
+   if (wIntMode=1)
+     {
+       SetTitle('Выбор ограничения');
+     }
+
+   if ( not isValid(#DISTDOCHIERARCHY))
+     {
+      if (message('Справочник ограничений пуст.' +
+                 ''#13'Хотите заполнить его?',YesNo) <> cmYes)
+         {
+           abort;
+           exit;
+         }
+      else
+         {
+           PutCommand(cmInsert);
+         }
+     }
+
+}
+cmAddNewRec:
+{
+ PutCommand(cmInsert);
+ PutCommand(cmEdit);
+}
+cmDefault:
+{
+ if (wIntMode=1)
+  {
+    coBound := DISTDOCHIERARCHY.nrec;
+  }
+ else
+  {
+    PutCommand(cmEdit);
+    Abort;
+  }
+}
+cmEdit:
+{
+ if (CurWindow <> wCatReasonBound)
+   {
+     RunWindow(wCatReasonBound);
+   }
+}
+end;
+End.

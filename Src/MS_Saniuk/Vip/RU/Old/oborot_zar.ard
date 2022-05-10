@@ -1,0 +1,12 @@
+.Form 'oborot_zar'
+.ard
+.Group 'РУП "Белтелком"/Раздельный учет'
+.NameInList 'ЗАРПЛАТА для раздельного учета из Книги Бухгалтерских проводок'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('oborot_zar');
+end.
+.endform

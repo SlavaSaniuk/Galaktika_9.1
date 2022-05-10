@@ -1,0 +1,2 @@
+Connections = file(filename="\\gal_serv9\Gal910_TEST\Work\Logs\AtlLog.sil", maxsize="262144", maxparts="0")
+Enabled = true

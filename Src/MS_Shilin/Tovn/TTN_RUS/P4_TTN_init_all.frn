@@ -1,0 +1,38 @@
+.begin
+  АСтНацСН         := 0;
+  АСтНакСН         := 0;
+  АСТНац2          := 0;
+  CountKolF        := 0;
+  CountPoz         := 0;
+  MassaBrItog      := 0;
+  MassaNetItog     := 0;
+  iNpp             := 0;
+  sDocOfGoods      := '';
+  pClassDocOfGoods := 0;
+  iStrname         := 1;
+
+#ifdef _TTN_GR_INFO_
+  if (FOR_DOCOFGOODS.GetFirst TuneDef = tsOk)
+    if (FOR_DOCOFGOODS.GetFirst ExClassName = tsOk)
+    {
+      pClassDocOfGoods     := FOR_DOCOFGOODS.TuneDef.NRec;
+      wClassCodeDocOfGoods := FOR_DOCOFGOODS.ExClassName.ClassCode;
+    }
+#end
+
+!Автоматический расчет количества грузовых мест
+#ifdef _TTN_DOC_600_
+  bAutoGrM := boGetTune('SKLAD.CALCGRM');
+#else
+  bAutoGrM := boGetTune('OPER.SELL.NAKL.CALCGRM');
+#end
+
+#ifdef _IN_VAL_DOC_
+  ValSymb := НакСимвол;
+#else
+  ValSymb := 'руб.коп.';
+#end
+!Адрес грузополучателя заполнять адресом пункта разгрузки
+  if boGetTune('Doc.SD.PrnNakl.AdrPunktRazgr') and ((ТТН_ПунктР_Адрес <> '') OR (ТТН_ПунктР_Имя<> ''))
+    Грузополучатель_Адрес:= ТТН_ПунктР_Адрес;
+end.

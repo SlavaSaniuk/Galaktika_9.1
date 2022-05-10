@@ -1,0 +1,553 @@
+object 'L_SOPRDOC::AKTUSL' : InterfaceWindow {
+  Title = 'Список актов на оказание услуг';
+  Centered = True;
+  object BRSELECTNAKL : Browser {
+    ViewFlags = 6;
+    RowColorDark = 10;
+    VerDelimiterWidth = 1;
+    object c_BRSELECTNAKL : Column {
+      NoAutoSize = True;
+    } // c_BRSELECTNAKL : Column
+    // Информация: объект "'Field: KATORG.UNN'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATORG.UNN' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'УНП';
+      HelpLine = '';
+      FieldName = 'Field: KATORG.UNN';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 7;
+      DefaultWidth = 21;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 20;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KATORG.UNN : Column
+    object 'c_BRSELECTNAKL_KATORGVZR.NAME_Контр.взаиморасчетов' : Column {
+      Visible = False;
+      Index = 8;
+    } // c_BRSELECTNAKL_KATORGVZR.NAME_Контр.взаиморасчетов : Column
+    object 'c_BRSELECTNAKL_SUMSD_Сумма' : Column {
+      Index = 9;
+    } // c_BRSELECTNAKL_SUMSD_Сумма : Column
+    // Информация: объект "'Field: KATSOPR.SNALOGS'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATSOPR.SNALOGS' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'НДС';
+      HelpLine = '';
+      FieldName = 'Field: KATSOPR.SNALOGS';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 10;
+      DefaultWidth = 23;
+      TextAlign = 2;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '\2p[|-]36`666`666`666`666.88';
+      Points = 0;
+      MaxLen = 22;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KATSOPR.SNALOGS : Column
+    object 'c_BRSELECTNAKL_KATSOPR.SUMVAL_Сумма,_вал' : Column {
+      Visible = False;
+      Index = 11;
+    } // c_BRSELECTNAKL_KATSOPR.SUMVAL_Сумма,_вал : Column
+    object 'c_BRSELECTNAKL_Вал' : Column {
+      Index = 12;
+    } // c_BRSELECTNAKL_Вал : Column
+    // Информация: объект "'Field: KATSOPR.NAME'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATSOPR.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Примечание';
+      HelpLine = '';
+      FieldName = 'Field: KATSOPR.NAME';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 13;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KATSOPR.NAME : Column
+    // Информация: объект "DOGNODOC" типа Column не найден в базовой конфигурации!
+    object DOGNODOC : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = '№. дог.';
+      HelpLine = '';
+      FieldName = 'DOGNODOC';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 14;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // DOGNODOC : Column
+    object 'c_BRSELECTNAKL_KATSOPR.SUMMA_Сумма,_НДЕ' : Column {
+      Visible = False;
+      Index = 15;
+    } // c_BRSELECTNAKL_KATSOPR.SUMMA_Сумма,_НДЕ : Column
+    object 'c_BRSELECTNAKL_KATSOPR.DOPR_Дата_исполнения' : Column {
+      Index = 16;
+    } // c_BRSELECTNAKL_KATSOPR.DOPR_Дата_исполнения : Column
+    object 'c_BRSELECTNAKL_PRSF_СФ' : Column {
+      Index = 17;
+    } // c_BRSELECTNAKL_PRSF_СФ : Column
+    object 'c_BRSELECTNAKL_PRDO_ДО' : Column {
+      Index = 18;
+    } // c_BRSELECTNAKL_PRDO_ДО : Column
+    object 'c_BRSELECTNAKL_П' : Column {
+      Index = 19;
+    } // c_BRSELECTNAKL_П : Column
+    object 'c_BRSELECTNAKL_SIMBPLAT_Р_П' : Column {
+      Visible = False;
+      Index = 20;
+    } // c_BRSELECTNAKL_SIMBPLAT_Р_П : Column
+    object 'c_BRSELECTNAKL_FDIADOCSTATUS_Д' : Column {
+      Visible = False;
+      Index = 21;
+    } // c_BRSELECTNAKL_FDIADOCSTATUS_Д : Column
+    object 'c_BRSELECTNAKL_IMAGEONARCHIVE_А' : Column {
+      Visible = False;
+      Index = 22;
+    } // c_BRSELECTNAKL_IMAGEONARCHIVE_А : Column
+  } // BRSELECTNAKL : Browser
+  object EDITSOPR : InterfaceWindow {
+    object SCRHEADER : Screen {
+      object 'L_SCRHEADER_Контр.взаиморасчетов' : Label {
+        Visible = False;
+      } // L_SCRHEADER_Контр.взаиморасчетов : Label
+      object 'i_SCRHEADER_KATORGVZR.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_KATORGVZR.NAME : PanelInputLine
+      object 'L_SCRHEADER_Операция' : Label {
+        Visible = False;
+      } // L_SCRHEADER_Операция : Label
+      object i_SCRHEADER_HOZOPERVIEWNAME : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_HOZOPERVIEWNAME : PanelInputLine
+      object 'L_SCRHEADER_Единица_подв.состава' : Label {
+        Visible = False;
+      } // L_SCRHEADER_Единица_подв.состава : Label
+      object 'i_SCRHEADER_MOVECELLUZBEK.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_MOVECELLUZBEK.NAME : PanelInputLine
+      object 'L_SCRHEADER_Транспортная_единица' : Label {
+        Visible = False;
+      } // L_SCRHEADER_Транспортная_единица : Label
+      object 'i_SCRHEADER_KATSOPR.NVAGON' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_KATSOPR.NVAGON : PanelInputLine
+      object 'L_SCRHEADER_Связь_со_штрих-кодом' : Label {
+        Visible = False;
+      } // L_SCRHEADER_Связь_со_штрих-кодом : Label
+      object i_SCRHEADER_BARKODANDSTATE : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_BARKODANDSTATE : PanelInputLine
+      object i_SCRHEADER_FIGK : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADER_FIGK : PanelInputLine
+    } // SCRHEADER : Screen
+    object SCRHEADERFULL : Screen {
+      object 'L_SCRHEADERFULL_Контр.взаиморасчетов' : Label {
+        Visible = False;
+      } // L_SCRHEADERFULL_Контр.взаиморасчетов : Label
+      object 'i_SCRHEADERFULL_KATORGVZR.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_KATORGVZR.NAME : PanelInputLine
+      object 'L_SCRHEADERFULL_Операция' : Label {
+        Visible = False;
+      } // L_SCRHEADERFULL_Операция : Label
+      object i_SCRHEADERFULL_HOZOPERVIEWNAME : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_HOZOPERVIEWNAME : PanelInputLine
+      object 'L_SCRHEADERFULL_Единица_подв.состава' : Label {
+        Visible = False;
+      } // L_SCRHEADERFULL_Единица_подв.состава : Label
+      object 'i_SCRHEADERFULL_MOVECELLUZBEK.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_MOVECELLUZBEK.NAME : PanelInputLine
+      object 'L_SCRHEADERFULL_Транспортная_единица' : Label {
+        Visible = False;
+      } // L_SCRHEADERFULL_Транспортная_единица : Label
+      object 'i_SCRHEADERFULL_KATSOPR.NVAGON' : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_KATSOPR.NVAGON : PanelInputLine
+      object 'L_SCRHEADERFULL_Связь_со_штрих-кодом' : Label {
+        Visible = False;
+      } // L_SCRHEADERFULL_Связь_со_штрих-кодом : Label
+      object i_SCRHEADERFULL_BARKODANDSTATE : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_BARKODANDSTATE : PanelInputLine
+      object i_SCRHEADERFULL_FIGK : PanelInputLine {
+        Visible = False;
+      } // i_SCRHEADERFULL_FIGK : PanelInputLine
+    } // SCRHEADERFULL : Screen
+    object BRSPECIF : Browser {
+      object 'c_BRSPECIF_FSUMPRICEWONDS_Стоимость_без_налогов' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMPRICEWONDS_Стоимость_без_налогов : Column
+      object 'c_BRSPECIF_FSUMPRICEWNDS_Стоимость_с_налогами' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMPRICEWNDS_Стоимость_с_налогами : Column
+      object 'c_BRSPECIF_FRPRICE_Цена_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FRPRICE_Цена_в_НДЕ : Column
+      object 'c_BRSPECIF_FSUMPRICENDE_Стоимость_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMPRICENDE_Стоимость_в_НДЕ : Column
+      object 'c_BRSPECIF_FSUMPRICEWONDSNDE_Стоимость_без_налогов_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMPRICEWONDSNDE_Стоимость_без_налогов_в_НДЕ : Column
+      object 'c_BRSPECIF_FSUMNDS_Налоги_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMNDS_Налоги_в_НДЕ : Column
+      object 'c_BRSPECIF_FSUMPRICEWNDSNDE_Стоимость_с_налогами_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMPRICEWNDSNDE_Стоимость_с_налогами_в_НДЕ : Column
+      object 'c_BRSPECIF_FRVPRICE_Цена_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FRVPRICE_Цена_в_валюте : Column
+      object 'c_BRSPECIF_FSUMVPRICE_Стоимость_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMVPRICE_Стоимость_в_валюте : Column
+      object 'c_BRSPECIF_FSUMVPRICEWONDS_Стоимость_без_налогов_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMVPRICEWONDS_Стоимость_без_налогов_в_валюте : Column
+      object 'c_BRSPECIF_FSUMVNDS_Налоги_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMVNDS_Налоги_в_валюте : Column
+      object 'c_BRSPECIF_FSUMVPRICEWNDS_Стоимость_с_налогами_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSUMVPRICEWNDS_Стоимость_с_налогами_в_валюте : Column
+      object 'c_BRSPECIF_FSIMVOLV_Вал' : Column {
+        Visible = False;
+      } // c_BRSPECIF_FSIMVOLV_Вал : Column
+      object 'c_BRSPECIF_SALDTUNE.NAME_Объект_ЦУ' : Column {
+        Visible = False;
+      } // c_BRSPECIF_SALDTUNE.NAME_Объект_ЦУ : Column
+      object 'c_BRSPECIF_VSKAU1_КАУ_1' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU1_КАУ_1 : Column
+      object 'c_BRSPECIF_VSKAU2_КАУ_2' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU2_КАУ_2 : Column
+      object 'c_BRSPECIF_VSKAU3_КАУ_3' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU3_КАУ_3 : Column
+      object 'c_BRSPECIF_VSKAU4_КАУ_4' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU4_КАУ_4 : Column
+      object 'c_BRSPECIF_VSKAU5_КАУ_5' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU5_КАУ_5 : Column
+      object 'c_BRSPECIF_VSKAU6_КАУ_6' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU6_КАУ_6 : Column
+      object 'c_BRSPECIF_VSKAU7_КАУ_7' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU7_КАУ_7 : Column
+      object 'c_BRSPECIF_VSKAU8_КАУ_8' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU8_КАУ_8 : Column
+      object 'c_BRSPECIF_VSKAU9_КАУ_9' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU9_КАУ_9 : Column
+      object 'c_BRSPECIF_VSKAU10_КАУ_10' : Column {
+        Visible = False;
+      } // c_BRSPECIF_VSKAU10_КАУ_10 : Column
+    } // BRSPECIF : Browser
+    object BRSPECIF1 : Browser {
+      object 'c_BRSPECIF1_FSUMPRICEWONDS_Стоимость_без_налогов' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMPRICEWONDS_Стоимость_без_налогов : Column
+      object 'c_BRSPECIF1_FSUMPRICEWNDS_Стоимость_с_налогами' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMPRICEWNDS_Стоимость_с_налогами : Column
+      object 'c_BRSPECIF1_FRPRICE_Цена_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FRPRICE_Цена_в_НДЕ : Column
+      object 'c_BRSPECIF1_FSUMPRICENDE_Стоимость_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMPRICENDE_Стоимость_в_НДЕ : Column
+      object 'c_BRSPECIF1_FSUMPRICEWONDSNDE_Стоимость_без_налогов_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMPRICEWONDSNDE_Стоимость_без_налогов_в_НДЕ : Column
+      object 'c_BRSPECIF1_FSUMNDS_Налоги_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMNDS_Налоги_в_НДЕ : Column
+      object 'c_BRSPECIF1_FSUMPRICEWNDSNDE_Стоимость_с_налогами_в_НДЕ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMPRICEWNDSNDE_Стоимость_с_налогами_в_НДЕ : Column
+      object 'c_BRSPECIF1_FRVPRICE_Цена_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FRVPRICE_Цена_в_валюте : Column
+      object 'c_BRSPECIF1_FSUMVPRICE_Стоимость_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMVPRICE_Стоимость_в_валюте : Column
+      object 'c_BRSPECIF1_FSUMVPRICEWONDS_Стоимость_без_налогов_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMVPRICEWONDS_Стоимость_без_налогов_в_валюте : Column
+      object 'c_BRSPECIF1_FSUMVNDS_Налоги_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMVNDS_Налоги_в_валюте : Column
+      object 'c_BRSPECIF1_FSUMVPRICEWNDS_Стоимость_с_налогами_в_валюте' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSUMVPRICEWNDS_Стоимость_с_налогами_в_валюте : Column
+      object 'c_BRSPECIF1_FSIMVOLV_Вал' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_FSIMVOLV_Вал : Column
+      object 'c_BRSPECIF1_SALDTUNE.NAME_Объект_ЦУ' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_SALDTUNE.NAME_Объект_ЦУ : Column
+      object 'c_BRSPECIF1_VSKAU1_КАУ_1' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU1_КАУ_1 : Column
+      object 'c_BRSPECIF1_VSKAU2_КАУ_2' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU2_КАУ_2 : Column
+      object 'c_BRSPECIF1_VSKAU3_КАУ_3' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU3_КАУ_3 : Column
+      object 'c_BRSPECIF1_VSKAU4_КАУ_4' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU4_КАУ_4 : Column
+      object 'c_BRSPECIF1_VSKAU5_КАУ_5' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU5_КАУ_5 : Column
+      object 'c_BRSPECIF1_VSKAU6_КАУ_6' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU6_КАУ_6 : Column
+      object 'c_BRSPECIF1_VSKAU7_КАУ_7' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU7_КАУ_7 : Column
+      object 'c_BRSPECIF1_VSKAU8_КАУ_8' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU8_КАУ_8 : Column
+      object 'c_BRSPECIF1_VSKAU9_КАУ_9' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU9_КАУ_9 : Column
+      object 'c_BRSPECIF1_VSKAU10_КАУ_10' : Column {
+        Visible = False;
+      } // c_BRSPECIF1_VSKAU10_КАУ_10 : Column
+    } // BRSPECIF1 : Browser
+  } // EDITSOPR : InterfaceWindow
+  object EXTENDETINFO : InterfaceWindow {
+    object SCREXTENDETINFOFULL : Screen {
+      object 'i_SCREXTENDETINFOFULL_OTVPODR.NAME' : PanelInputLine {
+        Skip = True;
+      } // i_SCREXTENDETINFOFULL_OTVPODR.NAME : PanelInputLine
+    } // SCREXTENDETINFOFULL : Screen
+    object SCREXTENDETINFO : Screen {
+      object 'i_SCREXTENDETINFO_OTVPODR.NAME' : PanelInputLine {
+        Skip = True;
+      } // i_SCREXTENDETINFO_OTVPODR.NAME : PanelInputLine
+    } // SCREXTENDETINFO : Screen
+  } // EXTENDETINFO : InterfaceWindow
+  object SPECIFINFO : InterfaceWindow {
+    object SCRSPECIFINFO : Screen {
+      object 'L_SCRSPECIFINFO_Наименование_для_печати' : Label {
+        Visible = False;
+      } // L_SCRSPECIFINFO_Наименование_для_печати : Label
+      object 'i_SCRSPECIFINFO_SPSOPR.SNAMEVAR' : PanelInputLine {
+        Visible = False;
+      } // i_SCRSPECIFINFO_SPSOPR.SNAMEVAR : PanelInputLine
+      object 'i_SCRSPECIFINFO_KLVAL.SIMVOLV' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFO_KLVAL.SIMVOLV : PanelInputLine
+      object 'i_SCRSPECIFINFO_KLVAL.SIMVOLV#1' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFO_KLVAL.SIMVOLV#1 : PanelInputLine
+      object 'i_SCRSPECIFINFO_KLVAL.SIMVOLV#2' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFO_KLVAL.SIMVOLV#2 : PanelInputLine
+      object 'i_SCRSPECIFINFO_KLVAL.SIMVOLV#3' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFO_KLVAL.SIMVOLV#3 : PanelInputLine
+    } // SCRSPECIFINFO : Screen
+    object SCRSPECIFINFOFULL : Screen {
+      object 'L_SCRSPECIFINFOFULL_Наименование_для_печати' : Label {
+        Visible = False;
+      } // L_SCRSPECIFINFOFULL_Наименование_для_печати : Label
+      object 'i_SCRSPECIFINFOFULL_SPSOPR.SNAMEVAR' : PanelInputLine {
+        Visible = False;
+      } // i_SCRSPECIFINFOFULL_SPSOPR.SNAMEVAR : PanelInputLine
+      object 'i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV : PanelInputLine
+      object 'i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#1' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#1 : PanelInputLine
+      object 'i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#2' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#2 : PanelInputLine
+      object 'i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#3' : PanelInputLine {
+        Protect = False;
+      } // i_SCRSPECIFINFOFULL_KLVAL.SIMVOLV#3 : PanelInputLine
+    } // SCRSPECIFINFOFULL : Screen
+  } // SPECIFINFO : InterfaceWindow
+} // L_SOPRDOC::AKTUSL : InterfaceWindow
+//-----------------------------------------------------------------------------

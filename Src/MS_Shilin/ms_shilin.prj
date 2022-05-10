@@ -1,0 +1,94 @@
+#param /linc:""
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+#include ExcelFormat.vih
+
+#include glotypes.inc
+
+#include d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\rep_table.tbl
+#include KatOrgAttr.vih
+#include extattr.vih
+#include adrfunc.vih
+#include SpecialPropetiesForG.vih
+#include TDogovor.vih
+#include ExcelFormat.inc
+// Проверка параметров вызова:
+#include F_BuhSchet.vil
+#include F_PlansSch.vil
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\ExKAU\*.vip"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\ExKAU\*.frm"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\ExKAU\*.ard"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\MakeKAUForMC\*.vip"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\MakeKAUForMC\*.frm"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\MakeKAUForMC\*.ard"
+
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Copy_oborot\*.dlg"
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Copy_oborot\*.frm"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Make_Oborot_from_ost\Src\*.dlg"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Make_Oborot_from_ost\Src\*.slk"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Akt_Spis_instr\Src\*.rtf"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Akt_Usl\Podpisanty\*.vip"
+// Пересено в проект MS_SELL_BUY (ms_sellBuy_actUslugMs*)
+!#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Akt_Usl\*.rtf"
+
+// Перенесено в проект MS_SELL_BUY
+!#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\DO\*.rtf"
+
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\OS\*.rtf"
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\OS\OS6\*.rtf"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU_ZAR\*.vip"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Order\*.rtf"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Avto\pl.rtf"
+
+// Перенесено в проект ms_transport
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Avto\TEXG_REP_01MOTO_TEXG_REP.rtf"
+
+/* ********************************************
+ * ********************************************
+ * ************* РАЗДЕЛЬНЫЙ УЧЕТ **************
+ * ********************************************
+ * ********************************************
+*/
+
+// ***********************************************************************
+// Интерфейс "Загрузка справок 98x"
+// ***********************************************************************
+// был перенесен в компонент MS80RUZAT98X
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Imp_spav_98_\*.vip"
+
+// ************************************************************************
+// Интерфейс: "Раздельный учет. Формирование и выгрузка данных из проводок (ОС и НМА)"
+// ************************************************************************
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU_OS\ru_os.vip"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU_OS\urep_ru_os.vip"
+
+// ************************************************************************
+// Интерфейс: "Раздельный учет. Формирование и выгрузка данных из проводок (Затраты, Зарплата)"
+// ************************************************************************
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU\urep_ru.vip"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU\ru.vip"
+
+#make "D:\Work\Viper_Project\Temp\*.slk"
+// *** Перенесено в проект "ms_sell_buy"
+//#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\DO\Arenda\*.frm"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Reestr_PlPor\*.frm"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\SFO\*.frm"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Nezemnal_OS\*.dlg"
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Nezemnal_OS\*.vip"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Sklad\*.frm"
+
+#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\Zar\*.frm"

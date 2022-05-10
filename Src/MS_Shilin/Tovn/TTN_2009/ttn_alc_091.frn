@@ -1,0 +1,29 @@
+.begin
+  var LengthStr, KolLine:word;
+#ifdef _TTN_FRN_
+ #ifdef _TTN_2009F_
+      LengthStr:=140;
+ #else
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@│
+      LengthStr:=100;
+ #end
+#end
+
+#ifdef _TN2_PC_FRN_
+!│@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@│
+      LengthStr:=100;
+#end
+
+   KolLine := 10 + length(акцизные_марки1) + length(акцизные_марки2)
+                 + length(акцизные_марки3) + length(акцизные_марки4)
+                 + length(акцизные_марки5) + length(акцизные_марки6)
+                 + length(акцизные_марки7) + length(акцизные_марки8)
+                 + length(акцизные_марки9) + length(акцизные_марки10);
+
+   KolLine := word(if((KolLine mod LengthStr = 0),KolLine div LengthStr,(KolLine div LengthStr)+1));
+
+   kounter += KolLine;
+
+   if kounter > fixkol
+     kounter := fixkol
+end.

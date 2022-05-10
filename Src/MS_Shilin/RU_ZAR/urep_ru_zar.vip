@@ -1,0 +1,38 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_RU_Zar Implements IUserReport;
+Interface UserReport_RU_Zar;
+create view;
+
+procedure Run;
+begin
+  RunInterface(Z_ZARPL::RU_ZAR);
+end;
+
+function GetReportName: String;
+begin
+GetReportName := 'Архив начислений и налогов на ФОТ для РУ';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Раздельный учет';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 2;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := 'MENUZARP';
+ end;
+end;
+end.

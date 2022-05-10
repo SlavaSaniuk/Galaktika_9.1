@@ -1,0 +1,39 @@
+#define ComponentVersion
+#include UserReport.vih
+
+VipInterface UserReport_Nezemnal_OS Implements IUserReport;
+Interface UserReport_Nezemnal_OS;
+create view;
+
+procedure Run;
+begin
+  RunInterface(Nezemnal_OS);
+end;
+
+function GetReportName: String;
+begin
+GetReportName := 'Заполнение атрибутов Nezemnal';
+end;
+
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+   1 : GetGroupName := 'Интерфейс';
+//    2 : GetGroupName := 'Группа 2';
+  end;
+end;
+
+function GetPriority : Integer;
+begin
+ GetPriority := 0;
+end;
+
+function VisibleInModule(Ind : Byte) : String;
+begin
+ VisibleInModule := '';
+ case Ind of
+  1 : VisibleInModule := '*';
+ end;
+end;
+end.

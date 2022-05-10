@@ -1,0 +1,84 @@
+/*
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                     (c) 1994,97 корпорация ГАЛАКТИКА                      ║
+ ║                                                                           ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Кадры                                                     ║
+ ║ Версия        : 5.74 - 7.1                                                ║
+ ║ Назначение    : Объектный интерфейс с процедурой для работы               ║
+ ║                 с каталогами                                              ║
+ ║ Ответственный : Магниченко Александр Викторович                           ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+*/
+
+#ifndef _PickCat_INCLUDED_
+#define _PickCat_INCLUDED_
+
+#ifdef ComponentVersion
+#component "z_StaffCat"
+#end
+
+#doc
+Объектный интерфейс с процедурой для работы с каталогами
+#end
+objinterface IPickCat;
+
+#doc
+функция раскрутки каталога в плоскую структуру
+#end
+function SelectRecord(nRecTemp : comp) : boolean;
+
+#doc
+#end
+function SelRecCat(nRecCatalog : comp) : boolean;
+
+#doc
+проверка возможности ликвидации подразделений
+#end
+function CheckCloseDepart(nRecCatalog : comp; DateClose : date) : boolean;
+
+#doc
+ликвидация подразделенй
+#end
+function CloseDepart(nRecCatalog : comp; cStrTitl : comp; DateClose : date) : boolean;
+
+#doc
+очистка временной таблицы
+#end
+function ClearCatalogs1 : boolean;
+
+#doc
+набивка маркера
+#end
+procedure PushAllCatalogsToMarker(UseMarker : longint; CurSysCode : longint);
+
+#doc
+создание подразделения в KatPodr
+#end
+procedure StaffPodr(CatNrec : comp);
+
+#doc
+переподчинение подразделения в KatPodr
+#end
+procedure ChParentPodr(CatNrec : comp);
+
+end;
+
+#doc
+Расширение интерфейса IPickCat
+#end
+ObjInterface ObjEditPodrName;
+
+#doc
+Функция для изменения имени подразделений
+#end
+procedure EditPodrName(CatNrec : comp);
+
+end;
+vipinterface PickCatalog2 implements IPickCat, ObjEditPodrName
+#ifdef ATL51
+Licensed (free)
+parameters(iEntryPoint: integer; cCurPos: comp; parmode: comp)
+#end
+;
+#end

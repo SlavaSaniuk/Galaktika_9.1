@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>Podpis</ProjectName>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\TopSoft\Forms\505_28_0\EXE</AtlDir>
+				<ComponentName>$[ProjectName]</ComponentName>
+				<ClearResource>True</ClearResource>
+				<CompressResource>False</CompressResource>
+			</VipParameters>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipDebug>
+				<ActiveConfigure>по умолчанию</ActiveConfigure>
+				<DebugConfigList>
+					<DebugConfig Name="по умолчанию">
+						<AppFileName>D:\TopSoft\20032015\After_Patches\exe\atlexec.exe</AppFileName>
+						<AppCatalog>D:\TopSoft\Dogovor\Temp</AppCatalog>
+						<AppParameters>/c:D:\TopSoft\Dogovor\Start\copy_galaxy91.cfg</AppParameters>
+					</DebugConfig>
+				</DebugConfigList>
+			</VipDebug>
+			<VipFiles>
+				<OutputDirectory>Src</OutputDirectory>
+				<TemporaryDirectory>Temp</TemporaryDirectory>
+				<OutputResource>..\Forms\Res\podpis.res</OutputResource>
+				<IncludeList>
+					Src
+					C:\Work\Client\Src\Gal810\Inc
+					..\Forms\505_28\*
+					..\Dogovor\*
+					..\Forms\Src\BackUp\03052014\GlBuh\VIP_TXO\Example\TXoApi\Api\*
+				</IncludeList>
+				<StartPathDirectory>D:\TopSoft\16072017\After_Patches\EXE</StartPathDirectory>
+				<RepoSystemName>galnet</RepoSystemName>
+			</VipFiles>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>Galaxy91</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:by01-mssql02[1910]</SqlServerParameters>
+					<HwKeyDirectory>E:\GalaktikaCorp\GAL91\HWDir</HwKeyDirectory>
+					<LicFileName>E:\GalaktikaCorp\Support\Start\license.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<ActiveIndex>1</ActiveIndex>
+		<FileList>
+			<File Name="podpis.vip" PosX="9" PosY="37" OpenEditor="True" Active="True"/>
+			<File Name="podpis.prj" PosX="24" PosY="9" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="podpis.prj" Priority="0"/>
+		</ProjectItems>
+		<DebugOptions StopOnStartup="False"/>
+		<CheckAtlVer>5005023000</CheckAtlVer>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\TopSoft\Podpisanty\podpis.prj" DateTimeStart="43123,6686735301" DateTimeCompile="8,80439838510938E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица с именем DOVER уже есть в логической таблице. Синоним не добавлен" SourceFileName="D:\TopSoft\Podpisanty\podpis.vip" SourceLine="36" SourceColumn="15"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица с именем DOVFIO уже есть в логической таблице. Синоним не добавлен" SourceFileName="D:\TopSoft\Podpisanty\podpis.vip" SourceLine="38" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Неявное добавление таблицы DOVER1 в логическую таблицу MAINTABLE" SourceFileName="D:\TopSoft\Podpisanty\podpis.vip" SourceLine="139" SourceColumn="34"/>
+					<CompileMessage MessageType="mtError" MessageText="Таблица DOVER1 отсутствует в словаре" SourceFileName="D:\TopSoft\Podpisanty\podpis.vip" SourceLine="139" SourceColumn="34"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.01.2018 16:03:01"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+	<CoreProject>
+		<CoreVip>
+			<VipDatabase>
+				<DatabaseName></DatabaseName>
+			</VipDatabase>
+		</CoreVip>
+	</CoreProject>
+</Viper>

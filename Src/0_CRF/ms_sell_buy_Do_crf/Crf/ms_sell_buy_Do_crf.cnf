@@ -1,0 +1,439 @@
+object 'L_BASEDOC::VSCHET' : InterfaceWindow {
+  Title = 'Основание на продажу ';
+  Centered = True;
+  object BRVSCHET : Browser {
+    ViewFlags = 6;
+    RowColorDark = 10;
+    VerDelimiterWidth = 1;
+    object c_BRVSCHET : Column {
+      NoAutoSize = True;
+    } // c_BRVSCHET : Column
+    object 'c_BRVSCHET_KATORG.NAME_Контрагент' : Column {
+      Title = 'Плательщик';
+    } // c_BRVSCHET_KATORG.NAME_Контрагент : Column
+    // Информация: объект "'Field: KATORG.UNN'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATORG.UNN' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'УНП';
+      HelpLine = '';
+      FieldName = 'Field: KATORG.UNN';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 7;
+      DefaultWidth = 21;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 20;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KATORG.UNN : Column
+    object 'c_BRVSCHET_BASEDOC.TOTAL_Сумма_по_документу' : Column {
+      Index = 8;
+    } // c_BRVSCHET_BASEDOC.TOTAL_Сумма_по_документу : Column
+    // Информация: объект "'Field: BASEDOC.NDS'" типа Column не найден в базовой конфигурации!
+    object 'Field: BASEDOC.NDS' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'НДС';
+      HelpLine = '';
+      FieldName = 'Field: BASEDOC.NDS';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 9;
+      DefaultWidth = 23;
+      TextAlign = 2;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '\2p[|-]3666`666`666`666`666.88';
+      Points = 0;
+      MaxLen = 22;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: BASEDOC.NDS : Column
+    object 'c_BRVSCHET_SIMVOLB_Вал' : Column {
+      Index = 10;
+    } // c_BRVSCHET_SIMVOLB_Вал : Column
+    object 'c_BRVSCHET_SALDOPLAT_Оплата' : Column {
+      Visible = False;
+      Index = 11;
+    } // c_BRVSCHET_SALDOPLAT_Оплата : Column
+    object 'c_BRVSCHET_SALDOOTGR_Отгрузка' : Column {
+      Visible = False;
+      Index = 12;
+    } // c_BRVSCHET_SALDOOTGR_Отгрузка : Column
+    object 'c_BRVSCHET_DOLGDO_Долг' : Column {
+      Visible = False;
+      HelpLine = 'Баланс по документу, равен разности: отгрузка минус оплата';
+      Index = 13;
+    } // c_BRVSCHET_DOLGDO_Долг : Column
+    object 'c_BRVSCHET_TMPSALDO3_NNINFO_НН' : Column {
+      Visible = False;
+      Index = 14;
+    } // c_BRVSCHET_TMPSALDO3_NNINFO_НН : Column
+    object 'c_BRVSCHET_NAKFIN_П/Н' : Column {
+      HelpLine = 'Признак наличия платежей и сопроводительных документов по ДО (П - есть платежи; Н - есть отгрузки; V - есть платежи и отгрузки)';
+      Index = 15;
+    } // c_BRVSCHET_NAKFIN_П/Н : Column
+    object 'c_BRVSCHET_ISDOCREQ_З' : Column {
+      Index = 16;
+    } // c_BRVSCHET_ISDOCREQ_З : Column
+    object 'c_BRVSCHET_AKTOFPREALIZED_Ф' : Column {
+      Visible = False;
+      Index = 17;
+    } // c_BRVSCHET_AKTOFPREALIZED_Ф : Column
+    object 'c_BRVSCHET_BATENTRYINGROUP_Г' : Column {
+      Visible = False;
+      Index = 18;
+    } // c_BRVSCHET_BATENTRYINGROUP_Г : Column
+    object 'c_BRVSCHET_Д' : Column {
+      Index = 19;
+    } // c_BRVSCHET_Д : Column
+    object 'c_BRVSCHET_IMAGEONARCHIVE_А' : Column {
+      Visible = False;
+      Index = 20;
+    } // c_BRVSCHET_IMAGEONARCHIVE_А : Column
+    object 'c_BRVSCHET_DOGNODOC_Договор_номер' : Column {
+      Index = 21;
+    } // c_BRVSCHET_DOGNODOC_Договор_номер : Column
+    object 'c_BRVSCHET_DOGDDOC_Договор_дата' : Column {
+      Index = 22;
+    } // c_BRVSCHET_DOGDDOC_Договор_дата : Column
+    // Информация: объект "'Field: KURATPODR.NAME'" типа Column не найден в базовой конфигурации!
+    object 'Field: KURATPODR.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Куратор';
+      HelpLine = '';
+      FieldName = 'Field: KURATPODR.NAME';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 23;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KURATPODR.NAME : Column
+  } // BRVSCHET : Browser
+  object WINFILTERDO : InterfaceWindow {
+    object SCFILTERDO : Screen {
+      object L_SCFILTERDO_c : Label {
+        Visible = False;
+      } // L_SCFILTERDO_c : Label
+      object i_SCFILTERDO_dNewBeg : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_dNewBeg : PanelInputLine
+      object 'L_SCFILTERDO_по' : Label {
+        Visible = False;
+      } // L_SCFILTERDO_по : Label
+      object i_SCFILTERDO_dNewEnd : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_dNewEnd : PanelInputLine
+      object i_SCFILTERDO_FKONTR : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_FKONTR : PanelInputLine
+      object i_SCFILTERDO_NewFltDescr : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_NewFltDescr : PanelInputLine
+      object i_SCFILTERDO_NewFltGrDes : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_NewFltGrDes : PanelInputLine
+      object i_SCFILTERDO_FDOG : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_FDOG : PanelInputLine
+      object i_SCFILTERDO_FNOTE : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_FNOTE : PanelInputLine
+      object i_SCFILTERDO_FPODR : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_FPODR : PanelInputLine
+      object i_SCFILTERDO_FKURATPODR : PanelInputLine {
+        Visible = False;
+      } // i_SCFILTERDO_FKURATPODR : PanelInputLine
+    } // SCFILTERDO : Screen
+  } // WINFILTERDO : InterfaceWindow
+  object WSPSTEP : InterfaceWindow {
+    object SCSPSTEPMC : Screen {
+      object 'L_SCSPSTEPMC_для_печати' : Label {
+        Visible = False;
+      } // L_SCSPSTEPMC_для_печати : Label
+      object 'i_SCSPSTEPMC_SPSTEP.SNAMEVAR' : PanelInputLine {
+        Visible = False;
+      } // i_SCSPSTEPMC_SPSTEP.SNAMEVAR : PanelInputLine
+      object 'L_SCSPSTEPMC_Зарезервировано' : Label {
+        Visible = False;
+      } // L_SCSPSTEPMC_Зарезервировано : Label
+      object 'i_SCSPSTEPMC_SPSTEP.RESERV' : PanelInputLine {
+        Visible = False;
+      } // i_SCSPSTEPMC_SPSTEP.RESERV : PanelInputLine
+      object 'L_SCSPSTEPMC_до' : Label {
+        Visible = False;
+      } // L_SCSPSTEPMC_до : Label
+      object 'i_SCSPSTEPMC_SPSTEP.SROKRES' : PanelInputLine {
+        Visible = False;
+      } // i_SCSPSTEPMC_SPSTEP.SROKRES : PanelInputLine
+    } // SCSPSTEPMC : Screen
+    object SCSPSTEPMCEX : Screen {
+      object 'L_SCSPSTEPMCEX_Количество_груз.мест' : Label {
+        Visible = False;
+      } // L_SCSPSTEPMCEX_Количество_груз.мест : Label
+      object 'i_SCSPSTEPMCEX_SPSTEP.KOLGRM' : PanelInputLine {
+        Visible = False;
+      } // i_SCSPSTEPMCEX_SPSTEP.KOLGRM : PanelInputLine
+      object 'L_SCSPSTEPMCEX_ЕдИзм' : Label {
+        Visible = False;
+      } // L_SCSPSTEPMCEX_ЕдИзм : Label
+      object 'i_SCSPSTEPMCEX_KATOTPEDGRM.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCSPSTEPMCEX_KATOTPEDGRM.NAME : PanelInputLine
+      object 'i_SCSPSTEPMCEX_SPSTEP.PRVOZ' : PanelInputLine {
+        Visible = False;
+        Skip = True;
+      } // i_SCSPSTEPMCEX_SPSTEP.PRVOZ : PanelInputLine
+    } // SCSPSTEPMCEX : Screen
+  } // WSPSTEP : InterfaceWindow
+  object WDOPATTR : InterfaceWindow {
+    object SCWDOPATTRBS : Screen {
+      object i_SCWDOPATTRBS_STRCURSE : PanelInputLine {
+        Visible = False;
+      } // i_SCWDOPATTRBS_STRCURSE : PanelInputLine
+      object 'i_SCWDOPATTRBS_BASEDOC.VALCURSE' : PanelInputLine {
+        Visible = False;
+      } // i_SCWDOPATTRBS_BASEDOC.VALCURSE : PanelInputLine
+    } // SCWDOPATTRBS : Screen
+  } // WDOPATTR : InterfaceWindow
+  object WVSCHET : InterfaceWindow {
+    object BRSPSCHET : Browser {
+      StatusCtx = 6901;
+      object 'c_BRSPSCHET_RESONREGIONPODR_Резерв_регион' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_RESONREGIONPODR_Резерв_регион : Column
+      object 'c_BRSPSCHET_SALDTUNE.NAME_Объект_ЦУ' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_SALDTUNE.NAME_Объект_ЦУ : Column
+      object 'c_BRSPSCHET_VSKAU1_КАУ_1' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU1_КАУ_1 : Column
+      object 'c_BRSPSCHET_VSKAU2_КАУ_2' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU2_КАУ_2 : Column
+      object 'c_BRSPSCHET_VSKAU3_КАУ_3' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU3_КАУ_3 : Column
+      object 'c_BRSPSCHET_VSKAU4_КАУ_4' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU4_КАУ_4 : Column
+      object 'c_BRSPSCHET_VSKAU5_КАУ_5' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU5_КАУ_5 : Column
+      object 'c_BRSPSCHET_VSKAU6_КАУ_6' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU6_КАУ_6 : Column
+      object 'c_BRSPSCHET_VSKAU7_КАУ_7' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU7_КАУ_7 : Column
+      object 'c_BRSPSCHET_VSKAU8_КАУ_8' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU8_КАУ_8 : Column
+      object 'c_BRSPSCHET_VSKAU9_КАУ_9' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU9_КАУ_9 : Column
+      object 'c_BRSPSCHET_VSKAU10_КАУ_10' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_VSKAU10_КАУ_10 : Column
+      object 'c_BRSPSCHET_SMETAMY_Смета' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_SMETAMY_Смета : Column
+      object 'c_BRSPSCHET_SMETASPMY_Спецификация_сметы' : Column {
+        Visible = False;
+      } // c_BRSPSCHET_SMETASPMY_Спецификация_сметы : Column
+    } // BRSPSCHET : Browser
+    object SCVSCHET : Screen {
+      object 'i_SCVSCHET_BASEDOC.TIPMONEY' : PanelInputLine {
+        Skip = True;
+      } // i_SCVSCHET_BASEDOC.TIPMONEY : PanelInputLine
+      object 'L_SCVSCHET_Склад_отгрузки' : Label {
+        Visible = False;
+      } // L_SCVSCHET_Склад_отгрузки : Label
+      object 'i_SCVSCHET_KATPODR.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_KATPODR.NAME : PanelInputLine
+      object 'L_SCVSCHET_%_к_курсу' : Label {
+        Visible = False;
+      } // L_SCVSCHET_%_к_курсу : Label
+      object 'i_SCVSCHET_BASEDOC.DOPPROC' : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BASEDOC.DOPPROC : PanelInputLine
+      object 'i_SCVSCHET_BASEDOC.KOLKOMPL' : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BASEDOC.KOLKOMPL : PanelInputLine
+      object 'L_SCVSCHET_Операция' : Label {
+        Visible = False;
+      } // L_SCVSCHET_Операция : Label
+      object i_SCVSCHET_HOZOPERVIEWNAME : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_HOZOPERVIEWNAME : PanelInputLine
+      object 'L_SCVSCHET_Единица_подвижного_состава' : Label {
+        Visible = False;
+      } // L_SCVSCHET_Единица_подвижного_состава : Label
+      object 'i_SCVSCHET_BDMOVECELL.NAME' : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BDMOVECELL.NAME : PanelInputLine
+      object L_SCVSCHET_N : Label {
+        Visible = False;
+      } // L_SCVSCHET_N : Label
+      object 'i_SCVSCHET_BASEDOC.NVAGON' : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BASEDOC.NVAGON : PanelInputLine
+      object 'L_SCVSCHET_Связь_со_штрих-кодом' : Label {
+        Visible = False;
+      } // L_SCVSCHET_Связь_со_штрих-кодом : Label
+      object i_SCVSCHET_BARKODANDSTATE : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BARKODANDSTATE : PanelInputLine
+      object i_SCVSCHET_BATENTRYINGROUPFULL : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_BATENTRYINGROUPFULL : PanelInputLine
+      object i_SCVSCHET_FIGK : PanelInputLine {
+        Visible = False;
+      } // i_SCVSCHET_FIGK : PanelInputLine
+    } // SCVSCHET : Screen
+  } // WVSCHET : InterfaceWindow
+  object WEDIT_RESERV : InterfaceWindow {
+    object SCPAR_RESERV : Screen {
+      object 'L_SCPAR_RESERV_Зарезервировано' : Label {
+        Visible = False;
+      } // L_SCPAR_RESERV_Зарезервировано : Label
+      object 'i_SCPAR_RESERV_SPSTEP.RESERV' : PanelInputLine {
+        Visible = False;
+      } // i_SCPAR_RESERV_SPSTEP.RESERV : PanelInputLine
+    } // SCPAR_RESERV : Screen
+  } // WEDIT_RESERV : InterfaceWindow
+  object WEDIT_SROKRES : InterfaceWindow {
+    object SCPAR_SROKRES : Screen {
+      object 'L_SCPAR_SROKRES_Зарезервировано_до' : Label {
+        Visible = False;
+      } // L_SCPAR_SROKRES_Зарезервировано_до : Label
+      object 'i_SCPAR_SROKRES_SPSTEP.SROKRES' : PanelInputLine {
+        Visible = False;
+      } // i_SCPAR_SROKRES_SPSTEP.SROKRES : PanelInputLine
+    } // SCPAR_SROKRES : Screen
+  } // WEDIT_SROKRES : InterfaceWindow
+} // L_BASEDOC::VSCHET : InterfaceWindow
+//-----------------------------------------------------------------------------

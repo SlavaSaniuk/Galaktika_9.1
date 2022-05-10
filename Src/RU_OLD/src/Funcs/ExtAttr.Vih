@@ -1,0 +1,234 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Версия      : 8.10
+// Назначение  : Функции для работы с внешними атрибутами документов
+//------------------------------------------------------------------------------
+
+  //////////////////////// ВНЕШНИЕ АТРИБУТЫ ///////////////////////////
+  // для получения значения внешнего атрибута можно использовать Паскалевские функции
+  // xTxoGetExtAttr, где x = {s -string,do -double, d -date, t -time},
+  // не забывая заключать их в скобки InitServTXO/DoneServTXO
+
+
+#ifndef _ExtAttr_Func
+#define _ExtAttr_Func
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+//**************************************************************
+#doc
+Функции для работы с внешними атрибутами документов<br>
+</brief>
+  Параметры:<br>
+  <ul>
+   <li>  _wTable      - co-код Таблицы
+   <li>  _Name        - наименование атрибута
+   <li>  _cAttrNam    - код аттрибута
+   <li>  _cRec        - ссылка на запись в таблице
+   <li>  _AttrType    - Тип значения атрибута
+  </ul>
+  Доступны типы:<br>
+    <ul>
+       <li> cgAttrType_Str    = 0;   // 0 -  STRING
+       <li> cgAttrType_Dbl    = 1;   // 1 -  DOUBLE
+       <li> cgAttrType_Date   = 2;   // 2 -  DATE
+       <li> cgAttrType_Time   = 3;   // 3 -  TIME
+       <li> cgAttrType_Memo   = 4;   // 4 -  MEMO
+       <li> cgAttrType_Comp   = 5;   // 5 -  COMP
+    </ul>
+#end
+ObjInterface objExtAttr;
+
+!------------------------------------------------------------------------------
+  #doc
+  Набор функций для создания атрибута, получения ID, показа ошибки.<br>
+  Возвращает ссылку на внешний аттрибут если существует, если не найден - создает.
+  #end
+  Function CreateAttr ( _wTable : word; _Name : string; _Type : word ) : comp ;
+  #doc
+  Возвращает ID (NRec) атрибута по коду таблицы и нименованию. 0 - не найден
+  #end
+  Function AttrID  ( _wTable : word;  _Name : string ) : comp ;
+  #doc
+  Возвращает тип атрибута по коду таблицы и нименованию. 13 - не найден
+  #end
+  Function AttrType  ( _wTable : word;  _Name : string ) : word ;
+  #doc
+  Возвращает наименование аттрибута по его ID (NRec)
+  #end
+  Function AttrName(_cRec: comp): string;
+  #doc
+  Возвращает true, если у записи с номером _cRec таблицы с кодом _wTable
+  существует значение внешнего атрибута с именем _Name.
+  #end
+  function ValueExists(_wTable : word; _cRec: comp; _Name: string): boolean;
+  #doc
+  Возвращает true, если у записи с номером _cRec таблицы с кодом _wTable
+  существует значение внешнего атрибута с номером _cAttrNam.
+  #end
+  function ValueExistsID(_wTable : word; _cRec: comp; _cAttrNam: comp): boolean;
+  #doc
+  Удалить значение внешнего атрибута с именем _Name у у записи с номером _cRec  таблицы с кодом _wTable
+  #end
+  function DeleteValue(_wTable : word; _cRec: comp; _Name: string): integer;
+  #doc
+  Удалить значение внешнего атрибута с номером _cAttrNam у записи с номером _cRec таблицы с кодом _wTable.
+  #end
+  function DeleteValueID(_wTable : word; _cRec: comp; _cAttrNam: comp): integer;
+  #doc
+  Установить требование автоматического выдачи сообщения при ошибке; Возвращает предыдущее значение.
+  #end
+  Function SetNeedMessage ( _NeedMessage : boolean ) : boolean;
+  #doc
+  Выдать сообщение об ошибке
+  #end
+  Procedure ShowError (_err : word);
+  #doc
+  получить номер последней ошибки
+  #end
+  Function LastError : word ;
+
+  #doc
+  Создает внешний аттрибут с типом Comp. Если существует - возвращает ссылку.<br>
+  параметры:<br>
+  </brief>
+  *** _SysNumKau  - системный номер аналитики. Доступны константы<br>
+  cgKatKau_Table    = 0;      // системные <br>
+  cgKatKau_User     = 1;      // пользовательские <br>
+  cgKatKau_System   = 100;    // системные каталоги не являющиеся аналитикой (любая таблица Галактики) <br>
+  *** _KodKau - код аналитики для _SysNumKau=0 или 1. Или код таблицы для _SysNumKau=100 <br>
+  #end
+  Function CreateAttrComp ( _wTable : word; _Name : string; _Type : word; _SysNumKau : word; _KodKau : word) : comp;
+
+  #doc
+  Возвращает код КАУ(или код таблицы) по ID атрибута
+  #end
+  Function AttrCompKodKau ( _cAttrNam: comp) : word;
+  #doc
+  Возвращает системный номер КАУ по ID атрибута
+  #end
+  Function AttrCompSysNumKau ( _cAttrNam: comp) : word;
+
+!------------------------------------------------------------------------------
+  #doc
+  Набор функций для извлечения содержания внешних аттрибутов для различных типов<br>
+  </brief>
+  Функции возвращают значение внешнего аттрибута по коду таблицы, имени атрибута и nRec-ку записи
+  для разных типов атрибута.<br>
+  sGetAttr - возвращает строку для всех типов, преобразовав тип в строку<br>
+  #end
+  function sGetAttr (_wTable : word; _cRec : comp; _Name : string) : string;
+  function doGetAttr(_wTable : word; _cRec : comp; _Name : string) : double;
+  function dGetAttr (_wTable : word; _cRec : comp; _Name : string) : date;
+  function tGetAttr (_wTable : word; _cRec : comp; _Name : string) : time;
+  function mGetAttr (_wTable : word; _cRec : comp; _Name : string) : string;   // извлечь из мемо-поля строку
+  function coGetAttr(_wTable : word; _cRec : comp; _Name : string) : comp;
+
+  #doc
+  Функции возвращают значение внешнего аттрибута по коду таблицы, коду атрибута и nRec-ку записи
+  для разных типов атрибута.<br>
+  sGetAttrID - возвращает строку для всех типов, преобразовав тип в строку<br>
+  #end
+  function sGetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp) : string;
+  function doGetAttrID(_wTable : word;  _cRec : comp; _cAttrNam : comp) : double;
+  function dGetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp) : date;
+  function tGetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp) : time;
+  function mGetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp) : string;  // извлечь из мемо-поля строку
+  function coGetAttrID(_wTable : word;  _cRec : comp; _cAttrNam : comp) : comp;
+
+
+!------------------------------------------------------------------------------
+  #doc
+  Набор функций для установки содержания внешних аттрибутов для различных типов
+  </brief>
+  Функции устанавливает значение внешнего аттрибута по коду таблицы, имени атрибута и nRec-ку записи
+  для разных типов атрибута.<br>
+  !!! Если атрибут не найден, то он создается !!!<br>
+  Возвращает true - успешно, false - ошибка<br>
+  #end
+  function sSetAttr (_wTable : word; _cRec : comp; _Name : string; _Val : string) : boolean;
+  function doSetAttr(_wTable : word; _cRec : comp; _Name : string; _Val : double) : boolean;
+  function dSetAttr (_wTable : word; _cRec : comp; _Name : string; _Val : date)   : boolean;
+  function tSetAttr (_wTable : word; _cRec : comp; _Name : string; _Val : time)   : boolean;
+  function mSetAttr (_wTable : word; _cRec : comp; _Name : string; _Val : string) : boolean;  // записать в мемо-поле строку
+  function coSetAttr(_wTable : word; _cRec : comp; _Name : string; _Val : comp; _ValStr : string) : boolean;
+
+  #doc
+  Функции устанавливает значение внешнего аттрибута по коду таблицы, ID атрибута и nRec-ку записи
+  для разных типов атрибута.  Возвращает true - успешно, false - ошибка
+  #end
+  function sSetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp; _Val : string) : boolean;
+  function doSetAttrID(_wTable : word;  _cRec : comp; _cAttrNam : comp; _Val : double) : boolean;
+  function dSetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp; _Val : date)   : boolean;
+  function tSetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp; _Val : time)   : boolean;
+  function mSetAttrID (_wTable : word;  _cRec : comp; _cAttrNam : comp; _Val : string) : boolean;  // записать в мемо-поле строку
+  function coSetAttrID(_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : comp; _ValStr : string) : boolean;
+
+
+//------------------------------------------------------------------------------
+//   Набор функций для удаления, перемещения и копирования атрибутов
+
+  #doc
+  копирование атрибутов
+  #end
+  Function CopyAllAttr ( _wTableFrom: word; _cRecFrom: comp;  _cRecTo: comp ) : boolean;
+
+  #doc
+  копирование атрибутов, возможно для разных таблиц. Если атрибут для цели в AttrNam не существует, то он создается.
+  #end
+  Function CopyAllAttrEx ( _wTableFrom: word; _cRecFrom: comp; _wTableTo: word; _cRecTo: comp ) : boolean;
+
+  #doc
+  удаление всех значений внеш.атрибутов (при удалении записи в таблице)
+  #end
+  function DeleteAllAttr (_wTable: word; _cRec: comp) : boolean;
+
+  #doc
+  перенос от старой записи к новой (откуда-куда)
+  #end
+  function MoveAllAttr (_wTable: word; _cRecFrom: comp; _cRecTo : comp): boolean;
+
+  #doc
+  просмотр/редактирование значения внешнего атрибута в интерфейсе
+  #end
+  function Pick (_CanEdit: boolean; _wTable: word; _cRec: comp): boolean;
+
+  #doc
+  Модификация названия внешнего атрибута (для _isCreateAttr=True: если не найден - создаст)
+  #end
+  function ReNameAttr (_wTable : word; _Name : string; _Type : word; _SysNumKau : word; _KodKau : word; _NameNew : string; _isCreateAttr : boolean) : comp ;
+
+  #doc
+  удаление внеш.атрибута по его имени и типу
+  #end
+  function DeleteAttr (_wTable: word; _Name : string; _Type : word) : boolean;
+
+  #doc
+  Копирование значения всех помеченных атрибутов в указанную запись.
+  </brief>
+  Значения атрибутов помечаются интерфейсом PickAttrVal и сбрасываются в маркер. Пустые значения не копируются.
+  #end
+  Function CopyAttrPick ( _wTable: word; _cRecFrom: comp; _cRecTo: comp ) : boolean;
+
+  #doc
+  Копировать значение атрибута по его наименованию.
+  #end
+  Function CopyAttrName ( _wTable: word; _cRecFrom: comp; _cRecTo: comp; _Name : string ) : boolean;
+
+  #doc
+  Копировать значение атрибута по его ID.
+  #end
+  Function CopyAttrID ( _wTable: word; _cRecFrom: comp; _cRecTo: comp; _cAttrNam : comp ) : boolean;
+
+End;
+
+
+VipInterface iExtAttr implements objExtAttr
+#ifdef ATL51
+   licensed (FREE)
+#end
+;
+
+#end

@@ -1,0 +1,51 @@
+#doc
+Выбор варианта отчета(Белтелеком)
+#end
+
+Interface iPrintRep 'Выберите отчет для формирования' Gray, DoAccept, EscClose;
+  Show at (, , 100, 12);
+
+var
+vidRep:word;
+wYear :word;
+
+Screen scrPrintRep ('Выбор отчета', ,);
+Fields
+  vidRep ('Вариант отчета'):noprotect;
+Buttons
+  cmOK, Default, , 'Продолжить', , ;
+  cmCancel,    , , 'Отмена', , ;
+<<
+
+                                  `Варианты отчетов: `
+
+   (.) Список профессий (должностей) работающих, подлежащих периодическим медосмотрам`
+   (.) Список работающих с общими заболеваниями, препятствующими продолжению работы (по организации)`
+   (.) Список работающих с истекающими сроками ограничения в профпригодности (по организации)`
+
+                            <.Продолжить.>      <.  Отмена  .>
+
+>>
+end;
+
+
+Handleevent
+cmOK:
+{
+  case vidRep of
+    0:
+     {
+        RunInterface('iRepSpisProf');
+     }
+    1:
+     {
+        RunInterface('iRepSpisNeGodn');
+     }
+    2:
+     {
+        RunInterface('iRepSpisBound');
+     }
+  end;
+}
+end;
+End.

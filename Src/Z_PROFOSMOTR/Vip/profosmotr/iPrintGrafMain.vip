@@ -1,0 +1,514 @@
+#doc
+Формирование отчета
+"Список работающих подлежащих периодическому осмотру"(Белтелеком)
+#end
+
+#include iCheckFactorRez.vih
+#include AdrFunc.vih         // Функции работы с адресами
+
+Interface iPrintGrafMain 'Выбор подписантов' Gray, DoAccept, EscClose;
+  Show at (, , 55, 12);
+
+var
+objAdrFunc   : AddressFunc;           // Переменная типа интерфейс AddressFunc
+coNrecGraf:comp;
+objCheckFactorRez: iCheckFactorRez new;
+dateGraf:date;
+nomGraf, sOtvPodr:string;
+sFioRuk:string;
+cPer1 :comp;
+wtipSort, wMakroPageRun : word;
+
+File file_macro;
+
+table struct tmpMain
+(
+  coPers :comp
+ ,sPers  :string
+ ,sPodr  :string
+)
+with index
+(
+   tmpMain01 = sPers
+  ,tmpMain02 = sPodr + sPers
+)
+;
+
+Create view
+as Select *
+From
+ DISTDOCHIERARCHY  (ReadOnly)
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers    (ReadOnly)
+,SPALLSTAFF        (ReadOnly)
+,SPALLSTAFF SPALLSTAFFfactor  (ReadOnly)
+,Persons  (ReadOnly)
+,ADDRESSN (ReadOnly)
+,APPOINTMENTS (ReadOnly)
+,CATALOGS CATALOGSpost (ReadOnly)         //должность
+,CATALOGS CATALOGSStrEd (ReadOnly)
+,CATALOGS CATALOGSvalue (ReadOnly)
+,Persons Personscheck   (ReadOnly)
+,tmpMain
+where
+((
+    coNrecGraf == DISTDOCHIERARCHY.nrec
+
+and constRecPers              == SPALLSTAFF.WNOCON
+and DISTDOCHIERARCHY.nrec     == SPALLSTAFF.CLINKT                //средняя панель(сотрудники)
+
+and constRecFact              == SPALLSTAFFfactor.WNOCON
+and SPALLSTAFF.nrec           == SPALLSTAFFfactor.CLINKT     //нижняя панель(факторы)
+
+and SPALLSTAFFfactor.RESCOMP[1]        == DISTDOCHIERARCHYfactorPers.nrec
+
+and SPALLSTAFF.CBASET         == Persons.nrec                     //сотрудник
+
+and Persons.APPOINTCUR        == APPOINTMENTS.nrec                //назначение
+
+and APPOINTMENTS.post         == CATALOGSpost.nrec                //должность
+
+and APPOINTMENTS.DEPARTMENT   == CATALOGSStrEd.nrec              //СЕ сотрудника
+
+and Persons.LIVEADDR          == ADDRESSN.nrec               //адрес проживания
+))
+Bounds SortPers     =  tmpMain.coPers == SPALLSTAFF.CBASET(noindex)
+                       ordered by tmpMain.sPers
+Bounds SortPodrPers =  tmpMain.coPers == SPALLSTAFF.CBASET(noindex)
+                       ordered by tmpMain.sPodr, tmpMain.sPers
+;
+Parameters
+coNrecGraf
+;
+
+Screen scrPrintGrafMain ('Выбор подписантов', ,);
+Fields
+  sFioRuk ('ФИО руководителя', , sci13EnEsc) : protect;
+  wtipSort('Выберите вариант сортировки'):Noprotect;
+  wMakroPageRun  ('Применить макрос подгонки страницы к печати',,sci1Esc): NoProtect;
+Buttons
+  cmOk, Default,, 'Продолжить',, sci1Esc;
+  cmCancel,,,'Отмена',, sci1Esc;
+<<
+
+    `ФИО руководителя:`    .@@@@@@@@@@@@@@@@@@@@@
+
+               `Вариант сортировки`
+                (.) ФИО`
+                (.) Подразделение/ФИО`
+
+    [.] Применить макрос подгонки страницы к печати`
+
+         <. Продолжить .>  <.   ~О~тмена   .>
+>>
+end;
+
+
+Function AdressAll(nrec_adress:comp):string;
+{
+  AdressAll:='';
+  AdressAll:=objAdrFunc.GetFullAddressInd(nrec_adress);
+}
+
+Procedure StatTextExcel;
+{
+  xlPageSetupSetOrientation(2);
+
+  xlSetColumnWidth(4,1,1,1,1);       // ширина столбцов
+  xlSetColumnWidth(22,1,2,1,2);       // ширина столбцов
+  xlSetColumnWidth(4,1,3,1,3);       // ширина столбцов
+  xlSetColumnWidth(11,1,4,1,4);       // ширина столбцов
+  xlSetColumnWidth(15,1,5,1,5);       // ширина столбцов
+  xlSetColumnWidth(16,1,6,1,6);       // ширина столбцов
+  xlSetColumnWidth(11,1,7,1,7);       // ширина столбцов
+  xlSetColumnWidth(16,1,8,1,8);       // ширина столбцов
+  xlSetColumnWidth(15,1,9,1,9);       // ширина столбцов
+  xlSetColumnWidth(15,1,10,1,10);       // ширина столбцов
+
+  xlSetFontstyle(1,1,1,1,10);  // жирным
+  xlSetFontSize(12,1,1,1,10);  // высота  шрифта
+  xlSetRowHeight(15,1,1,1,10);     //высота строки
+  xlMergeCells(1,1,1,10);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,1,1,1,10);
+  xlSetCellStringValue('Список работающих подлежащих периодическому осмотру № '+replace(nomGraf,'/','-')+' от '+replace(dateGraf,'/','.'),1,1,1,10);
+
+  xlSetFontSize(12,2,1,2,10);  // высота  шрифта
+  xlSetRowHeight(15,2,1,2,10);     //высота строки
+  xlMergeCells(2,1,2,10);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,2,1,2,10);
+  xlSetCellStringValue(sOtvPodr,2,1,2,10);
+  xlFrameCells(xlBorderB,xlThin, 0, 0, 2, 1, 2, 10);
+
+  xlSetFontSize(8,3,1,3,10);  // высота  шрифта
+  xlSetRowHeight(10,3,1,3,10);     //высота строки
+  xlMergeCells(3,1,3,10);          //объединение
+  xlAlignCellsEx(xlCenter,xlCenter,3,1,3,10);
+  xlSetCellStringValue('наименование организации, адрес ее места нахождения',3,1,3,10);
+
+  xlSetRowHeight(130,4,1,4,10);     //высота строки
+  xlWrapText(4,1,4,10);
+  xlSetFontSize(10,4,1,4,10);     //высота  шрифта
+  xlAlignCellsEx(xlCenter,xlCenter,4,1,4,10);
+  xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+               xlThin, 0, 0, 4, 1, 4, 10);
+
+  xlSetCellStringValue('№ п/п',4,1,4,1);
+  xlSetCellStringValue('Фамилия, собственное имя, отчество (полностью)',4,2,4,2);
+  xlSetCellStringValue('Пол',4,3,4,3);
+  xlSetCellStringValue('Дата рождения',4,4,4,4);
+  xlSetCellStringValue('Домашний адрес',4,5,4,5);
+  xlSetCellStringValue('Подразделение',4,6,4,6);
+  xlSetCellStringValue('Профессия (должность)',4,7,4,7);
+  xlSetCellStringValue('Вредные и (или) опасные факторы производственной среды, показатели тяжести и напряженности трудового процесса <1>, работы <2>',4,8,4,8);
+  xlSetCellStringValue('Класс условий труда, параметры вредных и (или) опасных условий труда (факторов производственной среды)',4,9,4,9);
+  xlSetCellStringValue('Стаж работы в контакте с вредными и (или) опасными условиями труда (факторами производственной среды)',4,10,4,10);
+}
+
+Function GetStajStr(wkolMes:word):string;
+{
+ GetStajStr:='';
+
+ if(wkolMes<>0)
+   {
+     if(wkolMes<12)
+       {
+         GetStajStr:= wkolMes+' мес.';
+       }
+     else
+       {
+        case (wkolMes div 12) of
+         1,21,31,41,51,61:
+                        {
+                          GetStajStr:= (wkolMes div 12)+' год '+ (wkolMes mod 12)+' мес.';
+                        }
+                    2,3,4,
+                 22,23,24,
+                 32,33,34,
+                 42,43,44,
+                 52,53,54,
+                 62,63,64:
+                        {
+                          GetStajStr:= (wkolMes div 12)+' года '+ (wkolMes mod 12)+' мес.';
+                        }
+        else
+                        {
+                          GetStajStr:= (wkolMes div 12)+' лет. '+ (wkolMes mod 12)+' мес.';
+                        }
+        end;
+       }
+   }
+}
+
+Procedure InsertTmpMain;
+{
+ if(getfirst DISTDOCHIERARCHY =tsok)
+   {
+     _loop SPALLSTAFF
+        {
+
+         if(not isValid(#SPALLSTAFFfactor))        //если факторов нет - пропускаем
+           {
+             continue;
+           }
+
+           if(getfirst Persons=tsok)
+            {
+              ClearBuffer(#tmpMain);
+              tmpMain.coPers:=SPALLSTAFF.CBASET;
+              tmpMain.sPers:=Persons.Fio;
+              if(getfirst Appointments=tsok)
+                {
+                 if(getfirst CATALOGSStrEd=tsok)
+                   {
+                     tmpMain.sPodr:=CATALOGSStrEd.name;
+                   }
+                }
+              insert current tmpMain;
+            }
+        }
+   }
+}
+
+Procedure InsertRecExcel;
+var
+n, npp, istr:double;
+{
+iStr:=5;
+npp:=1;
+   if(getfirst DISTDOCHIERARCHY =tsok)
+     {
+      _loop tmpMain
+       {
+       _loop SPALLSTAFF
+        {
+          n:=0;
+         if(not isValid(#SPALLSTAFFfactor))        //если факторов нет - пропускаем
+           {
+             continue;
+           }
+
+          _loop SPALLSTAFFfactor              //вывод факторов
+           {
+             if(getfirst DISTDOCHIERARCHYfactorPers =tsok)
+               {
+                 xlSetCellStringValue(objCheckFactorRez.StrValueNabor('Factor',DISTDOCHIERARCHYfactorPers.CANVAL1),iStr,8,iStr,8);
+                 xlSetCellStringValue(objCheckFactorRez.StrValueNabor('Klass',DISTDOCHIERARCHYfactorPers.CANVAL1),iStr,9,iStr,9);
+                 xlSetCellStringValue(GetStajStr(objCheckFactorRez.GetStajFactor(DISTDOCHIERARCHY.DTCALC,SPALLSTAFFfactor.RESCOMP[1])),iStr,10,iStr,10);
+                 xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+                              xlThin, 0, 0, iStr, 8, iStr, 10);
+                 xlAlignCellsEx(xlLeft,xlCenter,iStr,8,iStr,8);
+                 xlAlignCellsEx(xlCenter,xlCenter,iStr,9,iStr,10);
+                 xlSetFontSize(8,iStr, 8, iStr, 10);
+                 xlWrapText(iStr,8,iStr,10);
+
+                 iStr+=1;
+                 n+=1;
+               }
+           }
+          xlWrapText(iStr-n,1,iStr-1,7);
+          xlMergeCells(iStr-n,1,iStr-1,1);
+          xlMergeCells(iStr-n,2,iStr-1,2);
+          xlMergeCells(iStr-n,3,iStr-1,3);
+          xlMergeCells(iStr-n,4,iStr-1,4);
+          xlMergeCells(iStr-n,5,iStr-1,5);
+          xlMergeCells(iStr-n,6,iStr-1,6);
+          xlMergeCells(iStr-n,7,iStr-1,7);
+          xlSetFontSize(8,iStr-n,1,iStr-1,7);
+          xlAlignCellsEx(xlCenter,xlCenter,iStr-n,1,iStr-1,1);
+          xlAlignCellsEx(xlLeft,xlCenter,iStr-n,2,iStr-1,2);
+          xlAlignCellsEx(xlCenter,xlCenter,iStr-n,3,iStr-1,4);
+          xlAlignCellsEx(xlLeft,xlCenter,iStr-n,5,iStr-1,7);
+          xlFrameCells(xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or xlInsideH,
+                   xlThin, 0, 0, iStr-n, 1, iStr-1, 7);
+          xlSetCellStringValue(npp,iStr-n,1,iStr-1,1);
+
+          if(getfirst Persons=tsok)
+            {
+               xlSetCellStringValue(Persons.Fio,iStr-n,2,iStr-1,2);
+               xlSetCellStringValue(PERSONS.SEX,iStr-n,3,iStr-1,3);
+               xlSetCellStringValue(DateToStr(PERSONS.BORNDATE, 'DD.MM.YYYY'),iStr-n,4,iStr-1,4);
+               if(getfirst ADDRESSN=tsok)
+                 {
+                   xlSetCellStringValue(AdressAll(ADDRESSN.nrec),iStr-n,5,iStr-1,5);
+                 }
+               if(getfirst Appointments=tsok)
+                 {
+                   if(getfirst CATALOGSStrEd=tsok)
+                     {
+                       xlSetCellStringValue(CATALOGSStrEd.Name,iStr-n,6,iStr-1,6);
+                     }
+                   if(getfirst CATALOGSPost=tsok)
+                     {
+                       xlSetCellStringValue(CATALOGSPost.Name,iStr-n,7,iStr-1,7);
+                     }
+                 }
+            }
+          npp+=1;
+        }
+       }
+       iStr+=1;
+       xlMergeCells(iStr,6,iStr,7);
+       xlMergeCells(iStr,8,iStr,10);
+       xlSetCellStringValue(sFioRuk,iStr,8,iStr,10);
+       xlAlignCellsEx(xlLeft,xlCenter,iStr,8,iStr,10);
+
+       iStr+=1;
+       xlSetFontSize(7,iStr,6,iStr,10);
+       xlMergeCells(iStr,6,iStr,7);
+       xlMergeCells(iStr,8,iStr,10);
+
+       xlSetCellStringValue('(подпись)',iStr,6,iStr,7);
+       xlFrameCells(xlBorderT, xlThin, 0, 0, iStr, 6, iStr, 7);
+       xlAlignCellsEx(xlCenter,xlTop,iStr,6,iStr,7);
+
+       xlSetCellStringValue('(ФИО руководителя)',iStr,8,iStr,10);
+       xlFrameCells(xlBorderT, xlThin, 0, 0, iStr, 8, iStr, 10);
+       xlAlignCellsEx(xlCenter,xlTop,iStr,8,iStr,10)
+     }
+}
+
+Procedure ReadDSK;
+{
+  if (NOT ReadMyDSK(sFioRuk, 'sFioRukGrafTelecom'    , TRUE))
+  {
+    sFioRuk:='';
+  }
+}
+
+Procedure initBoundsSort;
+{
+  case wtipSort of
+     0:
+      {
+       if (not BoundActive(tbSortPers))
+         {
+           AddBounds(tbSortPers);
+         }
+      }
+     1:
+      {
+       if (not BoundActive(tbSortPodrPers))
+         {
+           AddBounds(tbSortPodrPers);
+         }
+      }
+  end;
+}
+
+Procedure doneBoundsSort;
+{
+  if ( BoundActive( tbSortPers ) )
+     {
+        SubBounds(tbSortPers);
+     }
+  if ( BoundActive( tbSortPodrPers ) )
+     {
+        SubBounds(tbSortPodrPers);
+     }
+}
+
+Procedure SaveDSK;
+{
+  SaveMyDSK(sFioRuk, 'sFioRukGrafTelecom');
+}
+
+Procedure CreateMacro;     //процедура создания макросов
+{
+ file_macro.OpenFile(GetDefaultUserPath+'MacroRepGrafMain.bas', stCreate);
+ //////макрос для того чтобы при окончании листа не обрезалась объединенная строка
+ file_macro.WriteLn('Sub MakePagesBreack()');
+ file_macro.WriteLn('Dim rUsRng As Range, li As Long, lCnt As Long');
+ file_macro.WriteLn('Set rUsRng = Range("A1", Cells.SpecialCells(11))');
+ file_macro.WriteLn('For li = 1 To rUsRng.Rows.Count+1000');
+ file_macro.WriteLn('If rUsRng.Rows(li).PageBreak <> xlNone Then');
+ file_macro.WriteLn('If rUsRng.Cells(li, 1).MergeCells Then');
+ file_macro.WriteLn('lCnt = li - Cells(li, 1).MergeArea.Row');
+ file_macro.WriteLn('If lCnt > 0 Then Rows(li - lCnt).Resize(lCnt).Insert: lCnt = 0');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('End If');
+ file_macro.WriteLn('Next li');
+ file_macro.WriteLn('End Sub');
+ file_macro.WriteLn('');
+ ///////////
+
+ file_macro.WriteLn('');
+ //////макрос для установки заголовка, который будет повторяться на каждом листе
+ file_macro.WriteLn('Sub PrintTop()');
+ file_macro.WriteLn('Application.PrintCommunication = False');
+ file_macro.WriteLn('With ActiveSheet.PageSetup');
+ file_macro.WriteLn('.PrintTitleRows = "$4:$4"');     // координаты строки с заголовком
+ file_macro.WriteLn('.PrintTitleColumns = ""');
+ file_macro.WriteLn('End With');
+ file_macro.WriteLn('End Sub');
+ ///////
+ file_macro.Close;
+}
+
+Procedure CreateRepExcel;
+{
+  dateGraf:=date(0,0,0);
+  nomGraf:='';
+  sOtvPodr:='';
+  if(getfirst DISTDOCHIERARCHY=tsok)
+    {
+      dateGraf:=DISTDOCHIERARCHY.DTCALC;
+      nomGraf :=DISTDOCHIERARCHY.SNAME;
+      if(getfirst CatalogsValue where ((DISTDOCHIERARCHY.COBJECT==CatalogsValue.nrec))=tsok)
+        {
+          sOtvPodr:= CatalogsValue.name;
+        }
+    }
+  xlCreateExcel(GetDefaultUserPath+'Список работающих подлежащих периодическому осмотру № '+replace(nomGraf,'/','-')+' от '+replace(dateGraf,'/','-'),true);
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm,
+                 'Формирование отчета', 1);
+
+  StatTextExcel;
+
+  InsertTmpMain;
+
+  initBoundsSort;
+
+  InsertRecExcel;
+
+  doneBoundsSort;
+
+  CreateMacro;
+
+  if(xlImportModule(GetDefaultUserPath+'MacroRepGrafMain.bas'))
+    {
+      xlRunMacro('PrintTop');
+
+      if(wMakroPageRun=1)
+        {
+          xlRunMacro('MakePagesBreack');
+        }
+    }
+
+  StopVisual('', 0);
+  xlSaveWorkBook(1);
+
+  message('Отчет сформирован!');
+  xlKillExcel;
+}
+Function PrintGrafMain_Pick:boolean;
+{
+  PrintGrafMain_Pick:=false;
+  case CurField of
+   #sFioRuk:
+           {
+              cPer1:=0;
+              sFioRuk:='';
+              if (RunInterface('GetPers', cPer1) <> cmCancel)
+                 {
+                   if(getfirst PersonsCheck where ((cPer1==PersonsCheck.nrec))=tsok)
+                     {
+                       set sFioRuk:=PersonsCheck.FIO;
+                     }
+                 }
+           }
+  end;
+  PrintGrafMain_Pick:=true;
+}
+
+Function PrintGrafMain_DelOnProtect:boolean;
+{
+  PrintGrafMain_DelOnProtect:=false;
+  case CurField of
+   #sFioRuk:
+           {
+             set sFioRuk:='';
+           }
+  end;
+  PrintGrafMain_DelOnProtect:=true;
+}
+
+HandleEvent
+cmInit:
+{
+  ReadDSK;
+}
+cmOk:
+{
+  PutCommand(cmDefault);
+}
+cmDefault:
+{
+  SaveDSK;
+  CreateRepExcel;
+  CloseInterFace(0);
+}
+cmDelOnProtect:
+{
+   if (not PrintGrafMain_DelOnProtect)
+    {
+     Abort;
+    }
+}
+cmPick:
+{
+   if (not PrintGrafMain_Pick)
+    {
+     Abort;
+    }
+}
+end;
+End.

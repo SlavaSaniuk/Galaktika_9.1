@@ -1,0 +1,39 @@
+.begin
+  StrNN    := 1;
+  KolAdd   := 0;
+  KolPage  := 0;
+  NomFull  := 0;
+  Nom      := 0;
+  KolSpSopr:= 0;
+  NextPage := false;
+
+  KolItogFull     := 0;
+  MassaBrItogFull := 0;
+  MassaNetItogFull:= 0;
+  Sum1ItogFull    := 0;
+  Sum2ItogFull    := 0;
+  Sum3ItogFull    := 0;
+
+  KolItog         := 0;
+  MassaBrItog     := 0;
+  MassaNetItog    := 0;
+  Sum1Itog        := 0;
+  Sum2Itog        := 0;
+  Sum3Itog        := 0;
+
+  if not readmydsk(breakPage, 'OptionsTorg4', false) breakPage := 1;
+  if not readmydsk(MainKol  , 'MainKolTorg4', false) MainKol   := 7;
+  if not readmydsk(FixKol   , 'FixKolTorg4' , false) FixKol    := 55;
+
+  FixKolPage := MainKol;
+  Cena_Pr0 := Cena_PrR;
+  strEmpty := '';
+!Автоматический расчет количества грузовых мест
+#ifdef _TTN_DOC_600_
+  bAutoGrM := boGetTune('SKLAD.CALCGRM');
+#else
+  bAutoGrM := boGetTune('OPER.SELL.NAKL.CALCGRM');
+#end
+!Выводить в названиях графы и копейки
+  НацСимвол := 'руб.коп.'
+end.

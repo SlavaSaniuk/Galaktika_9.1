@@ -1,0 +1,126 @@
+.begin
+  kounter  := kounter+1;
+
+#ifdef _IN_VAL_DOC_
+  ‘β„‘ ζ := ‘β„‘ ª;
+  ‘β ζ  := ‘β ª;
+  ‘β ζ‘  := ‘β ª‘;
+#else
+  ‘β„‘ ζ := ‘β„‘ ζ0;
+  ‘β ζ  := ‘β ζ0;
+  ‘β ζ‘  := ‘β ζ‘0;
+#end
+!β®£®Άλ¥ αγ¬¬¬λ
+  €„‘ ζ  := €„‘ ζ  + ‘β„‘ ζ;
+  €‘β ζ := €‘β ζ + ‘β ζ;
+  €‘β ζ‘ := €‘β ζ‘ + ‘β ζ‘;
+  if (bAutoGrM)
+    sumkolf  := sumkolf  + if(…„_‡……_ƒ“‡‚›•_…‘’ = '­/γ', 0, ‹_ƒ“‡‚›•_…‘’)
+  else
+    sumkolf  := sumkolf  + if(‹_ƒ“‡‚›•_…‘’ <> 0, ‹_ƒ“‡‚›•_…‘’,
+                              if(…„_‡……_ƒ“‡‚›•_…‘’ = '­/γ', 0, ®«”));
+
+#ifdef _TTN_FRN_
+ #ifdef _TTN_ALC_
+  sumves := sumves + if (wRoundMass2 > 3, Round(®«‚¥α, wRoundMass2 - 3), Round(®«‚¥α));
+ #else
+  sumves := sumves + Round(®«‚¥α / 1000, wRoundMass2) * 1000;
+ #end
+#end
+
+!β®£¨ ―® αβΰ ­¨ζ ¬
+  str€‘β ζ := str€‘β ζ + ‘β ζ;
+  str€„‘ ζ  := str€„‘ ζ  + ‘β„‘ ζ;
+  str€‘β ζ‘ := str€‘β ζ‘ + ‘β ζ‘;
+  if (bAutoGrM)
+    str€®«” := str€®«” + if(…„_‡……_ƒ“‡‚›•_…‘’ = '­/γ', 0, ‹_ƒ“‡‚›•_…‘’)
+  else
+    str€®«” := str€®«” + if(‹_ƒ“‡‚›•_…‘’ <> 0, ‹_ƒ“‡‚›•_…‘’,
+                              if(…„_‡……_ƒ“‡‚›•_…‘’ = '­/γ', 0, ®«”));
+
+#ifdef _TTN_FRN_
+ #ifdef _TTN_ALC_
+  str€®«‚¥α  := str€®«‚¥α  + if (wRoundMass2 > 3, Round(®«‚¥α, wRoundMass2 - 3), Round(®«‚¥α));
+ #else
+  str€®«‚¥α  := str€®«‚¥α  + Round(®«‚¥α / 1000, wRoundMass2) * 1000;
+ #end
+#end
+
+! §΅¨Άª  ­  αβΰ®ª¨ €…‚€ ¨ €„€
+var lnSName, lnSCode, KolLine: word
+#ifdef _TTN_FRN_
+ #ifdef _TTN_2001F_
+   lnSName   := 24;
+
+  #ifdef _TTN_2001R_
+   lnSName   := 19;
+  #end
+
+  #ifdef _TTN_2001P_
+   lnSCode   := 7;
+  #else
+   lnSCode   := 10;
+  #end
+
+  #ifdef _TTN_2001R_
+   lnSCode   := 8;
+  #end
+ #else
+!@@@@@@@@@@@@@@@@@@@@@@@@@@@ @@@@@@@@@@@³
+   lnSName   := 27;
+   lnSCode   := 11;
+ #end
+#end
+#ifdef _TN2_PC_FRN_
+!³@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@³
+ #ifdef _TTN_2001F_
+  lnSName    := 21;
+  lnSCode    := 12;
+ #else
+  lnSName    := 20;
+  lnSCode    := 11;
+ #end
+#end
+
+  KolLine := 0;
+   §Ά ­¨¥_„®― :=  §Ά ­¨¥;
+#ifdef _PROCNAC_
+  if („®―®«­¨β¥«μ­ ο_¨­δ®ΰ¬ ζ¨ο <> '')
+     §Ά ­¨¥_„®― :=  §Ά ­¨¥ + '(' + „®―®«­¨β¥«μ­ ο_¨­δ®ΰ¬ ζ¨ο + ')';
+#end
+#ifdef _TTN_ALC_
+  if (αβΰ ­ _ΆΆ®§  <> '')
+     §Ά ­¨¥_„®― :=  §Ά ­¨¥_„®― + '; ' + αβΰ ­ _ΆΆ®§ ;
+#end
+
+  ®¤–_„®― := if (bBarKodMC, ®¤–, '');
+
+  if (length( §Ά ­¨¥_„®―) > lnSName)
+     OR (length(®¤–_„®―) > lnSCode)
+  {
+    KolLine  := KolAddInStr ( §Ά ­¨¥_„®―, lnSName, true);//ª®«. ¤®―. αβΰ®ª
+    var tKolLine: word;
+    tKolLine := KolAddInStr (®¤–_„®―, lnSCode, true);
+
+    if (tKolLine > KolLine)
+      KolLine := tKolLine;
+
+    kounter  := kounter + KolLine;
+
+    if (kounter > fixkol)
+      kounter := fixkol;
+  }
+
+#ifdef _TTN_DOC_ROZN_
+  TypeRozn.pNRec := α―¥ζ¨δ¨ª ζ¨ο–_­ΰ¥ª;
+
+  if TypeRozn.GetFirst SpSopr = tsOk
+    if TypeRozn.GetFirst RzSpDoc = tsOk
+      if TypeRozn.GetFirst RzDoc = tsOk
+        if (TypeRozn.RzDoc.TypeMove = 911) OR (TypeRozn.RzDoc.TypeMove = 912)
+        {
+          isRozn911 := TRUE;// AND (KatSoprVhodNal <> 1);
+        }
+#end
+
+end.

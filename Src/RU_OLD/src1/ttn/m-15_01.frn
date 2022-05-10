@@ -1,0 +1,30 @@
+.begin
+  StrNN     := 1;
+  KolAdd    := 0;
+  KolPage   := 0;
+  NomFull   := 0;
+  Nom       := 0;
+  KolSpSopr := 0;
+  NextPage  := false;
+
+  KolDOItogFull := 0;
+  KolFItogFull  := 0;
+  Sum1ItogFull  := 0;
+  Sum2ItogFull  := 0;
+  Sum3ItogFull  := 0;
+
+  KolDOItog := 0;
+  KolFItog  := 0;
+  Sum1Itog  := 0;
+  Sum2Itog  := 0;
+  Sum3Itog  := 0;
+
+  if not readmydsk(breakPage, 'Optionsm15', false) breakPage := 1;
+  if not readmydsk(MainKol  , 'MainKolm15', false) MainKol   := 7;
+  if not readmydsk(FixKol   , 'FixKolm15' , false) FixKol    := 55;
+
+  FixKolPage := MainKol;
+  Cena_Pr0 := Cena_PrR;
+  strEmpty := '';
+  НацСимвол := 'руб.коп.'
+end.

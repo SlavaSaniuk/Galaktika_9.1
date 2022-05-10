@@ -1,0 +1,124 @@
+/*
+ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+บ             ASUP  (แ) 1995,97 € "ฎข๋ฉ €โซ ญโ"                     บ
+บ  ฅเแจ๏ :     5.50                                                  บ
+บ   งเ กฎโ ซ:  …เฅฌฅฅข .., €ขแฅฅข €..                             บ
+บ   งญ ็ฅญจฅ:  ฎญแโ ญโ๋ ชฎฌ ญค ’                                  บ
+บ                                                                     บ
+บ   1.  โ  ฌฎคจไจช ๆจจ  //     โฎ ฌฎคจไจๆจเฎข ซ               บ
+บ      —โฎ แคฅซ ญฎ:                                                   บ
+บ                                                                     บ
+ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+*/
+!
+! งคฅแ์ ฎฏจแ๋ข ๎โแ๏ จแฏฎซ์งใฅฌ๋ฅ ชฎญแโ ญโ๋
+!
+// ฎก ขจซ ชฎญแโ ญโ๋ 30.07.97. €ขแฅฅข €.. (ข๋ญฅแ จๅ จง Kadet.vip)
+  cmTepRedraw          = 35501;
+  cmClearFil           = 35502;
+  cmClearRet1          = 35503;
+  cmClearRet2          = 35504;
+
+  cmFgroup             = 30001;
+  cmFgroup2            = 30002;
+  cmFgroup3            = 30003;
+  cmChoose             = 30004;
+  cmClearBase          = 30005;
+  cmSumPlanValue       = 30006;
+  cmSumVolumeValue     = 30007;
+  cmExpEstFunc1        = 30008;
+  cmExpEstFunc2        = 30009;
+  cmSetFil             = 30010;
+  cmRescanFil          = 30011;
+  cmSingleProdPrimCost1 = 30012;
+  cmSingleProdPrimCost2 = 30013;
+  cmPrCost1Func3       = 30014;
+  cmPrCost1Subfunc31   = 30015;
+  cmPrCost1Subfunc32   = 30016;
+  cmStdWares           = 30017;
+  cmSubstr             = 30018;
+  cmTechProcFunc1      = 30019;
+  cmTechProcFunc2      = 30020;
+  cmTechProcFunc3      = 30021;
+  cmTechProcFunc4      = 30022;
+  cmTepAnother         = 30023;
+  cmTepBuy             = 30024;
+  cmTepManaf           = 30025;
+  cmTepNo              = 30026;
+  cmTepReady           = 30027;
+  cmTepReport          = 30028;
+  cmTepYes             = 30029;
+  cmInLvlDown          = 30030;
+  cmInLvlUp            = 30031;
+  cmIns                = 30032;
+  cmExpCat1            = 30033;
+  cmExpCat2            = 30034;
+  cmExpCat3            = 30035;
+  cmExpCat4            = 30036;
+  cmExpCat5            = 30037;
+  cmExpCat6            = 30038;
+  cmExpCat7            = 30039;
+  cmExpCat8            = 30040;
+  cmExpCat9            = 30046;
+  cmExpDistrBase1      = 30041;
+  cmExpDistrBase2      = 30042;
+  cmExpDistrBase3      = 30043;
+  cmExpDistrBase4      = 30044;
+  cmExpDistrBase5      = 30045;
+  cmExpDistrBase6      = 30109;
+  cmExpDistrBase7      = 30110;
+  cmPurchase           = 30056;
+  cmMatCopy            = 30057;
+  cmMaterials          = 30058;
+  cmMatInc             = 30059;
+! cmUnMarkAll          = 30060;
+  cmUnpick             = 30061;
+  cmComplect           = 30062;
+  cmCompleteSets       = 30063;
+  cmComplexes          = 30064;
+  cmConSpec            = 30065;
+  cmIzdNorm            = 30066;
+  cmIzdStr             = 30067;
+  cmLvlDown            = 30068;
+  cmLvlUp              = 30069;
+! cmMark               = 30070;
+! cmMarkAll            = 30071;
+  cmMarkRecord         = 30072;
+  cmQuarter1Month1     = 30073;
+  cmQuarter1Month2     = 30074;
+  cmQuarter1Month3     = 30075;
+  cmQuarter2Month1     = 30076;
+  cmQuarter2Month2     = 30077;
+  cmQuarter2Month3     = 30078;
+  cmQuarter3Month1     = 30079;
+  cmQuarter3Month2     = 30080;
+  cmQuarter3Month3     = 30081;
+  cmQuarter4Month1     = 30082;
+  cmQuarter4Month2     = 30083;
+  cmQuarter4Month3     = 30084;
+  cmYearMonth01        = 30085;
+  cmYearMonth02        = 30086;
+  cmYearMonth03        = 30087;
+  cmYearMonth04        = 30088;
+  cmYearMonth05        = 30089;
+  cmYearMonth06        = 30090;
+  cmYearMonth07        = 30091;
+  cmYearMonth08        = 30092;
+  cmYearMonth09        = 30093;
+  cmYearMonth10        = 30094;
+  cmYearMonth11        = 30095;
+  cmYearMonth12        = 30096;
+  cmYearQuarter1       = 30097;
+  cmYearQuarter2       = 30098;
+  cmYearQuarter3       = 30099;
+  cmYearQuarter4       = 30100;
+  cmYoHoo              = 30101;
+  cmDetales            = 30102;
+  cmInstrument         = 30103;
+
+  cmExpEst1Sel                   = 30104;
+  cmTotalProdCalcItemCalcParSel  = 30105;
+  cmProdGroupCalcItemCalcParSel  = 30106;
+  cmSingleProdCalcItemCalcParSel = 30107;
+  cmSingleProdPrimCostSel        = 30108;
+!  30109 ง ญ๏โ 

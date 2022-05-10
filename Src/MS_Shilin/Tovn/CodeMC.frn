@@ -1,0 +1,54 @@
+!Код учетной и отпускной единицы матценности
+!ОКЕИ в российский формах
+.begin
+  var piExAttr  : iExtAttr;
+
+  CodeOtpEd := '';
+  CodeEd    := '';
+
+#ifdef __PrnSoprFunMem__
+  FROMKATMCMEM.pNrec := comp(спецификацияМЦ_нрек);
+
+  if (FROMKATMCMEM.GetFirst SpSoprMemTTN = tsOk)
+  {
+    if (FROMKATMCMEM.GetFirst KatOtpEd = tsOk)
+    {
+      if (FROMKATMCMEM.GetFirst KatEd where ((FROMKATMCMEM.KatOtpEd.cKatEd == KatEd.NRec )) = tsOk)
+        CodeOtpEd := piExAttr.sGetAttr(coKatEd, FROMKATMCMEM.KatEd.NRec, 'Код');
+    }
+
+    if (FROMKATMCMEM.SpSoprMemTTN.PrMC = 1)
+    {
+      if (FROMKATMCMEM.GetFirst KatMC = tsOk)
+        if (FROMKATMCMEM.GetFirst KatEd where ((FROMKATMCMEM.KatMC.cEd == KatEd.NRec )) = tsOk)
+          CodeEd := piExAttr.sGetAttr(coKatEd, FROMKATMCMEM.KatEd.NRec, 'Код');
+    }
+    else
+      if (FROMKATMCMEM.GetFirst KatUsl = tsOk)
+        if (FROMKATMCMEM.GetFirst KatEd where ((FROMKATMCMEM.KatUsl.cEd == KatEd.NRec )) = tsOk)
+          CodeEd := piExAttr.sGetAttr(coKatEd, FROMKATMCMEM.KatEd.NRec, 'Код');
+  }
+#else
+  FROMKATMC.pNrec := comp(спецификацияМЦ_нрек);
+
+  if (FROMKATMC.GetFirst SpSopr = tsOk)
+  {
+    if (FROMKATMC.GetFirst KatOtpEd = tsOk)
+    {
+      if (FROMKATMC.GetFirst KatEd where ((FROMKATMC.KatOtpEd.cKatEd == KatEd.NRec )) = tsOk)
+        CodeOtpEd := piExAttr.sGetAttr(coKatEd, FROMKATMC.KatEd.NRec, 'Код');
+    }
+
+    if (FROMKATMC.SpSopr.PrMC = 1)
+    {
+      if (FROMKATMC.GetFirst KatMC = tsOk)
+        if (FROMKATMC.GetFirst KatEd where ((FROMKATMC.KatMC.cEd == KatEd.NRec )) = tsOk)
+          CodeEd := piExAttr.sGetAttr(coKatEd, FROMKATMC.KatEd.NRec, 'Код');
+    }
+    else
+      if (FROMKATMC.GetFirst KatUsl = tsOk)
+        if (FROMKATMC.GetFirst KatEd where ((FROMKATMC.KatUsl.cEd == KatEd.NRec )) = tsOk)
+          CodeEd := piExAttr.sGetAttr(coKatEd, FROMKATMC.KatEd.NRec, 'Код');
+  }
+#end
+end.

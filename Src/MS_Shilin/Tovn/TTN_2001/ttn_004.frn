@@ -1,0 +1,29 @@
+.create view KolSpSopr
+var pNrec:comp;
+from
+  SpSoprMemTTN,
+  KatMc,
+  KatParty
+ ,KATSOPRMemTTN
+where
+((
+  pNrec               == SpSoprMemTTN.cSopr  and
+  PrUsl              >>= SpSoprMemTTN.PrMc   and
+  SpSoprMemTTN.cMCUSL == KatMC.NRec    and
+  SpSoprMemTTN.cParty == KatParty.NRec
+))
+;
+
+.create view TypeRozn
+var pNrec:comp;
+from
+  SpSoprMemTTN,
+  RzSpDoc,
+  RzDoc
+where
+((
+  pNrec               == SpSoprMemTTN.NRec and
+  SpSoprMemTTN.cOwner == RzSpDoc.NRec      and
+  RzSpDoc.cSopr       == RzDoc.NRec
+))
+;

@@ -1,0 +1,60 @@
+!α―®α®΅ ―¥ΰ¥Ά®§ª¨ ­/γ £ΰγ§®Ά
+.begin
+
+  if (ΰ¨§­ ª_– > 1)
+  {
+    ‹_ƒ“‡‚›•_…‘’          := 0;
+    …„_‡……_ƒ“‡‚›•_…‘’ := '-';
+    KolGrM                     := '-';
+    KolOneGrM                  := '-';
+    EXIT;
+  }
+
+  FROMKATMC.pNrec := comp(α―¥ζ¨δ¨ª ζ¨ο–_­ΰ¥ª);
+
+  //®«¨η¥αβ® £ΰγ§®Άλε ¬¥αβ
+  if (bAutoGrM)
+  {
+    KolGrM := DoubleToStr(‹_ƒ“‡‚›•_…‘’, RoundGrm);
+
+    // ¥α«¨ – - β ΰ  - ΆλΆ®¤¨βμ ―ΰ®η¥ΰª¨ Ά £ΰ δ ε 10-12 ’’-1, ’-2; 6-8 ’ƒ-12; 8-9 1-’
+    if (‹_ƒ“‡‚›•_…‘’ = 0)
+      if (FROMKATMC.GetFirst SpSopr = tsOk)
+        if (FROMKATMC.SpSopr.cOwner <> comp(0))
+        {
+          …„_‡……_ƒ“‡‚›•_…‘’ := '-';
+          KolGrM                     := '-';
+          KolOneGrM                  := '-';
+          EXIT;
+        }
+  }
+  else
+    KolGrM := DoubleToStr(if(‹_ƒ“‡‚›•_…‘’ <> 0, ‹_ƒ“‡‚›•_…‘’, ®«”), RoundGrm);
+
+  //®«-Ά® ―ΰ®¤γªζ¨¨ Ά ®¤­®¬ £ΰγ§®Ά®¬ ¬¥αβ¥
+  if (””–…’_ƒ“‡‚›•_…‘’ = 0)
+    KolOneGrM := DoubleToStr(®«“η / if(‹_ƒ“‡‚›•_…‘’ <> 0, ‹_ƒ“‡‚›•_…‘’, ®«”), Kol_Pr)
+  else
+    KolOneGrM := DoubleToStr(””–…’_ƒ“‡‚›•_…‘’, Kol_Pr);
+
+  if (FROMKATMC.GetFirst SpSopr = tsOk)
+  {
+    if (FROMKATMC.GetFirst KatOtpEd = tsOk)
+    {
+      var piExClass  : iExtClass;
+      var _ClassCode : word;
+      var sMethod    : string;
+
+      _ClassCode := piExClass.GetClassCode (coKatOtpEd, '‘‘ ……‚‡ /“ ƒ“‡€');
+      sMethod    := piExClass.GetSegName   (_ClassCode, FROMKATMC.KatOtpEd.NRec);
+
+      if (sMethod <> '')
+      {
+        …„_‡……_ƒ“‡‚›•_…‘’ := '­/γ';
+        KolGrM                     := '-';
+        KolOneGrM                  :=  sMethod;
+        ‹_ƒ“‡‚›•_…‘’          := 0;
+      }
+    }
+  }
+end.

@@ -1,0 +1,52 @@
+!Поля для формы ГУ-29-О (zhdnakl_1.rtf, zhdnakl_2.rtf, zhdnakl_3.rtf, zhdnakl_4.rtf)
+.fields
+  номер
+  ТТН_Скорость_Имя
+  oPrnSoprFun.GetVagon(накладная_нрек, 0)
+
+  ТТН_ПунктП_Имя
+  ТТН_ПунктП_СТРАНА_ИМЯ
+  ТТН_ПунктР_Имя
+  ТТН_ПунктР_СТРАНА_ИМЯ
+
+  oPrnSoprFun.WriteCodeRwy(накладная_нрек, 1)+ ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2)
+  oPrnSoprFun.WriteCodeRwy(накладная_нрек, 2)+ ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2)
+  #AdrFields(Грузоотправитель)
+  #AdrFields(Грузополучатель)
+//  oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2) + ','
+//  #AdrFieldsUr(Поставщик)
+  oPrnSoprFun.WriteCodeRwy(накладная_нрек, 4)+ ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 2) + ','
+  #AdrFieldsUr(Плательщик)
+  oPrnSoprFun.WriteCodeRwy(накладная_нрек, 4)+ ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 2) + ','
+  #AdrFieldsUr(Плательщик)
+
+  Грузоотправитель_БАНК_Счет
+  Грузоотправитель_БАНК_Счет_Ркц
+  Грузоотправитель_БАНК_Мфо
+  Грузоотправитель_БАНК_Адрес
+
+// Количество грузовых мест
+  KolGrM
+// Вид упаковки
+  if (ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд)
+// Наименование МЦ
+  Название
+// Масса брутто
+  oPrnSoprFun.GetMassaBr(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч))
+  oPrnSoprFun.GetMassaBr(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч))
+
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+
+  DoubleToStr(Round(KolItog, KolZn), strDr)
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+  oPrnSoprFun.GetMassaBr(1, MassaBrItog)
+
+  if (MassaBrItog = 0, '',
+    MassaInWords (MassaBrItog, wRoundMass2))
+
+  oPrnSoprFun.GetMassaBr(1, MassaNetItog)
+  oPrnSoprFun.GetMassaBr(1, MassaNetItog)
+
+  Спецсимвол
+.endfields

@@ -1,0 +1,17 @@
+//подключаемые ресурсы
+/resources:%gal_exe%C_StatLine.res;
+/resources:%gal_exe%extfun.res;
+/resources:%gal_exe%F_OSRep.res;
+/resources:%gal_exe%F_OsInvCard.res;
+/resources:%gal_exe%F_Os.res;
+/resources:%gal_exe%F_OsOper.res;
+/resources:%gal_exe%F_sfo.res;
+/resources:%gal_exe%F_mbp.res;
+/resources:%gal_exe%L_PrnSopr.res;
+/resources:%gal_exe%L_Sklad.res;
+/resources:%gal_exe%F_BuhRep.res;
+/resources:%gal_exe%L_Dover.res;
+/resources:%gal_exe%F_SFO.res;
+/resources:%gal_exe%F_PlPor.res;
+/resources:%gal_exe%F_SFO1.res;
+/resources:%gal_exe%Z_PAYREP.res;

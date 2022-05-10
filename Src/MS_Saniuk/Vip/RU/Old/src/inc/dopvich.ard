@@ -1,0 +1,12 @@
+.Form 'dopvich'
+.ard
+.Group 'Постоянные доплаты'
+.NameInList 'Дополнительные вычеты'
+.f 'nul'
+.Table Blank
+.fields
+.endfields
+.begin
+RunInterface('dopvich');
+end.
+.endform

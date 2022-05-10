@@ -1,0 +1,527 @@
+/*
+          ╔════════════════════════════════════════════════════════════════════════════════╗
+          ║                     (c) 2011 корпорация ГАЛАКТИКА                              ║
+          ║ Проект        : ГАЛАКТИКА                                                      ║
+          ║ Модуль        : Основные средства + Nezemnal (МГТС)                            ║
+          ║ Версия        : 8.10                                                           ║
+          ║ Клиент        : [МГТС] Филиал Минская городская телефонная сеть РУП Белтелеком ║
+          ║ Назначение    : ХРАНИЛИЩЕ атрибуты KatOS Nezemnal                              ║
+          ║ Ответственный : Прокофьев Игорь Александрович [ДТП] Стамп                      ║
+          ║                                                                                ║
+          ║ Изменения                                                                      ║
+          ║  Дата      :                                                                   ║
+          ║  Описание  :                                                                   ║
+          ╚════════════════════════════════════════════════════════════════════════════════╝
+*/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Interface Nezemnal_OS  'Заполнение/корректировка ХРАНИЛИЩА атрибутов ОС (Nezemnal)', EscClose, cyan;
+show at (1,1,120,26);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var
+
+  mCount
+, i
+, kol           : integer
+
+  nRecAttr
+, nRecMark      : comp
+
+  dat1
+, DatFrom
+, DatTo
+, dat3
+, dZakr         : date
+
+  sPick
+, sParam        : string
+
+  bOper         : boolean
+
+create view
+as select *
+from
+  KatOS          (readonly)
+, KatOS KatOS2   (readonly)
+, AttrNam        (readonly)
+, pick
+, Nezemnal (NEZEMNAL05)
+, Nezemnal NezemnalFrom
+, Nezemnal NezemnalTo
+
+where
+((
+        sParam         ==  Nezemnal.param
+   and  dat1           ==  Nezemnal.DataN
+!   and  dat2          >>=  Nezemnal.DataN
+
+   and  Nezemnal.cOS   ==  KatOS.nRec
+   and  nRecMark       ==  KatOS2.nRec
+
+   and  nRecAttr       ==  AttrNam.nRec
+
+   and  coKatOS        ==  pick.wlist
+
+   and  sParam         ==  NezemnalFrom.param
+   and  DatFrom        ==  NezemnalFrom.DataN
+
+   and  sParam            ==  NezemnalTo.param
+   and  DatTo             ==  NezemnalTo.DataN
+   and  NezemnalFrom.cOS  ==  NezemnalTo.cOS
+))
+;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+window wAddNezemnal 'Добавление записей в хранилище (Nezemnal)' blue;
+ show at(,,80,8);
+  screen sAddNezemnal '' (,hcOSBInvKart,sci1EnEsc);
+  table Nezemnal;
+!  show at(,,,5);
+  fields
+   dat3    : [15], NoProtect;
+   sParam  :         Protect;
+   sPick   ('Выбранные ОС',,sci13Esc) : Protect, PickButton;
+
+  buttons
+   cmOK;
+
+<<
+    дата добавления записей           для атрибута
+   .@@@@@@@@@@                       .@@@@@@@@@@@@@@@@@@@@@
+
+    выбор ОС для добавления Nezemnal
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   <.Добавить записи.>
+
+>>
+  end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+HandleEvent
+
+cmInit:
+{
+  bOper    := FALSE;
+  nRecMark := comp(0);
+  mCount   := 0;
+  sPick    := '';
+  dat3     := date(0,0,0);
+}
+
+cmUpdateRecord:
+{
+  UpDate current Nezemnal;
+}
+
+cmCheckField:
+{
+  set dat3 := date( 01, month(dat3), year(dat3) ); // принудительно ставим первое число указанной даты
+
+  if ( dZakr > dat3 ) // проверяем дату добавления с закрытым периодом
+   message('Запрещено добавление записей в закрытом периоде. Укажите другую дату');
+}
+
+cmPick:
+{
+  case CurField of
+   #sPick:
+   {
+     nRecMark := comp(0);
+     mCount := 0;
+
+     RunInterface( 'PickDogOS', sParam, dat3, mCount, nRecMark );
+
+     if ( mCount = 0 and nRecMark = comp(0) )
+      set sPick := 'Не выбраны ОС';
+
+     if ( mCount = 1 or ( mCount = 0 and nRecMark <> comp(0) ) )
+     {
+       if ( GetFirst KatOS2 = tsOk )
+        set sPick := KatOS2.NameOS;
+     }
+
+     if ( mCount > 1 )
+      set sPick := 'Выбрано ' + mCount;
+   }
+  end;
+}
+
+cmOK:
+{
+  if ( mCount = 0 )
+  {
+    message('Не выбраны ОС');
+    exit;
+  }
+
+  if ( dZakr > dat3 ) // проверяем дату добавления с закрытым периодом
+  {
+    message('Запрещено добавление в закрытом периоде');
+    exit;
+  }
+
+
+  bOper := TRUE;
+
+  if ( mCount = 1 )
+  {
+    ClearBuffer(#Nezemnal);
+     Nezemnal.param   :=  sParam;
+     Nezemnal.DataN   :=  dat3;
+     Nezemnal.cOS     :=  nRecMark;
+
+     if ( GetFirst KatOS2 where (( nRecMark == KatOS2.nRec )) = tsOk )
+      Nezemnal.OS_INV  := KatOS2.InNum;
+
+    insert current Nezemnal;
+  }
+  else
+   _loop stdcache pick
+   {
+     ClearBuffer(#Nezemnal);
+      Nezemnal.param   :=  sParam;
+      Nezemnal.DataN   :=  dat3;
+      Nezemnal.cOS     :=  pick.cRec;
+
+      if ( GetFirst KatOS2 where (( pick.cRec == KatOS2.nRec )) = tsOk )
+       Nezemnal.OS_INV  := KatOS2.InNum;
+
+     insert current Nezemnal;
+   }
+
+  CloseWindow(wAddNezemnal);
+  exit;
+}
+
+end; // HandleEvent window
+
+end;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+window wEditNezemnal 'Редактирование записей хранилища (Nezemnal)' blue;
+ show at(,,,8);
+  screen sEditNezemnal '' (,hcOSBInvKart,sci1EnEsc);
+  table Nezemnal;
+  fields
+   Nezemnal.OS_INV   : [15],   Protect;
+   KatOS.NameOS      : [55],   Protect;
+!   Nezemnal.DataN    : [15],   Protect;
+   Nezemnal.koef3    : [, '666 666 666 666 667.88'], NoProtect;
+
+<<
+
+        ИНН            Наименование ОС                                    значение
+   .@@@@@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  .@@@@@@@@@@
+
+>>
+  end;
+end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+window wEditBrow 'Редактирование записей хранилища (Nezemnal)' blue;
+ show at(,,,);
+  browse brNezemnalOS (,hcOSBInvKart,sci1478EnEscA);
+  table Nezemnal;
+  fields
+   Nezemnal.OS_INV   : [15],   Protect;
+   KatOS.NameOS      : [55],   Protect;
+!   Nezemnal.DataN    : [15],   Protect;
+   Nezemnal.koef3    : [, '666 666 666 666 667.88'], NoProtect;
+  end;
+
+HandleEvent
+cmAddNewRec:
+{
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( sParam = '' )
+  {
+    message('Выберите атрибут');
+    exit;
+  }
+
+/*
+  if ( dat1 = date(0,0,0) or dat2 = date(0,0,0) ) // проверяем дату добавления с закрытым периодом
+  {
+    message('Необходимо указать период');
+    exit;
+  }
+*/
+
+  RunWindowModal( wAddNezemnal );
+
+  ReReadRecord(#Nezemnal);
+}
+end;
+
+end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+panel pNezemnal;
+ table Nezemnal;
+  screen sExAttrKatOS1 'Хранилище (Nezemnal)' (,hcOSBInvKart,sci1478EnEscA);
+  show at(,,,3);
+  fields
+   AttrNam.name   ('Атрибут ОС',,sci13Esc) : Protect, PickButton;
+
+   dat1            : [15], NoProtect;
+!   dat2            : [15], NoProtect;
+
+<<
+     внешний атрибут для ОС                           на дату
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@      .@@@@@@@@@@  (начало месяца)
+>>
+  end;
+
+  browse viewKatOS (,hcOSBInvKart,sci1478EnEscA);
+  show at(,4,,);
+  fields
+   KatOS.NameOS      'Наименование' : [55], protect;
+   Nezemnal.OS_INV   'ИНН'          : [15], protect;
+!   Nezemnal.DataN    'дата'         : [15], protect;
+   Nezemnal.koef3    'Значение'     : [, '666 666 666 666 667.88'], protect;
+  end;
+
+end;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+HandleEvent
+
+cmInit:
+{
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+  dat3  := date(0,0,0);
+
+  SelectField(#Nezemnal.koef3);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmUpdateRecord:
+{
+  UpDate current Nezemnal;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmCheckField:
+{
+  if IsModified
+  {
+    UpDate current Nezemnal;
+  }
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmDeleteRecord:
+{
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( dZakr > Nezemnal.DataN ) // проверяем дату добавления с закрытым периодом
+  {
+    message('Запрещено добавление в закрытом периоде');
+    exit;
+  }
+
+  if ( Message('Удалить запись?', yesNo+Confirmation) = cmYes )
+   delete current Nezemnal;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmAddNewRec:
+{
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( sParam = '' )
+  {
+    message('Выберите атрибут');
+    exit;
+  }
+
+/*
+  if ( dat1 = date(0,0,0) or dat2 = date(0,0,0) ) // проверяем дату добавления с закрытым периодом
+  {
+    message('Необходимо указать период');
+    exit;
+  }
+*/
+
+  RunWindowModal( wAddNezemnal );
+
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmValue1: //
+{
+  if ( sParam = '' )
+  {
+    message('Выберите атрибут');
+    exit;
+  }
+
+  kol := 0;
+  DatFrom := DatTo := date(0,0,0);
+
+  if( RunDialog( 'Copy_Nezemnal_Koef3', DatFrom, DatTo ) <> cmOk )
+   exit;
+
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( dZakr > DatTo ) // проверяем дату добавления с закрытым периодом
+  {
+    message('Запрещено изменение в закрытом периоде');
+    exit;
+  }
+
+
+  if ( DatFrom = date(0,0,0) or DatTo = date(0,0,0) )
+  {
+    message('Некорректно указаны даты');
+    exit;
+  }
+
+  if ( DatFrom = DatTo )
+  {
+    message('Дата источники и приемника должны отличаться');
+    exit;
+  }
+
+  DatFrom := date( 01, month(DatFrom), year(DatFrom) );
+  DatTo   := date( 01, month(DatTo)  , year(DatTo)   );
+
+  _loop NezemnalFrom
+   if ( GetFirst NezemnalTo = tsOk and NezemnalTo.Koef3 = 0 and NezemnalFrom.Koef3 <> 0 )
+   {
+     NezemnalTo.Koef3 := NezemnalFrom.Koef3;
+     UpDate current NezemnalTo;
+
+     ++kol;
+   }
+
+  ReReadRecord(#Nezemnal);
+
+  if ( kol = 0 )
+   message('Не найдено записей для копирования значений');
+  else
+   message('Скопировано значений для '+kol+' записей');
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmEdit:
+{
+//  PutCommand(cmEdit);
+
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( dZakr > Nezemnal.DataN )
+   message('Запрещено редактирование в закрытом периоде');
+  else
+   RunWindowModal( wEditBrow );
+
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmDefault:
+{
+  dZakr := dGetTune('FIN.USER.DTECBUH');
+
+  if ( dZakr > Nezemnal.DataN )
+   message('Запрещено редактирование в закрытом периоде');
+  else
+   RunWindowModal( wEditNezemnal );
+
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmCheckField:
+{
+/*
+  case CurField of
+   #dat1 or #dat2:
+   {
+     if ( dat1 > dat2 )
+      message('Неверно указан период');
+   }
+  end;
+*/
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmPick:
+{
+  case CurField of
+   #AttrNam.name:
+   {
+     if ( RunInterface( PickAttrKatOS, nRecAttr ) = cmDefault )
+      if( GetFirst AttrNam = tsOk )
+       sParam := SubStr(AttrNam.name,1,20);
+   }
+  end;
+
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmPrintDoc:
+{
+  xlCreateExcel( 'Nezemnal.xls', True );
+
+  if not xlIsExcelValid { message('Ошибка инициализации Excel'); exit; };
+
+  xlSetCellStringValue( 'Реестр записей хранилища (Nezemnal) по атрибуту: ' + sParam + ' на дату: '+dat1, 2, 2, 2, 2 );
+
+  xlSetCellStringValue( 'ИНН ОС'          , 4, 1, 4, 1);
+  xlSetCellStringValue( 'Наименование ОС' , 4, 2, 4, 2);
+  xlSetCellStringValue( 'Значение'        , 4, 3, 4, 3);
+
+  xlSetColumnWidth( 10, 1, 1, 1, 1);
+  xlSetColumnWidth( 60, 1, 2, 1, 2);
+  xlSetColumnWidth( 10, 1, 3, 1, 3);
+
+  xlFrameCells( xlBorderL or xlBorderR or xlBorderT or xlBorderB or xlInsideV or
+                xlInsideH or xlInsideHorizontal or xlInsideVertical, xlThin, 0, 0, 4, 1, 4, 3);
+
+
+  xlCreateMatrix(64000, 31); // создали массив
+
+  StartNewVisual( vtRotateVisual, vfTimer, 'Формирование отчета', 1);
+
+  i := 0;
+
+  _loop Nezemnal
+  {
+    ++i;
+    nextvisual;
+
+    if ( GetFirst KatOS = tsOk )
+    {
+      xlStWriteToMatrix( i, 1, chr(39)+KatOS.InNum );
+      xlStWriteToMatrix( i, 2, KatOS.NameOS        );
+    }
+
+    xlDoWriteToMatrix( i, 3, Nezemnal.Koef3 );
+  }
+
+
+  xlWriteMatrixToExcel( 5, 1 );
+
+
+  xlClearMatrix;
+  StopVisual('', 0);
+  xlFreeMatrix;
+  xlKillExcel;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmPickAttr:
+{
+  RunInterface( Attribute, word(31500), Nezemnal.nRec );
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cmHotKeys:
+{
+  PutHotCommand( RunMenu('Table_HotKeys_KatOS_Nezemnal') );
+  ReReadRecord(#Nezemnal);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+end;
+
+end.
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Table_HotKeys_KatOS_Nezemnal Menu
+{
+  - 'Внешние ~а~трибуты'     , cmPickAttr, 'Внешние атрибуты'    , hcGkatalM1Attr, 'Alt+A' , kbAltA , sci1Esc;
+  - 'Копирование значений'   , cmValue1  , 'Копирование значений', hcGkatalM1Attr,         ,        , sci1Esc;
+  - 'Печать каталога'        , cmPrintDoc, 'Печать реестра ОС'   , hcGkatalM1Attr, 'Ctrl+P', kbCtrlP, sci1Esc;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////

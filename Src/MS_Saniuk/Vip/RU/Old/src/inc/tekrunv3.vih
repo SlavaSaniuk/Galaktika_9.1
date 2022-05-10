@@ -1,0 +1,91 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Общие функции
+// Объект с функциями модификации текущих остатков
+//******************************************************************************
+#doc
+Объект с функциями модификации текущих остатков
+#end
+
+#doc
+Модификация текущих остатков
+#end
+
+ObjInterface ObjTekRunV3;
+
+//******************************************************************************
+#doc
+Минимальное значение для количества МЦ
+#end
+Function  GetMinQuantity: double;
+
+#doc
+возвращает сумму резервов во всех dores-ах, ссылающихся на конкретный spstep
+#end
+Function  GetSumDoRes(cSpStep: comp): double;
+
+#doc
+модификация текущих матценностей
+#end
+Function  ModifyTekMC(c_MC: comp; KK: double; RR: double): boolean;
+
+#doc
+модификация складских остатков
+#end
+Function  ModifySklOst(c_MC: comp; c_Podr: comp; KK: double; RR: double): boolean;
+
+#doc
+модификация складских остатков
+#end
+Function  ModifySklOstAlways(c_MC: comp; c_Podr: comp; KK: double; RR: double): boolean;
+
+#doc
+модификация текущих остатков
+#end
+Function  ModifyTekSaldo(c_MC, c_Podr, c_MOL, c_Party: comp; KK, RR: double): boolean;
+
+#doc
+последовательно вызывает функии ModifyTekMC; ModifySklOst; ModifyTekSaldo,
+делая откат в случае неуспеха по любой из них
+#end
+Function  ModifyAllTek(c_MC, c_Podr, c_MOL, c_Party: comp; KK, RR: double): boolean;
+
+#doc
+Модификация резрва по складам
+#end
+Function  ModifyDoRes(c_SpStep, c_Podr, c_MOL, c_Party: comp; RR: double): boolean;
+
+#doc
+Удаление резрва по складам
+#end
+Function  DeleteDoRes(c_SpStep: comp): boolean;
+
+#doc
+установка семафора
+семафор устанавливается для исключения одновременного резервирования по одной и той же МЦ
+#end
+Function  SwitchSemaphore(bParam: boolean; pMC: comp): boolean;
+
+#doc
+Ожидание освобождения семафора
+#end
+Function  WaitSemaphore(pMC: comp): boolean;
+
+#doc
+Удаление резерва по предприятию
+#end
+Procedure DelDoResOnSpSopr(pSpSopr: comp);
+
+//******************************************************************************
+
+end;
+
+//******************************************************************************
+
+VipInterface TekRunV3 implements ObjTekRunV3
+#ifdef ATL51
+  licensed (FREE)
+#end
+;
+
+//******************************************************************************

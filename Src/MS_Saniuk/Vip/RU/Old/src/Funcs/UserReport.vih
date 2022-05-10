@@ -1,0 +1,100 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//                                                          (c) Галактика - Киев
+//------------------------------------------------------------------------------
+// Галактика 5.8x - 7.1x - 8.0 - 8.1
+// Интерфейс доступа к отчетам пользователя
+//------------------------------------------------------------------------------
+
+#ifdef ComponentVersion
+#Component "F_UserReport"
+#end
+
+#ifndef __UserReport_vih__
+#define __UserReport_vih__
+
+#doc
+Интерфейс доступа к отчетам пользователя. </brief> <br>
+Возможные значения параметра <i>ModuleID</i> интерфейса
+<b><link Interface F_UserReport::UserReport>UserReport</link></b>,
+они же - возможные результаты метода VisibleInModule:
+<table>
+  <tr><th> ModuleID      <th> Наименование модуля
+  <tr><td> AFPLAN        <td> Планирование финансов
+  <tr><td> APLAN         <td> Управление проектами
+  <tr><td> BUY           <td> Управление снабжением
+  <tr><td> B_ACT         <td> Нематериальные активы
+  <tr><td> B_BALANS      <td> Бухгалтерская отчетность
+  <tr><td> B_FA          <td> Финансовый анализ
+  <tr><td> B_FINANS      <td> ФРО
+  <tr><td> B_HOZOP       <td> ХозОперации
+  <tr><td> B_KASSA       <td> Касса
+  <tr><td> B_KONSOL      <td> Консолидация
+  <tr><td> B_OSN         <td> Основные средства
+  <tr><td> B_VEKS        <td> Векселя и кредиты
+  <tr><td> CONTROLLING   <td> Контроллинг
+  <tr><td> COPLAN        <td> Корпоративное планирование
+  <tr><td> CRM           <td> Клиент
+  <tr><td> CUSTBANK      <td> Клиент-Банк
+  <tr><td> DOCBAS        <td> Документооборот
+  <tr><td> DOGOVOR       <td> Управление договорами
+  <tr><td> DVS           <td> Давальческое сырье
+  <tr><td> EXP_IMP       <td> Обмен бизнес-документами
+  <tr><td> MANUFACTURE   <td> Учет в производстве
+  <tr><td> MANUFPLAN     <td> Планирование производства
+  <tr><td> MBP           <td> Учет спецоснастки, спецоборудования и спецодежды
+  <tr><td> MENUAVT       <td> Управление транспортом
+  <tr><td> MENUMGTS      <td> Претензионно-исковая работа
+  <tr><td> MENUZARP      <td> Заработная плата
+  <tr><td> MNUMARKET     <td> Рекламные кампании
+  <tr><td> NALOGREG      <td> Налоговый учет
+  <tr><td> NASTR_G       <td> Настройка
+  <tr><td> OFP           <td> Платежный календарь
+  <tr><td> OTPRCONS      <td> Консигнация
+  <tr><td> PARTNER       <td> Партнерский модуль
+  <tr><td> POSTPOL       <td> Поставщики,получатели
+  <tr><td> REMONT        <td> Управление ремонтами
+  <tr><td> ROZN          <td> Розничная торговля
+  <tr><td> SALEPLAN      <td> Управление заказами
+  <tr><td> SELL          <td> Управление сбытом
+  <tr><td> SERVICE       <td> Сервисное обслуживание
+  <tr><td> SFO           <td> Спецодежда
+  <tr><td> SFP           <td> Управление бюджетом
+  <tr><td> SKLAD         <td> Складской учет
+  <tr><td> SKLAD2        <td> Матценности
+  <tr><td> STAFFMAINMENU <td> Управление персоналом
+  <tr><td> STROY         <td> Управление строительством
+  <tr><td> SUPPLYPLAN    <td> МТО
+  <tr><td> TAXES         <td> Ведение налоговых расчетов
+  <tr><td> TEP           <td> ТЭП
+  <tr><td> TPP           <td> Спецификации продуктов
+  <tr><td> UFZ           <td> Фактические затраты
+</table>
+#end
+ObjInterface IUserReport;
+  #doc
+  Запуск отчета на выполнение при выборе его из списка отчетов
+  #end
+  procedure Run;
+  #doc
+  Наименование отчета в списке
+  #end
+  function GetReportName : String;
+  #doc
+  Наименования групп, в которые входит отчет.
+  Группа <b> n+1 </b> делается подчиненной группе <b> n </b>
+  #end
+  function GetGroupName (Level : Word) : String;
+  #doc
+  Приоритет отчета - сортировка внутри группы выполняется сначала
+  по приоритету, а затем по наименованию
+  #end
+  function GetPriority : Integer;
+  #doc
+  ModuleID модулей, в которых будет виден отчет.
+  Если возвращает '*', то отчет будет виден в любом модуле
+  #end
+  function VisibleInModule (Ind : Byte) : String;
+end;
+
+#end

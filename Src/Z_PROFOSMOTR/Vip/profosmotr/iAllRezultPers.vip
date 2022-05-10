@@ -1,0 +1,145 @@
+#doc
+Сводный интерфейс с результатами прохождения профосмотра(Белтелеком)
+#end
+
+#include SelectPersons.vih
+
+Interface iAllRezultPers 'Просмотр результатов медосмотров' EscClose, cyan;
+Show at (1, 1, 160, 25);
+
+var
+objInitTmp: SelectPersons;
+
+Create view
+as select
+*
+from
+ Persons(PERSBYFIO)
+,PersonsTmp
+,Catalogs PodrCatalogs
+,Catalogs PostCatalogs
+,Appointments
+,SPALLSTAFF
+,SPALLSTAFF SPALLSTAFFfactor
+,DISTDOCHIERARCHY
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers
+,DISTDOCHIERARCHY DISTDOCHIERARCHYnabor
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactor
+,SPALLSTAFF SPALLSTAFFfactorRED
+where
+((
+    PersonsTmp.Person  == Persons.NRec
+
+and Persons.AppointCur == Appointments.Nrec
+
+and Persons.Department == PodrCatalogs.Nrec
+and Appointments.Post  == PostCatalogs.Nrec
+
+and constRecFact       == SPALLSTAFFfactor.WNOCON        //нижняя панель
+and PersonsTmp.Person  == SPALLSTAFFfactor.CBASET         //ссылка на сотрудника
+and (SPALLSTAFFfactor.RESWORD[1]<>0 and SPALLSTAFFfactor.RESDATE[2]<>date(0,0,0))    //только с заполненными результатами
+
+and SPALLSTAFFfactor.RESCOMP[1]        == DISTDOCHIERARCHYfactorPers.nrec        //факторы сотрудника
+
+and DISTDOCHIERARCHYfactorPers.CANVAL1 == DISTDOCHIERARCHYnabor.nrec  //набор
+
+and DISTDOCHIERARCHYnabor.CUSERID      == DISTDOCHIERARCHYfactor.nrec  //справочник факторов
+
+and SPALLSTAFFfactor.CLINKT == SPALLSTAFF.nrec            //средняя панель
+
+and SPALLSTAFF.CLINKT       == DISTDOCHIERARCHY.nrec      //верхняя панель
+
+and constRecFact              == SPALLSTAFFfactorRED.WNOCON     //таблица для определения необходимости подсветки красным(сотрудники с проблемами)
+and PersonsTmp.Person         == SPALLSTAFFfactorRED.CBASET
+and (SPALLSTAFFfactorRED.RESWORD[1]=2 and SPALLSTAFFfactorRED.RESDATE[2]<>date(0,0,0))
+))
+;
+
+panel pAllLschetPersons
+table PersonsTmp;
+ browse brAllLschetPersons (,, sci1Esc);
+ show (,,,5);
+fields
+   {Font = {Color = if (IsValid(#SPALLSTAFFfactorRED), ColorSysRed, 0) }};
+   PersonsTmp.FIO      'Фамилия Имя Отчество'  ('Фамилия Имя Отчество',,):[30], protect;
+   PersonsTmp.TabNum   'Таб.номер'      ('Табельный номер работника',,):[20], protect;
+   PodrCatalogs.Name   'Подразделение'  ('Подразделение',,):[30], skip;
+   PostCatalogs.Name   'Должность'  ('Должность',,):[30], skip;
+end;
+end;
+
+Panel panRezultProfosmotr
+  Show at (, 6, , )
+Table SPALLSTAFFfactor;
+Browse brRezultProfosmotr (, , sci1Esc)
+Fields
+  DISTDOCHIERARCHY.WTYPEHIER       #3'Год'                  : [4], protect;
+  DISTDOCHIERARCHY.SNAME           #3'Номер'                : [10], protect,skip;
+  DISTDOCHIERARCHY.WDOCNORM        #3'Вид медосмотра' ('Вид медосмотра'):
+  [LIST 0 ' ', 1 'Предварительный', 2 'Периодический', 3 'Внеочередной'],Protect,skip;
+  DISTDOCHIERARCHYfactor.SNAME     #3'Фактор' :[28],protect,skip;
+  DISTDOCHIERARCHYnabor.WKOLNORM         #3'Класс' ('Класс условий труда'):
+  [LIST 0 ' ', 1 'класс 1', 2 'класс 2', 3 'класс 3.1', 4 'класс 3.2', 5 'класс 3.3', 6 'класс 3.4', 7 'класс 4'],Protect, Skip;
+  DISTDOCHIERARCHYnabor.WKODGRKAU1       #3'Периодичность' ('Периодичность условий труда'):
+  [LIST 0 ' ', 1 '1 раз в год', 2 '1 раз в 2 года', 3 '1 раз в 3 года', 4 '1 раз в 4 года', 5 '1 раз в 5 лет'],Protect, Skip;
+  SPALLSTAFFfactor.RESSTRING[1]        #3'Номер документа' : [10], protect,skip;
+  SPALLSTAFFfactor.RESDATE[1]          #3'Дата документа' : [12], protect,skip;
+  SPALLSTAFFfactor.RESWORD[1]          #3'Результат' ('Результат медосмотра'):
+  [LIST 0 ' ', 1 'Годен', 2 'Негоден', 3 'Годен с ограничениями'],Protect,skip;
+  SPALLSTAFFfactor.RESDATE[2]          #3'Дата медосмотра' : [12], protect,skip;
+end; //Browse
+end; // Panel
+
+Handleevent
+
+cmInit:
+{
+  objInitTmp.InitTmpPers; //инициализация временной таблицы
+
+  DisableCommand(cmOk);
+  DisableCommand(cmDefault);
+  DisableCommand(cmDelete);
+}
+
+cmDefault:
+{
+  abort;
+  exit;
+}
+
+cmHotKeys:
+{
+ var iTmpMnu : LongInt;
+
+ if (CurTable <> #PersonsTmp)
+   {
+    abort;
+    exit;
+   }
+
+ iTmpMnu := RunMenu('MenAllRezultMain');
+
+ if ((iTmpMnu <> cmCancel) and (iTmpMnu <> cmClose))
+   {
+    PutHotCommand(iTmpMnu);
+   }
+ else
+   {
+    abort;
+    exit;
+   }
+}
+
+cmFilterSave:
+{
+  RunInterface(CommonFiltr);
+  objInitTmp.InitTmpPers; //инициализация временной таблицы
+  ReReadRecord(#PersonsTmp);
+}
+end;
+End.
+
+MenAllRezultMain Menu
+{
+  - 'Фильтр ...',cmFilterSave,'Установка фильтра на данные', hcStaffNabNLS,'Alt+B',kbAltB,sci1Esc;
+}

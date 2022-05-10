@@ -1,0 +1,436 @@
+{\rtf1\ansi \deff4\deflang1033{\fonttbl
+{\f4\froman\fcharset204\fprq2 Times New Roman Cyr;}
+{\f5\fswiss\fcharset204\fprq2 Arial Cyr;}
+{\f11\fmodern\fcharset204\fprq1 Courier New Cyr;}
+}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;
+\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;
+\red255\green0\blue0;\red255\green255\blue0;\red255\green255\blue255;
+\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;
+\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;
+\red128\green128\blue128;\red192\green192\blue192;}
+{\stylesheet{\f4\fs16\lang1049 \snext0 Normal;}
+{\*\cs10 \additive Default Paragraph Font;}}{\info{\title 1\'09}
+{\author \'c3\'e2\'ee\'e7\'e4\'e8\'f6\'e8\'ed
+\'c0\'eb\'e5\'ea\'f1\'e0\'ed\'e4\'f0 \'f1\'e2\'e5\'f2
+\'c3\'e5\'ed\'ed\'e0\'e4\'fc\'e5\'e2\'e8\'f7}
+{\operator \'c3\'e2\'ee\'e7\'e4\'e8\'f6\'e8\'ed
+\'c0\'eb\'e5\'ea\'f1\'e0\'ed\'e4\'f0 \'f1\'e2\'e5\'f2
+\'c3\'e5\'ed\'ed\'e0\'e4\'fc\'e5\'e2\'e8\'f7}
+{\creatim\yr1996\mo7\dy30\hr11\min15}
+{\revtim\yr1996\mo7\dy30\hr11\min15}{\version1}{\edmins0}{\nofpages0}
+{\nofwords0}{\nofchars0}{\vern49205}}
+\paperw11906\paperh16838\margl1417\margr1417\margt1417\margb1417
+\deftab708\widowctrl\ftnbj\aenddoc\hyphhotz425\formshade \fet0\sectd
+\linex0\headery709\footery709\colsx709\endnhere {\*\pnseclvl1
+\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}
+{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}
+{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}
+{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}
+{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}
+{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}
+{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}
+{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang
+{\pntxtb (}{\pntxta )}}
+{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}
+.LinkForm 'ARENDAFORMSMS2021' Prototype is 'PRBDOC'
+ \par .Group '\'d3\'f1\'f2\'e0\'f0\'e5\'e2\'f8\'e8\'e5 \'f4\'ee\'f0\'ec\'fb (
+\'ef\'f0\'e5\'e4\'ee\'ef\'eb\'e0\'f2\'e0 \'ef\'f0\'ee\'e4\'e0\'e6)'
+ \par .Group '\'d3\'f1\'f2\'e0\'f0\'e5\'e2\'f8\'e8\'e5 \'f4\'ee\'f0\'ec\'fb (
+\'ef\'f0\'ee\'e4\'e0\'e6\'e0)'
+ \par .Group '\'d1\'f7\'e5\'f2 \'eb\'e5\'f1\'ee\'ef\'ee\'eb\'fc\'e7\'ee\'e2\'e0
+\'f2\'e5\'eb\'ff'
+ \par .NameInList '2021_\'d1\'f7\'e5\'f2(\'c0\'f0\'e5\'ed\'e4\'e0)'
+ \par .f 'NUL'
+ \par .var
+ \par   NrecOS:Comp
+ \par   oAiExt:iExtAttr
+ \par   oKatOrgAttr:KatOrgAttr
+ \par   PatchShablon:String
+ \par   NameOrg:String
+ \par   boRunReport:Boolean
+ \par   iRowStart:Integer
+ \par   iNpp:Integer
+ \par   FormulaCalc:String
+ \par   datNezemnal:Date
+ \par   totalSumBezNds:Double
+ \par   totalNDS:Double
+ \par   totalSumSNds:Double
+ \par   sumNDSmy:Double
+ \par   ColumnRecordUsl_3_7:String
+ \par   ColumnPrintUsl:String
+ \par   ColumnRecordUsl_2:String
+ \par   ColumnRecordUsl_8:String
+ \par   KodTarif:String
+ \par    sNDov, sDDov, sFIO, sIOF, sFullName, sDolzh : string;
+ \par    PersNRec : comp;
+ \par  \par 
+.endvar
+ \par .Create   view AppArenda
+ \par from
+ \par   BaseDoc
+ \par  ,StepDoc
+ \par  ,SpStep
+ \par  ,Katorg
+ \par  ,KatUsl
+ \par  ,SpDocNal
+ \par  ,KatBank KatBankKontr
+ \par  ,Nezemnal
+ \par  ,ListPar
+ \par  ,Katpodr
+ \par  ,Kattar
+ \par  ,TRSTV
+ \par where
+ \par ((
+ \par     BaseDocNrec      == BaseDoc.nRec
+ \par  \par 
+and Basedoc.nrec     == StepDoc.cBasedoc
+ \par  \par 
+and StepDoc.nrec     == Spstep.cstepdoc
+ \par  \par 
+and SpStep.nrec      == SpDocNal.CSPDOC
+ \par and word(1201)       == SpDocNal.tipDoc
+ \par  \par 
+and Basedoc.corg     == Katorg.nrec
+ \par  \par 
+and Basedoc.Cdogovor == Dogovor.nrec
+ \par  \par 
+and Dogovor.CCURPODR == Katpodr.nrec
+ \par  \par 
+and SpStep.cmcusl    == KatUsl.nrec
+ \par  \par 
+and Basedoc.cBank    == KatBankKontr.nrec
+ \par ));
+ \par .fields
+ .endfields
+ \par .begin
+ \par PatchShablon:=StartPathName+'Xls\L_BASEDOC\Arenda\ArendaFormsMs.xltm';
+ \par boRunReport:=true;
+ \par if(not ExistFile(StartPathName+'Xls\L_BASEDOC\Arenda\ArendaFormsMs.xltm'))
+ \par   \{
+ \par     message('\'cf\'ee \'ef\'f3\'f2\'e8 '+PatchShablon+' \'f8\'e0\'e1\'eb
+\'ee\'ed \'ed\'e5 \'ee\'e1\'ed\'e0\'f0\'f3\'e6\'e5\'ed! \'ce\'f2\'f7\'e5
+\'f2 \'ed\'e5 \'e1\'f3\'e4\'e5\'f2 \'f1\'f4\'ee\'f0\'ec\'e8\'f0\'ee\'e2
+\'e0\'ed!');
+ \par     boRunReport:=false;
+ \par   \}
+ \par OpenMessageLog(GetDefaultUserPath+'CreateProtokolArenda.log',mfLog2Stream+mfNoTimeStamp);
+ \par RunInterface('MS_Shilin::GetPodpis', sNDov, sDDov, sFIO, sIOF, sDolzh, sFullName,
+ persNRec);
+ \par end.
+ \par .\{
+ \par .begin
+ \par NameOrg:='';
+ \par totalSumBezNds:=0;
+ \par totalNDS:=0;
+ \par totalSumSNds:=0;
+ \par iRowStart:=22;
+ \par iNpp:=0;
+ \par if(boRunReport)
+ \par   \{
+ \par   if(xlCreateExcelWithTemplate(PatchShablon,true))
+ \par    \{
+ \par      if(AppArenda.getfirst BaseDoc=tsok)
+ \par       \{
+ \par        xlSetCellStringValue(AppArenda.BASEDOC.NODOC,3,4,3,5);
+ \par        xlSetCellStringValue(day(AppArenda.BASEDOC.DDOC),3,7,3,7);
+ \par        xlSetCellStringValue(datetostr(AppArenda.BASEDOC.DDOC,'Mon'),3,8,3,9);
+ \par        xlSetCellStringValue(Year(AppArenda.BASEDOC.DDOC)+' \'e3\'ee\'e4
+\'e0',3,10,3,10);
+ \par  \par 
+       if(AppArenda.getfirst Katorg =tsok)
+ \par          \{
+ \par            NameOrg:=AppArenda.Katorg.Name;
+ \par  \par 
+           xlSetCellStringValue(AppArenda.Katorg.Name,11,2,11,9);
+ \par            xlSetCellStringValue(oKatOrgAttr.GetPostAddr(AppArenda.Katorg.nrec),12,2,12,9);
+ \par          \}
+ \par  \par 
+       writeMessageLog('\'ce\'e1\'f0\'e0\'e1\'ee\'f2\'e0\'ed\'ee \'c4\'ce
+ \'ed\'ee\'ec\'e5\'f0 '+AppArenda.BaseDoc.NODOC+' \'ee\'f2 '+AppArenda.basedoc.DFORM+'
+ \'ea\'ee\'ed\'f2\'f0\'e0\'e3\'e5\'ed\'f2\'e0 '+NameOrg+'!');
+ \par  \par 
+       if(AppArenda.getfirst KatBankKontr = tsok)
+ \par          \{
+ \par            xlSetCellStringValue('\'d0/ \'f1\'f7\'e5\'f2 ü '+AppArenda.KatBankKontr.SCHET1+'
+ \'e2 '+AppArenda.KatBankKontr.Addr,13,2,13,9);
+ \par            xlSetCellStringValue(AppArenda.KatBankKontr.Name+', \'c1\'c8
+\'ca '+AppArenda.KatBankKontr.MFO1+', \'d3\'cd\'cf '+AppArenda.Katorg.UNN,14,2,14,9);
+ \par          \}
+ \par  \par 
+       if(AppArenda.getfirst Dogovor =tsok)
+ \par          \{
+ \par            xlSetCellStringValue('\'c4\'ee\'e3. '+AppArenda.Dogovor.NODOC_EXT+'
+ \'ee\'f2 '+AppArenda.Dogovor.DDOC+' \'e3.',17,2,17,8);
+ \par  \par 
+           if(AppArenda.getfirst Katpodr =tsok)
+ \par            \{
+ \par              xlSetCellStringValue('\'c0\'f0\'e5\'ed\'e4\'f3\'e5\'ec\'fb
+\'e9 \'ee\'e1\'fa\'e5\'ea\'f2 \'ed\'e0\'f5\'ee\'e4\'e8\'f2\'f1\'ff: '+AppArenda.Katpodr.Name,19,1,19,13);
+ \par            \}
+ \par          \}
+ \par        //xlSetCellStringValue(datetostr(AppArenda.BASEDOC.DDOC,'month'),18,6,18,7);
+ \par        //xlSetCellStringValue(Year(AppArenda.BASEDOC.DDOC)+' \'e3\'ee\'e4
+\'e0',18,8,18,8);
+ \par        xlSetCellStringValue(datetostr(Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1),'month'),18,6,18,7);
+ \par        xlSetCellStringValue(Year(Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1))+'
+ \'e3\'ee\'e4\'e0',18,8,18,8);
+ \par  \par 
+       //Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1)
+ \par  \par 
+       if(AppArenda.getfirst StepDoc=tsok)
+ \par          \{
+ \par            AppArenda._loop SpStep
+ \par              \{
+ \par                datNezemnal:=date(0,0,0);
+ \par                NrecOS:=0;
+ \par                FormulaCalc:='';
+ \par                sumNDSmy:=0;
+ \par                ColumnRecordUsl_3_7:='';
+ \par                ColumnRecordUsl_2:='';
+ \par                ColumnRecordUsl_8:='';
+ \par                ColumnPrintUsl:='';
+ \par                KodTarif:='';
+ \par                if(AppArenda.getfirst KatUsl = tsok)
+ \par                  \{
+ \par                    if(iNpp<>0)
+ \par                      \{
+ \par                        xlinsertRange(xlShiftDown,iRowStart,1,iRowStart,13);
+ \par                      \}
+ \par  \par 
+                   xlSetCellStringValue(AppArenda.KatUsl.name,iRowStart,1,iRowStart,1);
+ \par  \par 
+                   NrecOS:=oAiExt.coGetAttr(coSpStep,SpStep.nrec,'\'ce\'d1');
+ \par                    //datNezemnal:=date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC))
+ \par                    datNezemnal:=Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1);
+ \par  \par 
+                   ColumnRecordUsl_2:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'
+\'d1\'f7\'d4\'e0\'ea\'f2_\'ca\'ee\'eb\'ee\'ed\'ea\'e0_2');
+ \par  \par 
+                   if(length(ColumnRecordUsl_2)<>0)
+ \par                      \{
+ \par                         if(AppArenda.getfirst ListPar where((ColumnRecordUsl_2
+ == ListPar.KATPARID
+ \par                                                         and  coSpStep  
+        == ListPar.WTABLE
+ \par                                                         and  SpStep.nrec
+       == ListPar.CDoc )) = tsok)
+ \par                           \{
+ \par                              xlSetCellStringValue(AppArenda.ListPar.Value,iRowStart,2,iRowStart,2);
+ \par                           \}
+ \par                      \}
+ \par  \par 
+                   ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'
+\'d1\'f7\'d4\'e0\'ea\'f2_\'ca\'ee\'eb\'ee\'ed\'ea\'e0_8');
+ \par  \par 
+                   if(substr(ColumnRecordUsl_8,1,5)='\'d2\'e0\'f0\'e8\'f4')
+ \par                      \{
+ \par                        if(AppArenda.getfirst Dogovor=tsok)
+ \par                          \{
+ \par                            if(AppArenda.getfirst Katpodr =tsok)
+ \par                              \{
+ \par                                KodTarif:=oAiExt.sGetAttr(coKatpodr,Katpodr.nrec,ColumnRecordUsl_8);
+ \par                                if(AppArenda.getfirst KatTar where ((KodTarif
+ == Kattar.ID))=tsok)
+ \par                                  \{
+ \par                                    if(AppArenda.getfirst TRSTV where ((Kattar.nrec
+ ==  TRSTV.CKATTAR
+ \par                                                                and     datNezemnal
+ >>= TRSTV.DOWND(noindex)
+ \par                                                                and     datNezemnal
+ <<= TRSTV.UPD(noindex)))=tsok)
+ \par                                      \{
+ \par                                         xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
+ \par                                      \}
+ \par                                  \}
+ \par                              \}
+ \par                          \}
+ \par                      \}
+ \par                    else
+ \par                      \{
+ \par                       if(length(ColumnRecordUsl_8)<>0)
+ \par                         \{
+ \par                           if(getfirst Nezemnal where((ColumnRecordUsl_8
+ == NezemNal.param
+ \par                                                and    NrecOS           
+ == NezemNal.cOS
+ \par                                                and    datNezemnal      
+ == NezemNal.DataN))= tsok)
+ \par                             \{
+ \par                               xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,8,iRowStart,8);
+ \par                             \}
+ \par                         \}
+ \par                      \}
+ \par  \par 
+ \par 
+                   ColumnRecordUsl_3_7:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'
+\'d1\'f7\'d4\'e0\'ea\'f2_\'cf\'ee\'f0\'ff\'e4\'ee\'ea\'ca\'ee\'eb\'ee\'ed
+\'ee\'ea_3_7');
+ \par  \par 
+                   while (instr(';',ColumnRecordUsl_3_7)<>0 and length(ColumnRecordUsl_3_7)<>0)
+ \par                      \{
+ \par                        ColumnPrintUsl:=substr(ColumnRecordUsl_3_7,1,instr(';',ColumnRecordUsl_3_7)-1);
+ \par                        case ColumnPrintUsl of
+ \par                         '3':
+ \par                            \{
+ \par                              if(AppArenda.getfirst Nezemnal where (( '\'ca
+\'ee\'eb\'d4\'e8\'e7\'cb\'e8\'f6\'ce\'e1\'f9_\'f7\'e5\'eb' == NezemNal.param
+     //'\'ce\'e1\'f9\'ca\'ee\'eb\'d4\'e8\'e7\'cb\'e8\'f6_\'f7\'e5\'eb' ==
+ NezemNal.param
+ \par                                                     and    NrecOS      
+      == NezemNal.cOS
+ \par                                                     and    datNezemnal 
+      == NezemNal.DataN))= tsok)
+ \par                                \{
+ \par                                   xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,3,iRowStart,3);
+ \par                                \}
+ \par                            \}
+ \par                         '4':
+ \par                            \{
+ \par                              if(AppArenda.getfirst Nezemnal where (('\'cf
+\'eb\'cf\'ee\'ec\'ce\'e1\'f9_m2' == NezemNal.param
+ \par                                                     and    NrecOS      
+      == NezemNal.cOS
+ \par                                                     and    datNezemnal 
+      == NezemNal.DataN))= tsok)
+ \par                                \{
+ \par                                   xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,4,iRowStart,4);
+ \par                                \}
+ \par                            \}
+ \par                         '5':
+ \par                            \{
+ \par                              if(AppArenda.getfirst Nezemnal where (('\'cf
+\'eb\'cc\'e5\'f1\'f2\'ce\'e1\'f9\'cf\'ee\'eb\'fc\'e7_\'ec2' == NezemNal.param
+ \par                                                     and    NrecOS      
+      == NezemNal.cOS
+ \par                                                     and    datNezemnal 
+      == NezemNal.DataN))= tsok)
+ \par                                \{
+ \par                                   xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,5,iRowStart,5);
+ \par                                \}
+ \par                            \}
+ \par                         '6':
+ \par                            \{
+ \par                              case KATUSL.KOD of
+ \par                               '033002':
+ \par                                    \{
+ \par                                    if(AppArenda.getfirst Nezemnal where
+ (('\'d4\'d0_\'dd\'eb\'cc\'ee\'f9\'ed\'ce\'e1\'f9_\'ca\'e2\'f2' == NezemNal.param
+ \par                                                                     and
+    NrecOS            == NezemNal.cOS
+ \par                                                                     and
+    datNezemnal       == NezemNal.DataN))= tsok)
+ \par                                           \{
+ \par                                              xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,6,iRowStart,6);
+ \par                                           \}
+ \par                                    \}
+ \par                               else
+ \par                                    \{
+ \par                                    if(AppArenda.getfirst Nezemnal where
+ (('\'dd\'eb\'cc\'ee\'f9\'ed\'ce\'e1\'f9_\'ca\'e2\'f2' == NezemNal.param
+ \par                                                                  and   
+ NrecOS            == NezemNal.cOS
+ \par                                                                  and   
+ datNezemnal       == NezemNal.DataN))= tsok)
+ \par                                           \{
+ \par                                              xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,6,iRowStart,6);
+ \par                                           \}
+ \par                                    \}
+ \par                               end;
+ \par                            \}
+ \par                         '7':
+ \par                            \{
+ \par                              if(AppArenda.getfirst Nezemnal where (('\'dd
+\'eb\'cc\'ee\'f9\'ed\'cc\'e5\'f1\'f2\'ce\'cf_\'ca\'e2\'f2' == NezemNal.param
+ \par                                                     and    NrecOS      
+      == NezemNal.cOS
+ \par                                                     and    datNezemnal 
+      == NezemNal.DataN))= tsok)
+ \par                                \{
+ \par                                   xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,7,iRowStart,7);
+ \par                                \}
+ \par                            \}
+ \par                        end;
+ \par                        ColumnPrintUsl:='';
+ \par                        ColumnRecordUsl_3_7:=substr(ColumnRecordUsl_3_7,instr(';',ColumnRecordUsl_3_7)+1,length(ColumnRecordUsl_3_7)-instr(';',ColumnRecordUsl_3_7));
+ \par                      \}
+ \par  \par 
+                   FormulaCalc:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'\'d1
+\'f7\'d4\'e0\'ea\'f2_\'cf\'ee\'f0\'ff\'e4\'ee\'ea\'d0\'e0\'f1\'f7\'e5\'f2
+\'e0');
+ \par  \par 
+                   xlSetCellStringValue(FormulaCalc,iRowStart,9,iRowStart,9);
+ \par  \par 
+                   xlSetCellNumberValue(Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2),iRowStart,10,iRowStart,10);
+ \par                    if(AppArenda.getfirst SpdocNal = tsok)
+ \par                      \{
+ \par                      if (AppArenda.SPDOCNAL.NALOG<>0)
+ \par                      \{
+ \par                        xlSetCellStringValue(doubletostr(AppArenda.SPDOCNAL.NALOG,'666')+'%',iRowStart,11,iRowStart,11);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par                        sumNDSmy:=Round(AppArenda.SPDOCNAL.SUMNAL,2);
+ \par                        xlSetCellNumberValue(sumNDSmy,iRowStart,12,iRowStart,12);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par                      \}
+ \par                      else
+ \par                      \{
+ \par                        xlSetCellStringValue(' ',iRowStart,11,iRowStart,11);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par                        //sumNDSmy:=Round(AppArenda.SPDOCNAL.SUMNAL,2);
+ \par                        //xlSetCellNumberValue(' ',iRowStart,12,iRowStart,12);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par                        xlSetCellStringValue(' ',iRowStart,12,iRowStart,12);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par                      \}
+ \par  \par 
+                     \}
+ \par                    xlSetCellNumberValue(Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2)+sumNDSmy,iRowStart,13,iRowStart,13);
+    //\'e2\'fb\'e2\'ee\'e4
+ \par  \par 
+                   totalSumBezNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2);
+ \par                    totalNDS+=sumNDSmy;
+ \par                    totalSumSNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2)+sumNDSmy;
+ \par                    iRowStart++;
+ \par                    iNpp++;
+ \par                  \}
+ \par              \}
+ \par            xlSetCellNumberValue(totalSumBezNds,iRowStart,10,iRowStart,10);
+ \par            xlSetCellNumberValue(totalNDS,iRowStart,12,iRowStart,12);
+ \par            xlSetCellNumberValue(totalSumSNds,iRowStart,13,iRowStart,13);
+ \par  \par 
+           iRowStart:=iRowStart+2;
+ \par            xlSetCellStringValue(DoubleToString(comp(0),totalNDS),iRowStart,2,iRowStart,13);
+ \par            iRowStart:=iRowStart+2;
+ \par            xlSetCellStringValue(DoubleToString(comp(0),totalSumSNds),iRowStart,1,iRowStart,13);
+ \par          \}
+ \par         writeMessageLog(' ');
+ \par       \}
+ \par       iRowStart:=iRowStart+2;
+ \par       xlSetCellStringValue(sDolzh,iRowStart,1,iRowStart,1);
+ \par  \par 
+      iRowStart:=iRowStart+1;
+ \par       xlSetCellStringValue(sIOF,iRowStart,2,iRowStart,2);
+ \par  \par 
+     xlKillExcel;
+ \par     \}
+ \par   \}
+ \par end.
+ \par .\{CheckEnter ISBASEFIN
+ \par .\}
+ \par .\{CheckEnter ISEXCLASS
+ \par .\}
+ \par .\{CheckEnter ISGROUP
+ \par .\}
+ \par .\{
+ \par .\}
+ \par .if DELIMITER
+ \par .else
+ \par .end
+ \par .\}
+ \par .begin
+ \par   CloseMessageLog;
+ \par   processText(GetDefaultUserPath+'CreateProtokolArenda.log',vfEscable+vfMacroSize,'
+\'cb\'ee\'e3 \'f4\'ee\'f0\'ec\'e8\'f0\'ee\'e2\'e0\'ed\'e8\'ff \'f1\'f7\'e5
+\'f2\'e0 \'e0\'f0\'e5\'ed\'e4\'fb');
+ \par end.
+ \par .endform
+ \par \par }

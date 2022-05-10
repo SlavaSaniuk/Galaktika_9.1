@@ -1,0 +1,18 @@
+#Component  "Z_PROFOSMOTR"
+
+#doc
+ Объектный интерфейс для работы с факторами рабочего места сотрудника
+#end
+objinterface FactorPersObj;
+
+#doc
+ Процедура заполнения параметров интерфейса
+ wFlMode - параметр режима работы интерфейса(выбор/обычный режим)
+ cPers - нрек сотрудника(Persons)
+#end
+public procedure SetInfcParam (wFlMode : word; cPers: comp);
+
+end;
+
+vipinterface iFactorPers implements FactorPersObj
+  Parameters ( wIntMode : word;  coPers : comp; coFactorPers  : comp);

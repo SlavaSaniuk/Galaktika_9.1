@@ -1,0 +1,380 @@
+#Component "L_Sklad"
+#include getkau.vih
+//#include getkau.var
+/*table struct sResult_MC
+(
+  nRec: comp,
+  sBarcode   : string,
+  sNameMC    : String,
+  dParty     : Date,
+  isImport   : string,
+!  cOldDog    : Comp,
+  sMessage   : string
+)
+with index
+(
+  sResult_Dog01  = nRec (surrogate, unique),
+  sResult_Dog02  = sNameMC + sBarcode
+);
+*/
+Interface  MakeExtKAU_MC 'Групповое создание внешних КАУ для ТМЦ' /*DoAccept, Cyan,*/ EscClose;
+  show at (15,2,100,10);
+Var
+  wParam, wDelete : word;
+  sTMC, sGrKAU : string;
+  iGetKAU : GetKau;
+Create view
+Var
+  MC_nrec,cSpKAU: comp;
+  dBeg, dEnd : date;
+//  sPeriod, sPeriod1    : string;
+  sKatKau, sKatKauAbbr, sKatKAUCode, sKAU : string;
+  wKatKAU, FiltSelection, CurPickCode, Counts : word;
+  FiltMC : boolean;
+As select
+  *
+From
+    sResult_MC,
+    katmc,
+    kaureff,
+    pick,
+    katkau,
+    spkau
+//where
+//((
+//      MC_nrec           == katmc.nrec
+//   MC_nrec           == katparty.cmc
+//  and 0                 == katparty.kons
+//  and 0001000000000002h == katparty.cGroupParty
+//))
+//order byRes by sresult_mc.sNameMC
+//order by katmc.name, katparty.CreateDateTime
+//Bounds byDate = _DateTime(day(dBeg), month(dBeg), year(dBeg), 0, 0, 0, 0) <<= katparty.CreateDateTime (noindex)
+//            and _DateTime(day(dEnd), month(dEnd), year(dEnd), 0, 0, 0, 0) >>= katparty.CreateDateTime (noindex)
+;
+Form frmReportMakeExtKAUMC ('repExtKAUMC.OUT', 'repExtKauMC') with NoVisual;
+Procedure PrintExtKauMC;
+{
+  frmReportMakeExtKAUMC.write(sKatKAU);
+  frmReportMakeExtKAUMC.write(sKAU);
+    _Loop sResult_MC ordered sNameMC
+    {
+      frmReportMakeExtKAUMC.write(sResult_MC.sNameMC);
+      frmReportMakeExtKAUMC.write(sResult_MC.sBarcode);
+      frmReportMakeExtKAUMC.write(sResult_MC.isImport);
+      frmReportMakeExtKAUMC.write(sResult_MC.sMessage);
+    }
+    if (NOT frmReportMakeExtKAUMC.error)
+      frmReportMakeExtKAUMC.showFile('');
+    else
+      {
+        frmReportMakeExtKAUMC.abortForm;
+      }
+};
+
+function CreateOneExtKAU(cNrecMC:comp; _wKAU:word; _cKAU:comp) : boolean;
+{
+  MC_NRec:=cNrecMC;
+  CreateOneExtKAU:=false;
+  ClearBuffer(#sResult_MC);
+
+  if(getfirst katmc where ((cNrecMC == katmc.nrec)) != tsOK)
+  {
+    sResult_MC.sMessage := 'Ошибка позиционирования на ТМЦ!';
+    insert current sResult_MC;
+    CreateOneExtKAU := false;
+    Exit;
+  }
+
+  sResult_MC.sNameMC    := katmc.name;
+  sResult_MC.sBarcode   := katmc.barkod;
+
+//    message('1');
+  if(getfirst kaureff where ((1411              == kaureff.coTable
+                          and MC_NRec           == kaureff.cRec
+                          and _wKAU             == kaureff.wKAU
+                             )) != tsOK)
+  {
+    ClearBuffer(#kaureff);
+    kaureff.coTable := 1411;
+    kaureff.cRec    := MC_NRec;
+    kaureff.wKAU    := _wKAU;
+    kaureff.cKAU    := _cKAU;
+    if(insert current kaureff = tsOK)
+    {
+      sResult_MC.isImport := 'OK';
+      CreateOneExtKAU:=true;
+    }
+    else
+    {
+      sResult_MC.isImport := '!!!Ошибка вставки внешнего КАУ!!!';
+      CreateOneExtKAU:=false;
+    }
+  }
+  else
+  {
+    if( ((wParam AND 1) > 0))
+    {
+      if(delete current kaureff = tsOK)
+      {
+        ClearBuffer(#kaureff);
+        kaureff.coTable := 1411;
+        kaureff.cRec    := MC_NRec;
+        kaureff.wKAU    := _wKAU;
+        kaureff.cKAU    := _cKAU;
+        if(insert current kaureff = tsOK)
+        {
+          sResult_MC.isImport := 'OK';
+          CreateOneExtKAU:=true;
+        }
+        else
+        {
+          sResult_MC.isImport := '!!!Ошибка вставки внешнего КАУ!!!';
+          CreateOneExtKAU:=false;
+        }
+      }
+      else
+      {
+         sResult_MC.isImport := 'Ошибка удаления старого КАУ';
+      }
+    }
+    else
+    {
+      sResult_MC.isImport := 'КАУ уже привязан';
+      CreateOneExtKAU:=false;
+    }
+  }
+  insert current sResult_MC;
+}
+procedure CreateExtKAU_MC;
+{
+  CurPickCode := 7;
+  if(sKatKAUCode = '' or cSpKau = comp(0))
+  {
+    Message('Не выбран КАУ!');
+    Exit;
+  }
+  StartNewVisual( vtNumericVisual, vfTimer+vfBreak+vfConfirm, 'Пакетное создание внешних КАУ для ТМЦ', 1);
+  if (GetFirst Pick where ((CurPickCode == Pick.wList)) <> tsOk)
+  {
+    Message('Выберите ТМЦ!');
+  }
+  else
+  do
+  {
+     CreateOneExtKAU(pick.crec, word(sKatKAUCode),cSpKAU);
+  }
+  while (GetNext Pick where ((CurPickCode == Pick.wList)) = tsOk);
+  StopVisual;
+}
+
+procedure  ViewSetMc;// Установка фильтра по МЦ
+{
+  var RecNum : Comp;
+  var MCCount : Word;
+  CurPickCode := 7; // 7 - код WList в таблице Pick для МЦ
+  MCCount := 0;
+  MCCount := RecordsInTable(tnKatMC);
+  //_LOOP KatMC
+  //    MCCount := MCCount+1;
+
+  sTMC := 'По всем МЦ';
+  FiltSelection := FiltSelection and (not 2);
+  if (GetFirst Pick where ((CurPickCode == Pick.wList)) <> tsOk)
+  {
+    sTMC := 'По всем МЦ';
+    FiltSelection := FiltSelection and (not 2);
+    FiltMC:=false;
+  }
+  else
+  {
+    RecNum := Pick.cRec;
+    FiltSelection := FiltSelection or 2;
+    Counts := 1;
+    while (GetNext Pick where ((CurPickCode == Pick.wList)) = tsOk)
+      Counts := Counts+1;
+    if (Counts > 1)
+    {
+      sTMC := 'Выбрано '+String(Counts)+' МЦ';
+    }
+    else // Count = 1
+    {
+      if (GetFirst KatMC where ((RecNum == KatMC.NRec)) = tsOk)
+      {
+        sTMC := KatMC.Name;
+      }
+    }
+    if (Counts = MCCount)
+    {
+      sTMC := 'Все МЦ';
+      FiltSelection := FiltSelection and (not 2);
+    }
+  } // of GetFirst = tsOk
+  RereadRecord;
+}
+
+//Window wDogFromDo;
+Screen sMakeExKAUMC ('',,sci178Esc);
+//  show at(,,,4) fixed_y;
+  table katmc;
+Fields
+//  sPeriod('─рЄ√ т√сюЁъш ярЁЄшщ'):Protect, Skip;
+  sTMC ('Выбор ТМЦ'):Protect, PickButton, {Font = {BackColor = ColorNeed}};
+  sKatKAUAbbr ('Выбор группы КАУ'):Protect, Skip ;
+  sKatKAU ('Выбор группы КАУ'):Protect, PickButton, {Font = {BackColor = ColorNeed}};
+  sKatKAUCode ('Выбор группы КАУ'):Protect, Skip ;
+  sKAU ('Выбор КАУ'):Protect, PickButton, {Font = {BackColor = ColorNeed}};
+  wParam ('Параметры',,sci13Esc) : NoProtect;
+
+buttons
+  cmOk, default,, 'Создать';
+  cmCancel,,, 'Отмена';
+
+<<
+       Выберите ТМЦ          .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+       Выберите группу КАУ   .@@@@@@@@ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@@
+       Выберите значение КАУ .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+       [.] Удалять существующие КАУ этой группы`
+
+             <.Создать.>                               <.  Отмена  .>
+>>
+end; //screen
+
+HandleEvent
+cmInit :
+{
+//  sPeriod := '─рЄ√ эрўрыр т√сюЁъш ярЁЄшщ:';
+//  sPeriod1 := 'яю'
+//  wParam := 0;
+  sTMC:='';
+  sKatKAU:='';
+  sKAU:='';
+  wParam := 0;
+}
+cmCancel: CloseInterface(cmCancel);
+
+cmCheckField:
+  case Curfield of
+  #sTMC:
+  {
+    if(sTMC = '')
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sTMC, ColorNeed);
+    }
+    else
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sTMC, 0);
+    }
+      RedrawPanel(#katmc);
+  }
+  #sKatKAU:
+  {
+    if(sKatKAU = '')
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sKatKAU, ColorNeed);
+    }
+    else
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sKatKAU, 0);
+    }
+    ToggleFieldState(#sKAU,sfVisible,(sKatKAU = ''));
+    RedrawPanel(#katmc);
+  }
+  #sKAU:
+  {
+    if(sKAU = '')
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sKAU, ColorNeed);
+    }
+    else
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sKAU, 0);
+    }
+    RedrawPanel(#katmc);
+  }
+  #wParam:
+  {
+    if( ((wParam AND 1) > 0))
+    {
+      if ( message('Вы действительно хотите удалять'+chr(13)+'имеющуюся аналитику этого вида при ее наличии?', Confirmation + yesNo) != cmYes)
+      {
+        set wParam:=wParam xor 1;
+      }
+
+    }
+  }
+end;
+
+cmPick:
+{
+  case Curfield of
+  #sTMC:
+  {
+    RunInterface('L_MCU::GetSomeMC', -12345);
+    ViewSetMc;
+    if(sTMC = '')
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sTMC, ColorNeed);
+    }
+    else
+    {
+      SetFontBackgroundColor(sMakeExKAUMC, #sTMC, 0);
+    }
+    RedrawPanel(#katmc);
+  }
+  #sKatKAU:
+  {
+//    RunInterface('L_MCU::GetSomeMC', -12345);
+    var cKatKAU : comp;
+    RunInterface('GetKauTable', cgiPick, word(cgKatKau_BuhDisabled or 1), wKatKAU, cKatKAU);
+    if(getfirst katKau where ((cKatKAU == katkau.nrec)) = tsOK)
+    {
+      set sKatKAU:=katkau.name;
+      set sKatKAUAbbr:=string(KATKAU.CODE);
+      set sKatKAUCode:=KATKAU.KODGROUP;
+      SetFontBackgroundColor(sMakeExKAUMC, #sKatKAU, 0);
+    }
+    else
+    {
+      set sKatKAU:='';
+      SetFontBackgroundColor(sMakeExKAUMC, #sKatKAU, ColorNeed);
+    }
+    RedrawPanel(#katmc);
+  }
+  #sKAU:
+  {
+//    message('sKAU');
+    if (iGetKau.GetCodeKau(cgiPick,word(sKatKAUCode),cSpKAU) <> 0)
+    {
+      if(getfirst spkau where ((cSpKAU == spkau.nrec)) = tsOK)
+      {
+        set sKAU:=spkau.name;
+        SetFontBackgroundColor(sMakeExKAUMC, #sKAU, 0);
+      }
+    }
+
+  }
+  end;  //case
+}
+cmOK:
+{
+  if((wParam AND 1) > 0)
+  {
+    if ( Message('Будет удалена имеющаяся аналитика этого вида при ее наличии.'+chr(13)+'Вы уверены?', Confirmation + yesNo) != cmYes)
+    {
+      set wParam:=wParam xor 1;
+      Exit;
+    }
+  }
+  CreateExtKAU_MC;
+  PrintExtKauMC;
+  delete all sResult_MC;
+//  CloseInterface(cmOK);
+}
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+end; //HandleEvent;
+End.

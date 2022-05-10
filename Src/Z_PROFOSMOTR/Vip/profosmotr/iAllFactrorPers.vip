@@ -1,0 +1,257 @@
+#doc
+Сводный интерфейс сотрудники-факторы(Белтелеком)
+Реализован через подвязку к интерфейсу сотрудников интерфейса с факторами.
+Сотрудники с факторами закрытыми по болезни подсвечены красным цветом
+#end
+
+#include iCheckFactorRez.vih
+#include SelectPersons.vih
+#include iFactorPers.vih
+#include Marker.vih          // интерфейс работы с пометкой
+
+const
+  cmInsertMarkNabor =  30304;  // код события для кнопки групповой разноски
+end
+
+Interface iAllFactrorPers 'Факторы условий труда' EscClose, cyan;
+Show at (1, 1, 160, 25);
+
+var
+objInitTmp: SelectPersons;
+objFactorPers: iFactorPers new;
+objCheckFactorRez: iCheckFactorRez new;
+pMarker: iMarker(marker) new;     // для пометки
+
+Create view
+as select
+*
+from
+ Persons(PERSBYFIO)
+,PersonsTmp
+,Catalogs PodrCatalogs
+,Catalogs PostCatalogs
+,Appointments
+,DISTDOCHIERARCHY DISTDOCHIERARCHYfactorPers (ReadOnly)
+,Persons PersonsCheck  (ReadOnly)
+,DISTDOCHIERARCHY DDHCheckfactorPers (ReadOnly)
+,DISTDOCHIERARCHY DDHins
+where
+((
+    PersonsTmp.Person    == Persons.NRec
+and Persons.AppointCur   == Appointments.Nrec
+and Persons.Department   == PodrCatalogs.Nrec
+and Appointments.Post    == PostCatalogs.Nrec
+
+and PersonsTmp.Person    == DISTDOCHIERARCHYfactorPers.CPARENT
+and constFactorPers      == DISTDOCHIERARCHYfactorPers.WDOCTYPE
+and (DISTDOCHIERARCHYfactorPers.RESDATE<>date(0,0,0) and DISTDOCHIERARCHYfactorPers.WSORT=1)
+))
+;
+
+panel pAllLschetPersons
+table PersonsTmp;
+ browse brAllLschetPersons (,, sci1Esc);
+ show (,,,5);
+
+recMarker = pMarker {PersonsTmp.Person};
+
+fields
+   {Font = {Color = if (IsValid(#DISTDOCHIERARCHYfactorPers), ColorSysRed, 0) }};
+   PersonsTmp.FIO      'Фамилия Имя Отчество'  ('Фамилия Имя Отчество',,):[30], protect;
+   PersonsTmp.TabNum   'Таб.номер'      ('Табельный номер работника',,):[20], protect;
+   PodrCatalogs.Name   'Подразделение'  ('Подразделение',,):[30], skip;
+   PostCatalogs.Name   'Должность'  ('Должность',,):[30], skip;
+end;
+
+embedded scrFactorPers '' interface objFactorPers;
+ show (,6,,);
+end;
+
+tableevent table PersonsTmp;
+
+cmPositionChanged:
+{
+   objFactorPers.SetInfcParam(word(0),PersonsTmp.Person);
+}
+
+end;
+
+end;
+
+//******************************************************************************
+// Инициализация маркера
+//******************************************************************************
+procedure prInitMarker;
+{
+  pMarker.StoreName := 'iAllFactrorPers_Marker';
+  pMarker.Caption   := ('. Выбрано: %d');
+  pMarker.AutoSave  := false;
+  pMarker.LoadAuto  := false;
+}
+
+Procedure CreateProtokol;
+{
+ CloseMessageLog;
+ OpenMessageLog(GetDefaultUserPath+'ProcessingPersFactor.log',mfLog2Stream+mfNoTimeStamp);
+}
+
+Procedure CloseProtokol;
+{
+ CloseMessageLog;
+ processText(GetDefaultUserPath+'ProcessingPersFactor.log',vfEscable+vfMacroSize,'Лог процесса групповой разноски набора');
+}
+
+Procedure RunInsertMarkNabor;
+var
+ddatOpen:date;
+coNrecNabor:comp;
+sNabor:string;
+ikolmark:word;
+{
+  if(RunInterface('iGroupInsertNabor',ddatOpen,coNrecNabor)=cmCancel)
+    {
+      exit;
+    }
+  else
+    {
+      if(ddatOpen=date(0,0,0) and coNrecNabor=0)
+        {
+         message('Операция запрещена! Один из параметров пустой!')
+        }
+      else
+        {
+         sNabor:=objCheckFactorRez.StrValueNabor('Factor',coNrecNabor)+'/'+objCheckFactorRez.StrValueNabor('Klass',coNrecNabor)+'/'+objCheckFactorRez.StrValueNabor('Period',coNrecNabor);
+
+         ikolmark:=pMarker.count;
+         if(Message('Всем помеченным сотрудникам ('+ikolmark+' зап.) будет добавлен новый набор:'#13+
+                   '"'+sNabor+'" с датой открытия '+ddatOpen+'. Продолжить?', YesNo+Confirmation+mfSwapButtons) <> cmYes)
+           {
+              Exit;
+           }
+         else
+           {
+              CreateProtokol;
+
+              StartNewVisual (vtRotateVisual, vfBreak + vfConfirm + vfTimer, 'Групповая разноска набора...', 1);
+
+              _loop pMarker where ((comp(0) << pMarker.pNRec))
+               {
+
+                 if (not NextVisual)
+                   {
+                     break;
+                   }
+
+                 if(getfirst PersonsCheck where ((pMarker.pNRec==PersonsCheck.nrec))=tsok)
+                   {
+                    writeMessageLog('Обработка сотрудника: '+PersonsCheck.fio);
+                    if(getfirst DDHCheckfactorPers where (( PersonsCheck.nrec == DDHCheckfactorPers.CPARENT
+                                                     and constFactorPers      == DDHCheckfactorPers.WDOCTYPE
+                                                     and coNrecNabor          == DDHCheckfactorPers.CANVAL1(noindex)))<>tsok)
+                       {
+                         ClearBuffer(#DDHins);
+                         DDHins.nRec       := GetNextNRec(#DDHins, 0);;
+                         DDHins.WDOCTYPE   := constFactorPers;
+                         DDHins.CPARENT    := PersonsCheck.nrec;
+                         DDHins.CANVAL1    := coNrecNabor;
+                         DDHins.DTCALC     := ddatOpen;
+                         if(insert current DDHins=tsok)
+                            {
+                              writeMessageLog('  УСПЕШНО!  "'+sNabor+'" добавлен! Дата открытия: '+ddatOpen);
+                            }
+                         else
+                            {
+                              writeMessageLog('  ОШИБКА!  При добавлении набора "'+sNabor+'" произошла ошибка!');
+                            }
+                       }
+                   else
+                       {
+                          writeMessageLog('    ПРЕДУПРЕЖДЕНИЕ!  Набор "'+sNabor+'" добавлен не был! Причина: такой набор уже есть у данного сотрудника.');
+                       }
+                   }
+               }
+              StopVisual('',0);
+
+              objFactorPers.SetInfcParam(word(0),PersonsTmp.Person);
+              ReReadRecord(#PersonsTmp);
+              ReReadRecord(#DISTDOCHIERARCHYfactorPers);
+              CloseProtokol;
+              message('Операция завершена!');
+           }
+        }
+    }
+}
+
+Handleevent
+
+cmInit:
+{
+  prInitMarker;
+
+  objInitTmp.InitTmpPers; //инициализация временной таблицы
+
+  objFactorPers.SetInfcParam(word(0),PersonsTmp.Person);
+
+  DisableCommand(cmOk);
+  DisableCommand(cmDefault);
+  DisableCommand(cmDelete);
+}
+
+cmDefault:
+{
+  abort;
+  exit;
+}
+
+cmHotKeys:
+{
+ var iTmpMnu : LongInt;
+
+ if (CurTable <> #PersonsTmp)
+   {
+    abort;
+   }
+
+ iTmpMnu := RunMenu('MenFactorPersMain');
+
+ if ((iTmpMnu <> cmCancel) and (iTmpMnu <> cmClose))
+   {
+    PutHotCommand(iTmpMnu);
+   }
+ else
+   {
+    abort;
+   }
+}
+
+cmFilterSave:
+{
+  RunInterface(CommonFiltr);
+  objInitTmp.InitTmpPers; //инициализация временной таблицы
+  pMarker.UnselectAll;
+  ReReadRecord(#PersonsTmp);
+}
+cmInsertMarkNabor:
+{
+  if(pMarker.count=0)
+    {
+      message('Для выполнения функции необходимо пометить хотя бы одну запись!');
+      exit;
+    }
+  else
+    {
+      RunInsertMarkNabor;
+    }
+}
+cmDone:
+{
+ pMarker.UnselectAll;
+}
+end;
+End.
+
+MenFactorPersMain Menu
+{
+  - 'Фильтр ...',cmFilterSave,'Установка фильтра на данные', hcStaffNabNLS,'Alt+B',kbAltB,sci1Esc;
+  - 'Групповая разноска набора...',cmInsertMarkNabor,'Разноска определенного набора по помеченным записям', ,'',,sci1Esc;
+}

@@ -1,0 +1,29 @@
+#include CreateTune.vih
+
+Handler with replace Gal_DateModifyTune on ExtensionPoint
+  epDateModifyTuneEx (TS : ObjStartCreateTuneEx)
+Action
+{
+  TS.SetLastDateModTuneComp('#__COMPONENT__', 26, 10, 2017);
+  Result := true;
+}
+Handler with replace Gal_CreateTune on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx) [221]
+Action
+{
+  Result := true;
+
+  TR.SetComponent('#__COMPONENT__');
+
+  TR.SetParent('TUNE')
+  TR.AddPartS('TUNE.OwnTune', 'Собственные настройки','');
+
+  TR.SetParent('TUNE.OwnTune');
+  TR.AddPartS('TUNE.OwnTune.Medosmotr','Настройки медосмотра','');
+
+  TR.SetParent('TUNE.OwnTune.Medosmotr');
+  TR.AddPartS('TUNE.OwnTune.Medosmotr.Access','Настройки доступа','');
+
+  TR.SetParent('TUNE.OwnTune.Medosmotr.Access');
+  TR.AddTuneU('TUNE.OwnTune.Medosmotr.Access.Nabor', 'Запретить редактирование справочника "Набор соответствий"', ftBoolean, '', '', '');
+}

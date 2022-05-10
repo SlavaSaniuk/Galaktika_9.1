@@ -1,0 +1,77 @@
+!Поля для универсального передаточного документа (universal.rtf)
+.fields
+  Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactNum(СчФакт_НРек), ' ')
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactDate(СчФакт_НРек), ' ')
+  //продавец
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 0), 8, 0), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2)))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 0), #AdrFieldsUr(Поставщик))
+
+  if (СчФакт_НРек <> 0, '1', '2')
+
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 0), (ПоставщикУНН + ' / ' + ПоставщикКПП))
+  //грузоотправитель
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 2), 8, 0), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2)))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 2), #AdrFields(Грузоотправитель))
+  //грузополучатель
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 3), 8, 0), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2)))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 3), #AdrFields(Грузополучатель))
+
+  oPrnSoprFun.FindPlat(СчФакт_НРек)
+
+  //покупатель
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 1), 8, 0), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 1) + ' ' + oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 2)))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 1), #AdrFields(Получатель))
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 1), (ПолучательУНН + ' / ' + ПолучательКПП))
+
+  //Валюта: наименование, код
+  if (oPrnSoprFun.GetValName(Валюта_нрек)= '', sGetTune('NDE.NAMERUBL'),oPrnSoprFun.GetValName(Валюта_нрек))
+  if (oPrnSoprFun.GetValCode(Валюта_нрек)= '', sGetTune('NDE.RUBLISO'), oPrnSoprFun.GetValCode(Валюта_нрек))
+
+  Nom
+  КодМЦ
+  Название
+  CodeOtpEd
+  ОтпЕд
+  DoubleToStr(КолФ, Kol_Pr)
+  DoubleToStr(oPrnSoprFun.GetDPriceMC(спецификацияМЦ_нрек, 0, Признак_МЦ, ЦНацСН, ЦНацБН, ЦНакСН, ЦНакБН), Cena_Pr)
+  DoubleToStr(СтНацБН0 , Cena_Pr)
+  if (СчФакт_НРек <> 0, if (ЦАкцизНак <> 0, DoubleToStr(ЦАкцизНак, Cena_Pr0), 'Без акциза'), '-')
+  if (СчФакт_НРек <> 0, if (ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSStZero'), if (ставка_первого_налога = 0, sGetTune('Doc.SD.AbbrField.NDSStZero'), DoubleToStr(ставка_первого_налога, NDS_St))), '-')
+  if (ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSSummZero'), if (СтНДСНац = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНац, Cena_Pr0)))
+  DoubleToStr(СтНацСН , Cena_Pr0)
+  if (СчФакт_НРек <> 0, oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 0), '-')
+  if (СчФакт_НРек <> 0, oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 1), '-')
+  if (СчФакт_НРек <> 0, oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 2), '-')
+
+  DoubleToStr(Sum1Itog, Cena_Pr0)
+  DoubleToStr(Sum2Itog, Cena_Pr0)
+  DoubleToStr(Sum3Itog, Cena_Pr0)
+
+  //количество листов
+  if (Nom - 36 > 0 , DoubleToStr(Trunc((Nom - 36)/56) + 2, '666'),'1')
+
+  Директор //Значение настройки "..Собственная организация\Руководитель"
+  oPrnSoprFun.GetGlBuhName(накладная_нрек, Главный_бухгалтер) //Значение настройки "..Собственная организация\Главный бухгалтер" или "Старший бухгалтер"
+ // if (НомерДовер <>'' or LongInt(ДатаДовер) <> LongInt(0), 'По доверенности № ' +НомерДовер+ 'от ' +DateToStr(ДатаДовер, 'DD mon YYYY')+ 'г.', '')
+
+  if (Номер_Договора <> '', 'Договор № ' + Номер_Договора  + ' от ' + DateToStr(Дата_Договора, 'DD/MM/YYYY') + 'г.',
+    if (НарядЗаказНомер <> '', 'Заказ-наряд № ' + НарядЗаказНомер  + ' от ' + DateToStr(НарядЗаказДата, 'DD/MM/YYYY') + 'г.',
+      if (Основание <> '', 'Счет № ' + Основание  + ' от ' + DateToStr(ДатаОснования, 'DD/MM/YYYY') + 'г.',
+        if (НомерДовер <>'', 'Доверенность № ' + НомерДовер  + ' от ' + DateToStr(ДатаДовер, 'DD mon YYYY') + 'г.', ''))))
+
+  отпуск_разрешил_должность
+  отпуск_разрешил
+
+  if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'DD'))
+  if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'Mon'))
+  if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'YY'))
+
+  сдал_отправитель_должность
+  сдал_отправитель
+
+  ДовЛицоДолжность
+  ДовЛицо
+
+  Спецсимвол
+.endfields

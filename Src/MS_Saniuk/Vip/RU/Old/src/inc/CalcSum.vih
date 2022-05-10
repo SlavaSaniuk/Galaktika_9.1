@@ -1,0 +1,249 @@
+#declare/*  */CalcSum_func1(a, b, c, d, e)
+#b#e#d#a#c(cmVal9, 200, true);
+#end
+
+#declare/*  */CalcSum_func2(a, b, c, d, e, f, g, i, k, n, o)
+function #d#g#n#c#b#f#k#a#e#i#o(wTable,wVidDoc : word; dx : byte) : boolean;
+#end
+
+#declare/*  */CalcSum_func3(a, b, c, d, e, f, g, i, k, n, o, wTable, wVidDoc)
+if not #d#g#n#c#b#f#k#a#e#i#o(#wTable,#wVidDoc, 0)
+#end
+
+#declare/*  */CalcSum_func4(a, b, c, d)
+if not #d#b#c#a#c#a#d#b
+#end
+
+#declare/*  */CalcSum_func5(a, b, c, d)
+#a#b#c#d
+#end
+
+#declare/*  */UpdateTable/*  */
+#CalcSum_func4(o,e,m,d) {}
+else
+if (vCalcSum.wRun <> 10)
+  {
+    vCalcSum.wRun := 10;
+    #CalcSum_func1(me,st,r,ti,art)
+  }
+#end
+
+#declare/*  */cmValue1/*  */(wTable, wVidDoc)
+cmVal9:
+{
+  var wTable, wVidDoc : word;
+
+  wTable := #wTable;
+  wVidDoc := #wVidDoc;
+
+  #CalcSum_func3(omu,er,ck,vr,chre,_,ec,co,to,che,rds,wTable,wVidDoc)
+    CloseInterface(cmCancel);
+}
+#end
+
+#declare/*  */create/*  */
+Const
+  CalcSum_MaxSum#CalcSum_func5(Ba,se,D,oc) = 24 + 26;
+  CalcSum_MaxSum#CalcSum_func5(Ka,t,So,pr) = 24 + 26;
+  CalcSum_MaxSum#CalcSum_func5(I,s,k,i)    =  5;
+  CalcSum_MaxSum#CalcSum_func5(V,e,k,sl)   =  5;
+  CalcSum_MaxSum#CalcSum_func5(D,ogo,vo,r) =  20;
+End;
+
+Create view vCalcSum
+
+Var
+  wType, wRun  : word;
+
+From
+  #CalcSum_func5(Ba,se,D,oc)
+, #CalcSum_func5(Ka,t,So,pr)
+, #CalcSum_func5(I,s,k,i)
+, #CalcSum_func5(V,e,k,sl)
+, #CalcSum_func5(D,ogo,vo,r)
+
+Bounds b#CalcSum_func5(Ba,se,D,oc) = wType == #CalcSum_func5(Ba,se,D,oc).VidDoc
+Bounds b#CalcSum_func5(Ka,t,So,pr) = wType == #CalcSum_func5(Ka,t,So,pr).VidSopr
+Bounds b#CalcSum_func5(I,s,k,i)    = wType == #CalcSum_func5(I,s,k,i).TiDk
+Bounds b#CalcSum_func5(V,e,k,sl)   = wType == #CalcSum_func5(V,e,k,sl).TiDk
+;
+
+var CalcSum_Sums : array[0..2001] of byte;
+
+//******************************************************************************
+
+Procedure CalcSum_ClearSums(wVidDoc: word);
+var i: word;
+{
+  CalcSum_Sums[0] := 0;
+  if (wVidDoc > 0)
+    CalcSum_Sums[wVidDoc] := 0
+  else
+    For(i := 0; i <= 2001; i++)
+      CalcSum_Sums[i] := 0;
+}
+
+Function CalcSum_#CalcSum_func5(Ba,se,D,oc)(wVidDoc: word; dx : byte) : boolean;
+{
+  Result := TRUE;
+
+  CalcSum_ClearSums(wVidDoc);
+  vCalcSum.wType := wVidDoc;
+
+  if ((wVidDoc > 0) AND NOT vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(Ba,se,D,oc)))
+    vCalcSum.PushBounds(vCalcSum.tbb#CalcSum_func5(Ba,se,D,oc));
+
+  vCalcSum._LOOP #CalcSum_func5(Ba,se,D,oc)
+    {
+      inc(CalcSum_Sums[vCalcSum.#CalcSum_func5(Ba,se,D,oc).VidDoc]);
+      if (CalcSum_Sums[vCalcSum.#CalcSum_func5(Ba,se,D,oc).VidDoc] > CalcSum_MaxSum#CalcSum_func5(Ba,se,D,oc) - dx)
+        {
+          vCalcSum.wType := vCalcSum.#CalcSum_func5(Ba,se,D,oc).VidDoc;
+          Break;
+        }
+    }
+
+  if vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(Ba,se,D,oc))
+    vCalcSum.PopBounds(vCalcSum.tbb#CalcSum_func5(Ba,se,D,oc));
+
+  if (CalcSum_Sums[vCalcSum.wType] > CalcSum_MaxSum#CalcSum_func5(Ba,se,D,oc) - dx)
+    {
+      Result := FALSE;
+      Message('Д'+'е'+'м'+'о'+'-'+'р'+'е'+'ж'+'и'+'м пре'+'дпо'+'лаг'+'ает нал'+'ичие не бол'+'ее ' + string(CalcSum_MaxSum#CalcSum_func5(Ba,se,D,oc))
+            + ' ' + 'докум'+'ентов-осно'+'ваний одн'+'ого ти'+'па', CancelButton);
+    }
+}
+
+Function CalcSum_#CalcSum_func5(Ka,t,So,pr)(wVidDoc: word; dx : byte) : boolean;
+{
+  Result := TRUE;
+
+  CalcSum_ClearSums(wVidDoc);
+  vCalcSum.wType := wVidDoc;
+
+  if ((wVidDoc > 0) AND NOT vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(Ka,t,So,pr)))
+    vCalcSum.PushBounds(vCalcSum.tbb#CalcSum_func5(Ka,t,So,pr));
+
+  vCalcSum._LOOP #CalcSum_func5(Ka,t,So,pr)
+    {
+      inc(CalcSum_Sums[vCalcSum.#CalcSum_func5(Ka,t,So,pr).VidSopr]);
+      if (CalcSum_Sums[vCalcSum.#CalcSum_func5(Ka,t,So,pr).VidSopr] > CalcSum_MaxSum#CalcSum_func5(Ka,t,So,pr) - dx)
+        {
+          vCalcSum.wType := vCalcSum.#CalcSum_func5(Ka,t,So,pr).VidSopr;
+          Break;
+        }
+    }
+
+  if vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(Ka,t,So,pr))
+    vCalcSum.PopBounds(vCalcSum.tbb#CalcSum_func5(Ka,t,So,pr));
+
+  if (CalcSum_Sums[vCalcSum.wType] > CalcSum_MaxSum#CalcSum_func5(Ka,t,So,pr) - dx)
+    {
+      Result := FALSE;
+      Message('Д'+'е'+'м'+'о'+'-'+'р'+'е'+'ж'+'и'+'м пре'+'дпо'+'лаг'+'ает нал'+'ичие не бол'+'ее ' + string(CalcSum_MaxSum#CalcSum_func5(Ka,t,So,pr))
+            + ' ' + 'сопрово'+'дительных '+'документов одн'+'ого ти'+'па', CancelButton);
+    }
+}
+
+Function CalcSum_#CalcSum_func5(I,s,k,i)(wVidDoc: word; dx : byte) : boolean;
+{
+  Result := TRUE;
+
+  CalcSum_ClearSums(wVidDoc);
+  vCalcSum.wType := wVidDoc;
+
+  if ((wVidDoc > 0) AND NOT vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(I,s,k,i)))
+    vCalcSum.PushBounds(vCalcSum.tbb#CalcSum_func5(I,s,k,i));
+
+  vCalcSum._LOOP #CalcSum_func5(I,s,k,i)
+    {
+      inc(CalcSum_Sums[vCalcSum.#CalcSum_func5(I,s,k,i).TiDk]);
+      if (CalcSum_Sums[vCalcSum.#CalcSum_func5(I,s,k,i).TiDk] > CalcSum_MaxSum#CalcSum_func5(I,s,k,i) - dx)
+        {
+          vCalcSum.wType := vCalcSum.#CalcSum_func5(I,s,k,i).TiDk;
+          Break;
+        }
+    }
+
+  if vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(I,s,k,i))
+    vCalcSum.PopBounds(vCalcSum.tbb#CalcSum_func5(I,s,k,i));
+
+  if (CalcSum_Sums[vCalcSum.wType] > CalcSum_MaxSum#CalcSum_func5(I,s,k,i) - dx)
+    {
+      Result := FALSE;
+      Message('Д'+'е'+'м'+'о'+'-'+'р'+'е'+'ж'+'и'+'м пре'+'дпо'+'лаг'+'ает нал'+'ичие не бол'+'ее ' + string(CalcSum_MaxSum#CalcSum_func5(I,s,k,i))
+            + ' ' + 'исков'+'ых заявле '+'ний и реше'+'ний суда одно'+'го типа', CancelButton);
+    }
+}
+
+Function CalcSum_#CalcSum_func5(V,e,k,sl)(wVidDoc: word; dx : byte) : boolean;
+{
+  Result := TRUE;
+
+  CalcSum_ClearSums(wVidDoc);
+  vCalcSum.wType := wVidDoc;
+
+  if ((wVidDoc > 0) AND NOT vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(V,e,k,sl)))
+    vCalcSum.PushBounds(vCalcSum.tbb#CalcSum_func5(V,e,k,sl));
+
+  vCalcSum._LOOP #CalcSum_func5(V,e,k,sl)
+    {
+      inc(CalcSum_Sums[vCalcSum.#CalcSum_func5(V,e,k,sl).TiDk]);
+      if (CalcSum_Sums[vCalcSum.#CalcSum_func5(V,e,k,sl).TiDk] > CalcSum_MaxSum#CalcSum_func5(V,e,k,sl) - dx)
+        {
+          vCalcSum.wType := vCalcSum.#CalcSum_func5(V,e,k,sl).TiDk;
+          Break;
+        }
+    }
+
+  if vCalcSum.BoundActive(vCalcSum.tbb#CalcSum_func5(V,e,k,sl))
+    vCalcSum.PopBounds(vCalcSum.tbb#CalcSum_func5(V,e,k,sl));
+
+  if (CalcSum_Sums[vCalcSum.wType] > CalcSum_MaxSum#CalcSum_func5(V,e,k,sl) - dx)
+    {
+      Result := FALSE;
+      Message('Д'+'е'+'м'+'о'+'-'+'р'+'е'+'ж'+'и'+'м пре'+'дпо'+'лаг'+'ает нал'+'ичие не бол'+'ее ' + string(CalcSum_MaxSum#CalcSum_func5(V,e,k,sl))
+            + ' ' + 'исков'+'ых заявле'+'ний и реше'+'ний суда одно'+'го типа', CancelButton);
+    }
+}
+
+Function CalcSum_#CalcSum_func5(D,ogo,vo,r)(wVidDoc: word; dx : byte) : boolean;
+{
+  wVidDoc := wVidDoc;
+
+  Result := TRUE;
+
+  var lCount : word;
+  lCount := 0;
+
+  vCalcSum._LOOP #CalcSum_func5(D,ogo,vo,r)
+    {
+      lCount++;
+
+      if (lCount > CalcSum_MaxSum#CalcSum_func5(D,ogo,vo,r) - dx)
+        {
+          Result := FALSE;
+          Message('Д'+'е'+'м'+'о'+'-'+'р'+'е'+'ж'+'и'+'м пре'+'дпо'+'лаг'+'ает нал'+'ичие не бол'+'ее ' + string(CalcSum_MaxSum#CalcSum_func5(D,ogo,vo,r))
+                 +' '+'дого'+'во'+'ров', CancelButton);
+          break;
+        }
+    }
+}
+
+
+#CalcSum_func2(omu,er,ck,vr,chre,_,ec,co,to,che,rds)
+{
+  Result := TRUE;
+
+  #CalcSum_func4(o,e,m,d)
+    Exit;
+
+  case wTable of
+    co#CalcSum_func5(Ba,se,D,oc): Result := CalcSum_#CalcSum_func5(Ba,se,D,oc)(wVidDoc, dx);
+    co#CalcSum_func5(Ka,t,So,pr): Result := CalcSum_#CalcSum_func5(Ka,t,So,pr)(wVidDoc, dx);
+    co#CalcSum_func5(I,s,k,i)   : Result := CalcSum_#CalcSum_func5(I,s,k,i)(wVidDoc, dx);
+    co#CalcSum_func5(V,e,k,sl)  : Result := CalcSum_#CalcSum_func5(V,e,k,sl)(wVidDoc, dx);
+    co#CalcSum_func5(D,ogo,vo,r): Result := CalcSum_#CalcSum_func5(D,ogo,vo,r)(wVidDoc, dx);
+  end;
+}
+#end
