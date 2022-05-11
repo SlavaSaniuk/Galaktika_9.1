@@ -1,4 +1,12 @@
+#param /linc:""
 #statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+
+//#include C_EXTCLASS.vil
+//#include Z_Katpodr.vil
+!#include F_OS.vil
 
 /* ************************************************
  * *** Наработки для модуля Складской учет ***************
@@ -18,3 +26,7 @@
  // Отчет:(МС) Справка о содержании драгметаллов в МЦ по накладной
  // Путь: Документы -> Накладные на внутреннее перемещение -> печать -> печать накладной
  #make "Frm\nakl\ms_sklad_spravkaSoderzhdrMetVMcPoNakl_frm.frm"
+
+ // Отчет: (МС) Фактические цены (НДЕ и валюта отчетов)
+ // Отчеты - оборотная ведомость - по партиям
+ #make "Frm\oborot\ms_sklad_msFactCenNde_frm.frm"

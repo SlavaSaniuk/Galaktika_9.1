@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>1</ActiveIndex>
+		<ActiveIndex>3</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -306,7 +306,6 @@
 						<ProjectItems>
 							<ProjectFolder Name="sf">
 								<ProjectItems>
-									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArenda2021_frm.frm"/>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArenda2021ParametersMD_frm.frm"/>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArenda2022_frm.frm"/>
 									<ProjectFile FileName="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArendaAms2021_rtf.rtf"/>
@@ -361,6 +360,30 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\RepDogAll\UseRep.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="RU">
+								<ProjectItems>
+									<ProjectFolder Name="Zat">
+										<ProjectItems>
+											<ProjectFile FileName="Src\MS_Saniuk\Vip\RU\Zat\ru.vip"/>
+											<ProjectFile FileName="Src\MS_Saniuk\Vip\RU\Zat\urep_ru.vip"/>
+										</ProjectItems>
+									</ProjectFolder>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="Example">
+								<ProjectItems>
+									<ProjectFolder Name="BrExp">
+										<ProjectItems>
+											<ProjectFile FileName="Src\MS_Saniuk\Vip\Example\BrExp\BrExp.vip"/>
+										</ProjectItems>
+									</ProjectFolder>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="AlgorAndConst">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\AlgorAndConst\GetConst.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 				</ProjectItems>
@@ -379,6 +402,11 @@
 							<ProjectFolder Name="nakl">
 								<ProjectItems>
 									<ProjectFile FileName="Src\MS_SKLAD\Frm\nakl\ms_sklad_spravkaSoderzhdrMetVMcPoNakl_frm.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="oborot">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_SKLAD\Frm\oborot\ms_sklad_msFactCenNde_frm.frm"/>
 								</ProjectItems>
 							</ProjectFolder>
 						</ProjectItems>
@@ -598,26 +626,20 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44687,6626003357" DateTimeCompile="0,000246886571403593" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SKLAD\ms_sklad.prj" DateTimeStart="44692,6721437153" DateTimeCompile="0,000205821757845115" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="106" SourceColumn="101"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="116" SourceColumn="98"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021_frm.frm" SourceLine="183" SourceColumn="109"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="141" SourceColumn="98"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="202" SourceColumn="111"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="209" SourceColumn="105"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="92" SourceColumn="12"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="06.05.2022 15:54:30"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка открытия компонента D:\01_DEV\Galaktika_9.1\Out\debugging.res Системе не удается найти указанный файл" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка открытия компонента D:\01_DEV\Galaktika_9.1\Out\debugging.res Системе не удается найти указанный файл" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="Нет такой функции, поля или метода : GETPRESISION_FORKOL" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SKLAD\FRM\OBOROT\ms_sklad_msFactCenNde_frm.frm" SourceLine="10" SourceColumn="45"/>
+					<CompileMessage MessageType="mtError" MessageText="Компиляция прервана в результате ошибки процесса компиляции"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="11.05.2022 16:08:11"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="69" PosY="34" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_SKLAD\Frm\oborot\ms_sklad_msFactCenNde_frm.frm" PosX="40" PosY="10" OpenEditor="True"/>
+			<File Name="Src\MS_SKLAD\ms_sklad.prj" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
+			<File Name="..\..\Work\Viper_Project\810\Описание_ресурсов_810\User1\MS__TINYPAR_0011.frm" PosX="1" PosY="1" OpenEditor="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

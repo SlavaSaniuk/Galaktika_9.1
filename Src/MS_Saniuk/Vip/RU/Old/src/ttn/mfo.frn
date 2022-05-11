@@ -1,8 +1,0 @@
-.var
-  mfo_, unn_, okpo_ : string;
-.endvar
-.begin
-  mfo_  := ' ' + sGetTune('KatOrg.FldView.MFO')  + ': ';
-  unn_  := ' ' + sGetTune('KatOrg.FldView.UNN')  + ': ';
-  okpo_ := ' ' + sGetTune('KatOrg.FldView.OKPO') + ': ';
-end.

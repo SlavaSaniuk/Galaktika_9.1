@@ -27,7 +27,7 @@ IF %VIPER_PROFILE%==Test (SET GAL_CONF=Test.cfg)
 ECHO Файл конфигурации для запуска приложения: %GAL_CONF%
 
 REM // Run galaktika:
-SET GAL_EXE=\\GAL_SERV9\GalSrv\exe\atlexec.exe
+SET GAL_EXE=d:\01_DEV\Galaktika_9.1\Tools\bins\AtlExecLogin.exe
 ECHO Исполняемый файл приложения: %GAL_EXE%
 ECHO Запуск приложения ...
 %GAL_EXE% /C:..\%GAL_CONF%

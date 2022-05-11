@@ -1,0 +1,37 @@
+Interface GetConst 'Выбрать константу' DoAccept, EscClose;
+  show at (0,0,80,24);
+  var
+    const_key: String;
+    const_name: String;
+    const_value: String;
+  parameters
+    const_key,
+    const_name,
+    const_value;
+  create view Consts
+  as select
+    key,
+    name,
+    formula
+  from
+    PatDefs
+  where (
+    key LIKE '&k1000%'
+  );
+  browse BrConsts (,,);
+    fields
+      key 'Ключ' : [16], protect;
+      name 'Имя' : [16], protect;
+      formula 'Формула' : [16], protect;
+  end;
+  HandleEvent
+    cmDefault: {
+      const_value:=Consts.PatDefs.formula;
+    }
+    cmDone: {
+      const_key:=Consts.PatDefs.key;
+      const_name:=Consts.PatDefs.name;
+      const_value:=Consts.PatDefs.formula;
+    }
+  end;
+end.

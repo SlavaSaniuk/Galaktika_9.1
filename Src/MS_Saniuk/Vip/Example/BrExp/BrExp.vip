@@ -1,0 +1,31 @@
+#include marker.vih
+
+Interface  BrExp 'Browse example' EscClose;
+  show at (0,0,170,32);
+  var
+    person_nrec: String;
+  create view
+    var
+      M, IndexNo: longInt; (MarkerStr)
+    as select *
+    from Persons;
+  browse Br (,,sci1478EnIns);
+    fields
+      nrec 'Номер сотрудника' : [16], protect, {Font={bold=SearchMarker(M, persons.nrec, IndexNo)}};
+      fio 'ФИО' : [25], protect, {Font={bold=SearchMarker(M, persons.nrec, IndexNo)}};
+  end;
+  handleEvent
+    cmInit: {
+        M := InitMarker('KATMCMarkers', sizeof(comp), 1000,100)
+    };
+    cmDefault: {
+      person_nrec:=Persons.nrec;
+      message('Номер пользователя: ' +person_nrec);
+    };
+    cmMarkUnmark: {
+      InvertMarker(M, persons.nrec);
+      if GetNext Persons <> tsOK then{};
+      RescanPanel(tnPersons);
+    };
+  end
+end.
