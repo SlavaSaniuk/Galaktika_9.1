@@ -1,0 +1,337 @@
+object 'F_OS::KATOSS' : InterfaceWindow {
+  Title = 'Инвентарная картотека (Стандарт. метод учёт; План счетов 2021г).';
+  Centered = True;
+  object PDOCUMENT : Browser {
+    object 'c_PDOCUMENT_KATOSLINK.INNUM_Сложный' : Column {
+      Visible = False;
+    } // c_PDOCUMENT_KATOSLINK.INNUM_Сложный : Column
+    object 'c_PDOCUMENT_BRCOLUMNPERSTOIM_Сумма_резерва' : Column {
+      Visible = False;
+    } // c_PDOCUMENT_BRCOLUMNPERSTOIM_Сумма_резерва : Column
+    object 'c_PDOCUMENT_BRCOLUMNSUMIZN_Амортизация' : Column {
+      Title = 'Накопленная'^M+
+              'амортизация';
+      HelpLine = 'Накопленная сумма амортизации за предыдущие отчетные периоды';
+    } // c_PDOCUMENT_BRCOLUMNSUMIZN_Амортизация : Column
+    object 'c_PDOCUMENT_BRCOLUMNSIZNM_Амортизация_за_период' : Column {
+      Title = 'Амортизация'^M+
+              ' за отч.период';
+      HelpLine = 'Сумма начисленной амортизации в отчетном периоде ИК';
+    } // c_PDOCUMENT_BRCOLUMNSIZNM_Амортизация_за_период : Column
+    object 'c_PDOCUMENT_KATOS.REGNUM_Регистрац._номер' : Column {
+      Visible = False;
+    } // c_PDOCUMENT_KATOS.REGNUM_Регистрац._номер : Column
+    object 'c_PDOCUMENT_PROBTRCURR.MES[13]_Текущий_месяц' : Column {
+      Visible = False;
+    } // c_PDOCUMENT_PROBTRCURR.MES[13]_Текущий_месяц : Column
+    object 'c_PDOCUMENT_KATOS.DTRESERV1_Дата_ликвидации' : Column {
+      Visible = False;
+    } // c_PDOCUMENT_KATOS.DTRESERV1_Дата_ликвидации : Column
+  } // PDOCUMENT : Browser
+    // Информация: объект "'Field: KATOS.BARKOD'" типа TreeColumn не найден в базовой конфигурации!
+  object TRDOCUMENT : TreeBrowser {
+    object 'Field: KATOS.BARKOD' : TreeColumn {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = True;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Инв. БРТПЦ';
+      HelpLine = '';
+      FieldName = 'Field: KATOS.BARKOD';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 6;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 30;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FixedState = 0;
+      EditButton = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // Field: KATOS.BARKOD : TreeColumn
+    object 'c_TRDOCUMENT_KATMOL.NAME_МОЛ' : TreeColumn {
+      Index = 7;
+    } // c_TRDOCUMENT_KATMOL.NAME_МОЛ : TreeColumn
+    object 'c_TRDOCUMENT_SPKATOS.DATEK_Дата_ввода' : TreeColumn {
+      Index = 8;
+    } // c_TRDOCUMENT_SPKATOS.DATEK_Дата_ввода : TreeColumn
+    object 'c_TRDOCUMENT_TRCOLUMNPERSTOIM_Сумма_с_учетом_пероценок' : TreeColumn {
+      Visible = False;
+      Index = 9;
+    } // c_TRDOCUMENT_TRCOLUMNPERSTOIM_Сумма_с_учетом_пероценок : TreeColumn
+    object 'c_TRDOCUMENT_Стоимость' : TreeColumn {
+      Index = 10;
+    } // c_TRDOCUMENT_Стоимость : TreeColumn
+    object 'c_TRDOCUMENT_TRCOLUMNSUMIZN_Амортизация' : TreeColumn {
+      Title = 'Накопленная'^M+
+              'амортизация';
+      HelpLine = 'Накопленная сумма амортизации за предыдущие отчетные периоды';
+      Index = 11;
+    } // c_TRDOCUMENT_TRCOLUMNSUMIZN_Амортизация : TreeColumn
+    object 'c_TRDOCUMENT_TRCOLUMNSIZNM_Амортизация_за_период' : TreeColumn {
+      Title = 'Амортизация'^M+
+              ' за отч.период';
+      HelpLine = 'Сумма начисленной амортизации в отчетном периоде ИК';
+      Index = 12;
+    } // c_TRDOCUMENT_TRCOLUMNSIZNM_Амортизация_за_период : TreeColumn
+    object 'c_TRDOCUMENT_OSTSROKPOLISP_Срок_исп.' : TreeColumn {
+      Index = 13;
+    } // c_TRDOCUMENT_OSTSROKPOLISP_Срок_исп. : TreeColumn
+    object 'c_TRDOCUMENT_KATOS.REGNUM_Регистрац._номер' : TreeColumn {
+      Visible = False;
+      Index = 14;
+    } // c_TRDOCUMENT_KATOS.REGNUM_Регистрац._номер : TreeColumn
+    object 'c_TRDOCUMENT_PROBTRCURR.MES[13]_Текущий_месяц' : TreeColumn {
+      Visible = False;
+      Index = 15;
+    } // c_TRDOCUMENT_PROBTRCURR.MES[13]_Текущий_месяц : TreeColumn
+    object 'c_TRDOCUMENT_Отчетный_период' : TreeColumn {
+      Index = 16;
+    } // c_TRDOCUMENT_Отчетный_период : TreeColumn
+    object c_TRDOCUMENT_VBR : TreeColumn {
+      Index = 17;
+    } // c_TRDOCUMENT_VBR : TreeColumn
+  } // TRDOCUMENT : TreeBrowser
+  object WIEDITKATOS : InterfaceWindow {
+    Title = 'Инвентарная карточка (Стандарт. метод учёт; План счетов 2021г)';
+    object KATOSSCR : Screen {
+      HelpLine = 'Сумма начисленной амортизации в отчетном периоде ИК';
+      object 'i_KATOSSCR_KATOS.OTCHPER' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCR_KATOS.OTCHPER : PanelInputLine
+      object 'L_KATOSSCR_Обособленное_подр.' : Label {
+        Visible = False;
+      } // L_KATOSSCR_Обособленное_подр. : Label
+      object i_KATOSSCR_FPODRTRNAME : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCR_FPODRTRNAME : PanelInputLine
+      object 'L_KATOSSCR_Аморт._льгота' : Label {
+        Visible = False;
+      } // L_KATOSSCR_Аморт._льгота : Label
+      object 'i_KATOSSCR_SPKATOS.SUMLGOTA' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCR_SPKATOS.SUMLGOTA : PanelInputLine
+      object 'L_KATOSSCR_за_месяц' : Label {
+        Visible = False;
+      } // L_KATOSSCR_за_месяц : Label
+      object 'i_KATOSSCR_SPKATOS.SUMLGOTAM' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCR_SPKATOS.SUMLGOTAM : PanelInputLine
+      object L_KATOSSCR_Label : Label {
+        Visible = False;
+      } // L_KATOSSCR_Label : Label
+      object i_KATOSSCR_FLD_KATOS_DATGAR : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCR_FLD_KATOS_DATGAR : PanelInputLine
+      object 'L_KATOSSCR_Label#1' : Label {
+        Visible = False;
+      } // L_KATOSSCR_Label#1 : Label
+      object i_KATOSSCR_FLD_SPKATOS_STOIML : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCR_FLD_SPKATOS_STOIML : PanelInputLine
+    } // KATOSSCR : Screen
+    object KATOSSCRCOMMONCOST : Screen {
+      object 'i_KATOSSCRCOMMONCOST_KATOS.OTCHPER' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCRCOMMONCOST_KATOS.OTCHPER : PanelInputLine
+      object 'L_KATOSSCRCOMMONCOST_Обособленное_подр.' : Label {
+        Visible = False;
+      } // L_KATOSSCRCOMMONCOST_Обособленное_подр. : Label
+      object i_KATOSSCRCOMMONCOST_FPODRTRNAME : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRCOMMONCOST_FPODRTRNAME : PanelInputLine
+      object 'L_KATOSSCRCOMMONCOST_Аморт._льгота' : Label {
+        Visible = False;
+      } // L_KATOSSCRCOMMONCOST_Аморт._льгота : Label
+      object 'i_KATOSSCRCOMMONCOST_SPKATOS.SUMLGOTA' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRCOMMONCOST_SPKATOS.SUMLGOTA : PanelInputLine
+      object 'L_KATOSSCRCOMMONCOST_за_месяц' : Label {
+        Visible = False;
+      } // L_KATOSSCRCOMMONCOST_за_месяц : Label
+      object 'i_KATOSSCRCOMMONCOST_SPKATOS.SUMLGOTAM' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRCOMMONCOST_SPKATOS.SUMLGOTAM : PanelInputLine
+      object L_KATOSSCRCOMMONCOST_Label : Label {
+        Visible = False;
+      } // L_KATOSSCRCOMMONCOST_Label : Label
+      object i_KATOSSCRCOMMONCOST_FLD_KATOS_DATGAR_SUM : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRCOMMONCOST_FLD_KATOS_DATGAR_SUM : PanelInputLine
+      object 'L_KATOSSCRCOMMONCOST_Label#1' : Label {
+        Visible = False;
+      } // L_KATOSSCRCOMMONCOST_Label#1 : Label
+      object i_KATOSSCRCOMMONCOST_FLD_SPKATOS_STOIML_SUM : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRCOMMONCOST_FLD_SPKATOS_STOIML_SUM : PanelInputLine
+    } // KATOSSCRCOMMONCOST : Screen
+    object KATOSSCRMSFO : Screen {
+      object 'i_KATOSSCRMSFO_KATOS.OTCHPER' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCRMSFO_KATOS.OTCHPER : PanelInputLine
+      object 'L_KATOSSCRMSFO_Обособ.подразделение' : Label {
+        Visible = False;
+      } // L_KATOSSCRMSFO_Обособ.подразделение : Label
+      object i_KATOSSCRMSFO_FPODRTRNAME : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRMSFO_FPODRTRNAME : PanelInputLine
+    } // KATOSSCRMSFO : Screen
+    object KATOSSCRRSRV : Screen {
+      object 'i_KATOSSCRRSRV_KATOSLINK.INNUM' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCRRSRV_KATOSLINK.INNUM : PanelInputLine
+      object 'i_KATOSSCRRSRV_KATOS.KOL' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCRRSRV_KATOS.KOL : PanelInputLine
+      object 'i_KATOSSCRRSRV_KATOS.OTCHPER' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCRRSRV_KATOS.OTCHPER : PanelInputLine
+    } // KATOSSCRRSRV : Screen
+    object KATOSSCROPLOS : Screen {
+      object 'i_KATOSSCROPLOS_KATOS.KOL' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCROPLOS_KATOS.KOL : PanelInputLine
+      object 'i_KATOSSCROPLOS_KATOS.OTCHPER' : PanelInputLine {
+        Skip = False;
+      } // i_KATOSSCROPLOS_KATOS.OTCHPER : PanelInputLine
+      object 'i_KATOSSCROPLOS_KATOSLINK.INNUM' : PanelInputLine {
+        Visible = False;
+      } // i_KATOSSCROPLOS_KATOSLINK.INNUM : PanelInputLine
+    } // KATOSSCROPLOS : Screen
+    object KATOSBUT : Screen {
+      object i_KATOSBUT_CONAME : PanelInputLine {
+        Skip = True;
+      } // i_KATOSBUT_CONAME : PanelInputLine
+    } // KATOSBUT : Screen
+    object KATOSBUTRSRV : Screen {
+      object i_KATOSBUTRSRV_CONAME : PanelInputLine {
+        Skip = True;
+      } // i_KATOSBUTRSRV_CONAME : PanelInputLine
+    } // KATOSBUTRSRV : Screen
+  } // WIEDITKATOS : InterfaceWindow
+  object WNUSERFRREESTR : InterfaceWindow {
+    object BFRREEKATOS : Browser {
+      object 'c_BFRREEKATOS_KATOSLINK.INNUM_ОС:Инвентарный_номер' : Column {
+        Visible = False;
+      } // c_BFRREEKATOS_KATOSLINK.INNUM_ОС:Инвентарный_номер : Column
+    } // BFRREEKATOS : Browser
+    object TFRREEKATOS : TreeBrowser {
+      object 'c_TFRREEKATOS_KATOSLINK.INNUM_ОС:Инвентарный_номер' : TreeColumn {
+        Visible = False;
+      } // c_TFRREEKATOS_KATOSLINK.INNUM_ОС:Инвентарный_номер : TreeColumn
+    } // TFRREEKATOS : TreeBrowser
+    object BFRREERESERVOS : Browser {
+      object 'c_BFRREERESERVOS_KATOSLINK.INNUM_ОС:Инвентарный_номер' : Column {
+        Visible = False;
+      } // c_BFRREERESERVOS_KATOSLINK.INNUM_ОС:Инвентарный_номер : Column
+    } // BFRREERESERVOS : Browser
+  } // WNUSERFRREESTR : InterfaceWindow
+  object WIDOPINFOOS : InterfaceWindow {
+    object DOPINFOOS : Screen {
+      object L_DOPINFOOS_Label : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Label : Label
+      object i_DOPINFOOS_FARCPREVOS : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_FARCPREVOS : PanelInputLine
+      object 'L_DOPINFOOS_Основной_объект' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Основной_объект : Label
+      object 'i_DOPINFOOS_KATOSCOMPUP.INNUM' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_KATOSCOMPUP.INNUM : PanelInputLine
+      object 'i_DOPINFOOS_KATOSCOMPUP.NAMEOS' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_KATOSCOMPUP.NAMEOS : PanelInputLine
+      object 'L_DOPINFOOS_Фикс._сумма_амортизации' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Фикс._сумма_амортизации : Label
+      object 'i_DOPINFOOS_SPKATOS.SUMFLD' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.SUMFLD : PanelInputLine
+      object 'L_DOPINFOOS_Резерв_на_обесценение' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Резерв_на_обесценение : Label
+      object 'i_DOPINFOOS_SPKATOS.PERRESERV' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.PERRESERV : PanelInputLine
+      object 'L_DOPINFOOS_Убыток_от_обесценения' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Убыток_от_обесценения : Label
+      object 'i_DOPINFOOS_SPKATOS.PERUBIT' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.PERUBIT : PanelInputLine
+      object 'L_DOPINFOOS_Забалансовый_износ' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_Забалансовый_износ : Label
+      object 'i_DOPINFOOS_SPKATOS.IZNOS' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.IZNOS : PanelInputLine
+      object 'L_DOPINFOOS_за_месяц' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_за_месяц : Label
+      object 'i_DOPINFOOS_SPKATOS.IZNOSM' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.IZNOSM : PanelInputLine
+      object 'L_DOPINFOOS_переоценка' : Label {
+        Visible = False;
+      } // L_DOPINFOOS_переоценка : Label
+      object 'i_DOPINFOOS_SPKATOS.PERIZNOS' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOS_SPKATOS.PERIZNOS : PanelInputLine
+    } // DOPINFOOS : Screen
+    object DOPINFOOSN : Screen {
+      object 'L_DOPINFOOSN_Основной_объект' : Label {
+        Visible = False;
+      } // L_DOPINFOOSN_Основной_объект : Label
+      object 'i_DOPINFOOSN_KATOSCOMPUP.INNUM' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOSN_KATOSCOMPUP.INNUM : PanelInputLine
+      object 'i_DOPINFOOSN_KATOSCOMPUP.NAMEOS' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOSN_KATOSCOMPUP.NAMEOS : PanelInputLine
+      object 'L_DOPINFOOSN_Фикс._сумма_амортизации' : Label {
+        Visible = False;
+      } // L_DOPINFOOSN_Фикс._сумма_амортизации : Label
+      object 'i_DOPINFOOSN_SPKATOS.SUMFLD' : PanelInputLine {
+        Visible = False;
+      } // i_DOPINFOOSN_SPKATOS.SUMFLD : PanelInputLine
+    } // DOPINFOOSN : Screen
+  } // WIDOPINFOOS : InterfaceWindow
+} // F_OS::KATOSS : InterfaceWindow
+//-----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>2</ActiveIndex>
+		<ActiveIndex>15</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -634,20 +634,30 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\ms_osnma_invBRTPC_crf.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.cnf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.crf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44693,7128777199" DateTimeCompile="0,000177835645445157" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44693,7130912847" DateTimeCompile="0,00017260416643694" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ALGORANDCONST\GetConst.vip" SourceLine="4" SourceColumn="1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="12.05.2022 17:06:48"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="12.05.2022 17:07:06"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
 			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="23" PosY="9" OpenEditor="True"/>
 			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="63" PosY="34" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\AlgorAndConst\GetConst.vip" PosX="34" PosY="54" OpenEditor="True" Active="True" FoldLine="64,95,112"/>
-			<File Name="Src\MS_Saniuk\Vip\RU\Zat\ru.vip" PosX="16" PosY="410" OpenEditor="True" FoldLine="178"/>
+			<File Name="Src\MS_Saniuk\Vip\AlgorAndConst\GetConst.vip" PosX="1" PosY="54" OpenEditor="True" FoldLine="63,94,111"/>
+			<File Name="Src\MS_Saniuk\Vip\RU\Zat\ru.vip" PosX="1" PosY="411" OpenEditor="True" FoldLine="178"/>
+			<File Name="Src\0_CRF\ms_osnma_invBRTPC_crf\ms_osnma_invBRTPC_crf.prj" PosX="22" PosY="7" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

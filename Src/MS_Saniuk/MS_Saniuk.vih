@@ -32,6 +32,7 @@ ObjInterface GetConstCasts;
 
   #doc
     Функция преобразует значение константы из String в Double.
+    Возвращает значение -666, если строковое значение не может быть преобразовано.
     @param str:String - значение в String;
     @return :Double - значение константы в Double.
   #end
