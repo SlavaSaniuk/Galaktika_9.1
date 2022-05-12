@@ -43,6 +43,8 @@ Var
   // Коэффициент для РУ из типовых алгоритмов и констант:
   coef_key, coef_name, coef_value : String;
   sCoef: String; // Коэффициент для РУ на экран;
+  dCoef: Double;// Коэффициент для РУ (Double) для расчетов;
+  iGetConst: GetConst; // Имплементация интерфейса GetConst
 const
   REP_NONE      = 0;
   REP_NACH      = 1;
@@ -401,7 +403,14 @@ cmInit :
   _sSch := planssch.code + sSch;
 
   // Инициализация коэффициента для РУ:
-  sCoef := '1.00000000';
+  sCoef := iGetConst.getConstValueStrByMonth(dGetTune('DAT_M_OT')); // Значение по месяцу (Строка)
+  //dCoef := iGetConst.coefValueStringToDouble(sCoef); // Значение (Double)
+
+  dCoef := iGetConst.coefValueStringToDouble('НЕ_НАЙДЕНО'); // Значение (Double)
+  if(dCoef=-666)  dCoef := 1;
+
+  sCoef := iGetConst.getConstNameByValue(sCoef) +' ('+DoubleToStr(dCoef,'66.888888')+')'; // Имя константы по значение
+  // -------------------------------------------
 
   if not ReadMyDsk(sFilePath,'sFilePath_RU_main', b)  sFilePath := 'D:\';
 
@@ -439,10 +448,17 @@ case Curfield of
     }
     SetKAU1Title;
   }
+  // -------------------------
+  // Выбор коэффициента для РУ:
   #sCoef: {
     RunInterface(MS_Saniuk::GetConst, coef_key, coef_name, coef_value);
-    set sCoef:= coef_key +', ' coef_name +', ' +coef_value;
+    set sCoef:= coef_name;
+    dCoef:=iGetConst.coefValueStringToDouble(coef_value);
+    message(DoubleToStr(dCoef,'[|-]66,888888'));
+
   }
+  // --------------------------
+  // Выбор места выгрузки:
   #sFilePath:
   {
      set sFilePath:=GetDirName('Выберете путь для сохранения файлов', sFilePath);

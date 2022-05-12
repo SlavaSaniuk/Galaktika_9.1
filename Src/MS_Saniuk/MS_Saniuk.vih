@@ -1,0 +1,42 @@
+#define ComponentVersion
+#Component "MS_Saniuk"
+
+ObjInterface GetConstFuncs;
+
+  #doc
+    Функция возвращает значение константы по номеру месяца в формате Double.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstByMonth(a_date: Date) : Double;
+
+  #doc
+    Функция возвращает значение константы (!в формате String) по номеру месяца.
+    Возвращает 'НЕ_НАЙДЕНО' если значение не найдено.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstValueStrByMonth(a_date: Date) : String;
+
+  #doc
+    Функция возвращает имя константы по ее значению (!в формате String).
+    Возвращает 'НЕ_НАЙДЕНО' если значение не найдено.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstNameByValue(a_val: String) : String;
+
+End;
+
+ObjInterface GetConstCasts;
+
+  #doc
+    Функция преобразует значение константы из String в Double.
+    @param str:String - значение в String;
+    @return :Double - значение константы в Double.
+  #end
+  function coefValueStringToDouble(str: String):Double;
+
+End;
+
+VipInterface GetConst implements GetConstFuncs, GetConstCasts Licensed (Free) parameters(onst_key: String; const_name: String; const_value: String);

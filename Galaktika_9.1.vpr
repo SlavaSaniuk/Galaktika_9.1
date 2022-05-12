@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>3</ActiveIndex>
+		<ActiveIndex>2</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -297,6 +297,9 @@
 					<HwKeyDirectory>\\Gal_serv9\HwDir</HwKeyDirectory>
 					<LicFileName>\\Gal_serv9\Sup5514\exe\license.lic</LicFileName>
 				</VipDatabase>
+				<VipDatabase>
+					<Name>Безымянная 1</Name>
+				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<ProjectItems>
@@ -377,6 +380,12 @@
 											<ProjectFile FileName="Src\MS_Saniuk\Vip\Example\BrExp\BrExp.vip"/>
 										</ProjectItems>
 									</ProjectFolder>
+									<ProjectFolder Name="Functions">
+										<ProjectItems>
+											<ProjectFile FileName="Src\MS_Saniuk\Vip\Example\Functions\SanFuncs.vih"/>
+											<ProjectFile FileName="Src\MS_Saniuk\Vip\Example\Functions\SanFuncs.vip"/>
+										</ProjectItems>
+									</ProjectFolder>
 								</ProjectItems>
 							</ProjectFolder>
 							<ProjectFolder Name="AlgorAndConst">
@@ -386,6 +395,7 @@
 							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
+					<ProjectFile FileName="Src\MS_Saniuk\MS_Saniuk.vih"/>
 				</ProjectItems>
 			</ProjectCompileFile>
 			<ProjectCompileFile FileName="Src\MS_SKLAD\ms_sklad.prj" Priority="0">
@@ -626,20 +636,18 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SKLAD\ms_sklad.prj" DateTimeStart="44692,6721437153" DateTimeCompile="0,000205821757845115" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44693,7128777199" DateTimeCompile="0,000177835645445157" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtError" MessageText="Ошибка открытия компонента D:\01_DEV\Galaktika_9.1\Out\debugging.res Системе не удается найти указанный файл" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="Ошибка открытия компонента D:\01_DEV\Galaktika_9.1\Out\debugging.res Системе не удается найти указанный файл" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="Нет такой функции, поля или метода : GETPRESISION_FORKOL" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SKLAD\FRM\OBOROT\ms_sklad_msFactCenNde_frm.frm" SourceLine="10" SourceColumn="45"/>
-					<CompileMessage MessageType="mtError" MessageText="Компиляция прервана в результате ошибки процесса компиляции"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="11.05.2022 16:08:11"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ALGORANDCONST\GetConst.vip" SourceLine="4" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="12.05.2022 17:06:48"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_SKLAD\Frm\oborot\ms_sklad_msFactCenNde_frm.frm" PosX="40" PosY="10" OpenEditor="True"/>
-			<File Name="Src\MS_SKLAD\ms_sklad.prj" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
-			<File Name="..\..\Work\Viper_Project\810\Описание_ресурсов_810\User1\MS__TINYPAR_0011.frm" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="23" PosY="9" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="63" PosY="34" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Vip\AlgorAndConst\GetConst.vip" PosX="34" PosY="54" OpenEditor="True" Active="True" FoldLine="64,95,112"/>
+			<File Name="Src\MS_Saniuk\Vip\RU\Zat\ru.vip" PosX="16" PosY="410" OpenEditor="True" FoldLine="178"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

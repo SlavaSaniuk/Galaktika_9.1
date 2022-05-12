@@ -1,3 +1,6 @@
+#define ComponentVersion
+#Component "MS_Saniuk"
+
 Interface GetConst 'Выбрать константу' DoAccept, EscClose;
   show at (0,0,80,24);
   var
@@ -9,15 +12,123 @@ Interface GetConst 'Выбрать константу' DoAccept, EscClose;
     const_name,
     const_value;
   create view Consts
-  as select
-    key,
-    name,
-    formula
-  from
-    PatDefs
-  where (
-    key LIKE '&k1000%'
-  );
+  as select key, name, formula
+  from PatDefs
+  where (key LIKE '&k1000%');
+
+  /* ---------------------------
+   *  *** ФУНКЦИИ ИНТЕРФЕЙСА ***
+   */
+
+  #doc
+    Функция преобразует значение константы из String в Double.
+    @param str:String - значение в String;
+    @return :Double - значение константы в Double.
+  #end
+  function coefValueStringToDouble(str: String):Double; {
+    var coef: Double;
+    var sym: String;
+    begin
+      // Check first symbol in str:
+      sym:=SubStr(str, 1, 1);
+      if(sym = Chr(39))
+        str:=SubStr(str,2,length(str)-1);
+
+      // Check last symbol in str:
+      sym:=SubStr(str, length(str), 1);
+      if(sym = Chr(39))
+        str:=SubStr(str, 1, length(str)-1);
+
+      // Try to parse String value:
+      _try
+        coef := Double(str);
+      _except
+        on ExNumberConvert: {
+          message('Exception!!');
+          coef := -666;
+        };
+      _finally {
+          coef := -666;
+      };
+
+       coefValueStringToDouble:=coef;
+    end;
+  }
+
+  #doc
+    Функция возвращает значение константы по номеру месяца в формате Double.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstByMonth(a_date: Date) : Double; {
+     var month: Integer;
+     var s_month: String; // Month - String;
+     var s_coefVal: String;
+     var res: Double;
+
+     // Get month from date:
+     month:=Integer(_GetMonth(_DateTime1(a_date, Cur_Time)));
+     // Cast month to string:
+     if(month > 9) s_month:='&k1000____' +String(month);
+     else s_month:='&k1000_____' +String(month);
+
+     // Get const value:
+     if((Consts.getfirst Patdefs where (Patdefs.key LIKE s_month)) = tsOk){
+       s_month := Consts.PatDefs.formula;
+       message('S_coefVal: ' +s_month);
+       res:=coefValueStringToDouble(s_month);
+     } else {
+       message('S_coefVal: ' +DoubleToStr(1.0, '66666.8888888'));
+       res:=1.0;
+     }
+     message('Res: ' +DoubleToStr(res, '666666666,88'));
+     getConstByMonth:=res;
+  }
+
+  #doc
+    Функция возвращает имя константы по ее значению (в формате String)
+    Возвращает 'НЕ_НАЙДЕНО' если значение не найдено.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstNameByValue(a_val: String) : String; {
+      var name: String = 'НЕ_НАЙДЕНО'; // Имя константы;
+
+      // Поиск в ЛТ:
+      if((Consts.getfirst PatDefs where (PatDefs.formula = a_val)) = tsOk)
+        name:=Consts.PatDefs.name;
+
+      // Возврат:
+      getConstNameByValue:=name;
+  }
+
+  #doc
+    Функция возвращает значение константы (!в формате String) по номеру месяца.
+    Возвращает 'НЕ_НАЙДЕНО' если значение не найдено.
+    @param a_date:Date - Дата;
+    @return :Double - значение константы в месяце.
+  #end
+  function getConstValueStrByMonth(a_date: Date) : String; {
+    var month: Integer; // Month from date;
+    var s_month: String; // Month - String;
+    var res: String = 'НЕ_НАЙДЕНО';
+
+    // Get month from date:
+    month:=Integer(_GetMonth(_DateTime1(a_date, Cur_Time)));
+
+    // Cast month to string and add key prefix:
+    if(month > 9) s_month:='&k1000____' +String(month);
+    else s_month:='&k1000_____' +String(month);
+
+    // Get const value:
+    if((Consts.getfirst Patdefs where (Patdefs.key LIKE s_month)) = tsOk)
+      res:= Consts.PatDefs.formula;
+
+    //Return:
+    getConstValueStrByMonth:=res;
+  }
+
+
   browse BrConsts (,,);
     fields
       key 'Ключ' : [16], protect;

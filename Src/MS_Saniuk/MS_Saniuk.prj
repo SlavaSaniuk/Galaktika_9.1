@@ -1,9 +1,13 @@
 #statusline "statgal"
 
+#define ComponentVersion
+
 #include galnet.inc end;
 #include glovars.inc
 
 #include galaktika.vil
+#include MS_Saniuk.vih
+#include SanFuncs.vih
 
 /* ************************************************
  * *** Разные наработки Санюка В.В. ***************
@@ -27,5 +31,6 @@
 
 
  #make "Vip\Example\BrExp\BrExp.vip"
+ #make "Vip\Example\Functions\SanFuncs.vip"
 
  #make "Vip\AlgorAndConst\GetConst.vip"

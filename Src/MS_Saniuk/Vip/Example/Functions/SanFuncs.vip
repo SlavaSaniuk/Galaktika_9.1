@@ -1,0 +1,14 @@
+#define ComponentVersion
+#Component "MS_Saniuk"
+
+Interface SanFuncs;
+
+  public function hello(name: double) : double;
+  {
+    begin
+      message('Hello, ' +name);
+      hello:=3.14;
+    end;
+  }
+
+end.
