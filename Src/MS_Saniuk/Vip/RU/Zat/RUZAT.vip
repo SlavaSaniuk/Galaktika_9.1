@@ -12,10 +12,7 @@ table struct ruz_os
   vidper     : word,
   sum        : double,
   sum_izn    : double,
-  kol        : decimal(31.15),
   datek      : date,
-  srokisp    : decimal(31.15),
-  poprkoef   : decimal(31.15),
   kp         : string,
   os         : string,
   sch        : string,
@@ -31,20 +28,25 @@ const
   cg_ru_kp = 'КР_9.00.00.0.00.0.0';
 end;
 
-Interface  RU_main 'Формирование данных по РУ' /*DoAccept, Cyan,*/ EscClose;
+Interface  RUZAT 'Формирование данных по РУ' /*DoAccept, Cyan,*/ EscClose;
   show at (0,0,170,32);
 Var
   _Filial : word;
   sFilePath, sPlanSch, sSch, kr_Param, sSubSchet : string;
   b : boolean;
   dop : word;
-  oborot_koef: double;
+  //oborot_koef: double;
   //iRecOb : RecOborot;
   // Коэффициент для РУ из типовых алгоритмов и констант:
   coef_key, coef_name, coef_value : String;
   sCoef: String; // Коэффициент для РУ на экран;
   dCoef: Double;// Коэффициент для РУ (Double) для расчетов;
   iGetConst: GetConst; // Имплементация интерфейса GetConst
+
+  coef_scr_title: String; // Имя коэффициента для РУ на экране;
+  coef_ru_dob: Double; // Коэффициент для РУ (Double);
+  coef_ru_str: String; // Коэффициент для РУ (String);
+
 const
   REP_NONE      = 0;
   REP_NACH      = 1;
@@ -79,6 +81,7 @@ From
  ,ruz_os
  ,ruz_os ruz_os_oborot
  ,ruz_os ruz_os_err
+ ,buhschet
 where
 ((
       _cPlanSsch           == planssch.nrec
@@ -97,11 +100,10 @@ where
   and 0                     == ruz_os_oborot.tidk
 
   and 99                    == ruz_os_err.tidk
-))
+));
 //and
 // katos.datek <= _edate and katos.datv = Date(0,0,0)
-order by ruz_os.innum
-;
+//order by ruz_os.innum
 file f1, f2;
 //Form frmReportRUZar ('repRUOS.OUT', 'repRUOS') with NoVisual;
 
@@ -116,7 +118,7 @@ procedure FillRU;
     ClearBuffer(#ruz_os_oborot);
     ruz_os_oborot.tidk     := 0;
     ruz_os_oborot.nach_sch := sSch;
-    ruz_os_oborot.sum      := oborot.sumob;
+    ruz_os_oborot.sum      := oborot.sumob*coef_ru_dob; // Умножение на коэффициент для РУ;
     ruz_os_oborot.podr     := DateToStr(oborot.datob, 'DD/MM/YYYY');
     if(getfirst katdoc = tsOK)
     {
@@ -164,7 +166,7 @@ procedure FillRU;
         ruz_os_err.os    := ruz_os_oborot.os;
         ruz_os_err.sch   := ruz_os_oborot.sch;
         ruz_os_err.sp    := ruz_os_oborot.sp;
-        ruz_os_err.sum   := ruz_os_oborot.sum;
+        ruz_os_err.sum   := ruz_os_oborot.sum*coef_ru_dob;
         insert current ruz_os_err;
       }
       insert current ruz_os_oborot;
@@ -179,7 +181,7 @@ Procedure PrintReportRU;
 {
     var fname1, fname2, st, st1, prefix : string;
     var sum : double;
-    var str_kol : integer;
+    var str_kol : double;
     case sSch of
       'RU': prefix := 'ZT';
       'RUOS': prefix := 'OC';
@@ -207,12 +209,12 @@ Procedure PrintReportRU;
         st := string(ruz_os.sum) + ';' + if(sSch = 'RU' , substr(ruz_os.kp, 1, 27), ruz_os.kp) + ';' + ruz_os.os + ';' + ruz_os.sch + ';' + ruz_os.sp;
         f1.WriteLn(DocBasFn866To1251(st));
         sum += round(ruz_os.sum, 2);
-        str_kol++;
+        str_kol := str_kol+1;
         NextVisual;
       }
       StopVisual;
     }
-    st1 := prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt' + ';' + Trim(DoubleToStr(str_kol,'777777'))+ ';'+Trim(DoubleToStr(sum,'666666666666.88'));
+    st1 := prefix + string(_Filial) + '_' + DoubleToStr(_mesn,'77') + string(_yearn) + '.txt' + ';' + str_kol+ ';'+Trim(DoubleToStr(sum,'666666666666.88'));
     f2.WriteLn(DocBasFn866To1251(st1));
     f1.close;
     f2.close;
@@ -269,7 +271,7 @@ Fields
 
   sPlanSch ('План счетов') : pickbutton, Protect;
   sSch ('Счет RU') : pickbutton, Protect, {Font = {BackColor = if(sSch = '', ColorNeed, 0)}};
-  sCoef ('Коэффициент для РУ') : pickButton, Protect;
+  coef_scr_title ('Коэффициент для РУ') : pickButton, Protect;
 //  kr_param ('Параметр КР') : NoProtect, PickButton, {Font = {BackColor = if(kr_param = '', ColorNeed, 0)}};
   dop : NoProtect;
   sFilePath ('Файл'): Protect, PickButton
@@ -308,27 +310,27 @@ Browse brRU 'Проводки' ('',,sci178Esc);
   show at(,,,)
   table ruz_os_oborot;
 Fields
-  ruz_os_oborot.podr          #3'Дата' ('Дата проводки',,) : [4], Protect;
-  ruz_os_oborot.innum         #3'Тип документа' ('Тип документа',,) : [6], Protect;
-  ruz_os_oborot.name          #3'Номер документа' ('Номер документа',,) : [6], Protect;
-  ruz_os_oborot.kp            #3'Бизнес-процесс' ('Бизнес-процесс',,) : [20], Protect;
-  ruz_os_oborot.os            #3'Код структуры' ('Организационная структура',,) : [8], Protect;
-  ruz_os_oborot.sch           #3'Затр.сч.' ('Затр.сч.',,) : [6], Protect;
-  ruz_os_oborot.sp            #3'Подр.РУ' ('Подразделение РУ',,) : [6], Protect;
-  ruz_os_oborot.sum           #3'Сумма' ('Сумма',,) : [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+  ruz_os_oborot.podr          'Дата проводки' headerAlign=centered: [4], Protect;
+  ruz_os_oborot.innum         'Тип документа' headerAlign=centered: [6], Protect;
+  ruz_os_oborot.name          'Номер документа' headerAlign=centered: [6], Protect;
+  ruz_os_oborot.kp            'Бизнес-процесс' headerAlign=centered: [20], Protect;
+  ruz_os_oborot.os            'Организационная структура' headerAlign=centered: [8], Protect;
+  ruz_os_oborot.sch           'Затр.сч.' headerAlign=centered: [6], Protect;
+  ruz_os_oborot.sp            'Подразделение РУ' headerAlign=centered: [6], Protect;
+  ruz_os_oborot.sum           'Сумма' headerAlign=centered: [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
 end; //screen
 
 Browse brRUOS_err 'Ошибки' ('',,sci178Esc);
   show at(,,,)
   table ruz_os_err;
 Fields
-  ruz_os_err.innum         #3'Номер док-та и дата проводки' ('Инвентарный номер',,) : [10], Protect;
-  ruz_os_err.err           #3'Описание' ('Описание ошибки',,) : [12], Protect;
-  ruz_os_err.kp            #3'Бизнес-процесс' ('Бизнес-процесс',,) : [20], Protect, {Font = {BackColor = if(ruz_os_err.kp = '', ColorNeed, 0)}};
-  ruz_os_err.os            #3'Код структуры' ('Организационная структура',,) : [8], Protect, {Font = {BackColor = if(ruz_os_err.os = '', ColorNeed, 0)}};
-  ruz_os_err.sch           #3'Затр.сч.' ('Затр.сч.',,) : [6], Protect, {Font = {BackColor = if(ruz_os_err.sch = '', ColorNeed, 0)}};
-  ruz_os_err.sp            #3'Подр.РУ' ('Подразделение РУ',,) : [6], Protect, {Font = {BackColor = if(ruz_os_err.sp = '', ColorNeed, 0)}};
-  ruz_os_err.sum           #3'Сумма' ('Сумма',,) : [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+  ruz_os_err.innum         'Инвентарный номер' headerAlign=centered: [10], Protect;
+  ruz_os_err.err           'Описание ошибки' headerAlign=centered: [12], Protect;
+  ruz_os_err.kp            'Бизнес-процесс' headerAlign=centered: [20], Protect, {Font = {BackColor = if(ruz_os_err.kp = '', ColorNeed, 0)}};
+  ruz_os_err.os            'Организационная структура' headerAlign=centered: [8], Protect, {Font = {BackColor = if(ruz_os_err.os = '', ColorNeed, 0)}};
+  ruz_os_err.sch           'Затр.сч.' headerAlign=centered: [6], Protect, {Font = {BackColor = if(ruz_os_err.sch = '', ColorNeed, 0)}};
+  ruz_os_err.sp            'Подразделение РУ' headerAlign=centered: [6], Protect, {Font = {BackColor = if(ruz_os_err.sp = '', ColorNeed, 0)}};
+  ruz_os_err.sum           'Сумма' headerAlign=centered: [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
 end; //screen
 
 end; //Tabbed sheet
@@ -379,6 +381,20 @@ procedure SetTabTitle;
 
 }
 
+  #doc
+    Проверяет коэффициент для РУ на валидность (-666, 0 - не валидные коэфициенты).
+    @param coef :Double - коэффициент для проверки;
+    @return - True - если коэффициент валидный.
+  #end
+  function isCoefValid(a_coef: Double): boolean; {
+    var isValid:Boolean = true;
+
+    if(a_coef = -666) isValid:=false;
+    if(a_coef = 0) isValid:=false;
+
+    isCoefValid:=isValid;
+  }
+
 HandleEvent
 cmInit :
 {
@@ -402,15 +418,16 @@ cmInit :
   if not ReadMyDsk(sSch,'sSch_RU_main', b)      sSch := 'RU';
   _sSch := planssch.code + sSch;
 
+  // =====================================================================
   // Инициализация коэффициента для РУ:
-  sCoef := iGetConst.getConstValueStrByMonth(dGetTune('DAT_M_OT')); // Значение по месяцу (Строка)
-  //dCoef := iGetConst.coefValueStringToDouble(sCoef); // Значение (Double)
-
-  dCoef := iGetConst.coefValueStringToDouble('НЕ_НАЙДЕНО'); // Значение (Double)
-  if(dCoef=-666)  dCoef := 1;
-
-  sCoef := iGetConst.getConstNameByValue(sCoef) +' ('+DoubleToStr(dCoef,'66.888888')+')'; // Имя константы по значение
-  // -------------------------------------------
+  coef_ru_str := iGetConst.getConstValueStrByMonth(dGetTune('DAT_M_OT')); // Значение по месяцу (Строка)
+  coef_ru_dob:= iGetConst.coefValueStringToDouble(coef_ru_str); // Значение (Double)
+    // Проверка коэффициента:
+  if(isCoefValid(coef_ru_dob) = false) coef_ru_dob := 1;
+    // Установка надписи на экране:
+  coef_scr_title := iGetConst.getConstNameByValue(coef_ru_str) +' ('
+    +DoubleToStr(coef_ru_dob,'6666666~9999999999')+')'; // Имя константы по значение
+  // ======================================================================
 
   if not ReadMyDsk(sFilePath,'sFilePath_RU_main', b)  sFilePath := 'D:\';
 
@@ -436,7 +453,7 @@ case Curfield of
   #sSch:
   {
 
-    RunInterface(F_BuhSchet::GetBuhSchet, 0, _cPlanSsch, _sSch, sSubSchet);
+    RunInterface(F_BuhSchet::GetBuhSchet, 0, _cPlanSsch, _sSch,'');
 //    set _sSch := sSch;
 //    message('_sSch = ' + _sSch);
     set sSch := SubStr(_sSch,2, length(_sSch));
@@ -447,22 +464,22 @@ case Curfield of
       set _sSch := planssch.code + sSch;
     }
     SetKAU1Title;
-  }
-  // -------------------------
-  // Выбор коэффициента для РУ:
-  #sCoef: {
+  } // ---------------------------
+  #coef_scr_title: { // Выбор коэффициента для РУ:
     RunInterface(MS_Saniuk::GetConst, coef_key, coef_name, coef_value);
-    set sCoef:= coef_name;
-    dCoef:=iGetConst.coefValueStringToDouble(coef_value);
-    message(DoubleToStr(dCoef,'[|-]66,888888'));
-
-  }
-  // --------------------------
-  // Выбор места выгрузки:
-  #sFilePath:
-  {
-     set sFilePath:=GetDirName('Выберете путь для сохранения файлов', sFilePath);
-  }
+    coef_ru_dob:=iGetConst.coefValueStringToDouble(coef_value); // Преобразовать коэф. из String -> Double
+      // Проверка коэффициента:
+    if(isCoefValid(coef_ru_dob) = false) {
+      coef_ru_dob := 1;
+      message('Выбранное значение не установлено. Коэффициент для РУ будет равен '
+        +DoubleToStr(coef_ru_dob, '666666~999999999999'));
+    }
+    coef_scr_title:=coef_name +' (' +DoubleToStr(coef_ru_dob, '6666666666~99999999999') +')';
+    set coef_scr_title;
+  } // ---------------------------
+  #sFilePath: { // Выбор места выгрузки:
+    set sFilePath:=GetDirName('Выберете путь для сохранения файлов', sFilePath);
+  } // ---------------------------
 
 end;
 

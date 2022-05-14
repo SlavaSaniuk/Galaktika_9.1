@@ -44,12 +44,8 @@ Interface GetConst 'Выбрать константу' DoAccept, EscClose;
         coef := Double(str);
       _except
         on ExNumberConvert: {
-          message('Exception!!');
           coef := -666;
         };
-      _finally {
-          coef := -666;
-      };
 
        coefValueStringToDouble:=coef;
     end;

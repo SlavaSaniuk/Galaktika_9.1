@@ -41,3 +41,4 @@ ObjInterface GetConstCasts;
 End;
 
 VipInterface GetConst implements GetConstFuncs, GetConstCasts Licensed (Free) parameters(onst_key: String; const_name: String; const_value: String);
+VipInterface RUZAT Licensed (Free);
