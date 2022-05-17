@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>16</ActiveIndex>
+		<ActiveIndex>17</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -664,12 +664,21 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\ms_sfo_otchNalNaBalanse_crf.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.cnf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.crf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44697,6257668056" DateTimeCompile="0,000205416668904945" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\0_CRF\ms_sfo_kartUcheSfo\ms_sfo_kartUcheSfo.prj" DateTimeStart="44698,471543912" DateTimeCompile="0,00023849537683418" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ACTSDELZEROS\ActsDelZeros.vip" SourceLine="1" SourceColumn="1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="16.05.2022 15:01:24"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="17.05.2022 11:19:22"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
