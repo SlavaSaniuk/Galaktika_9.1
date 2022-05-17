@@ -1,0 +1,7 @@
+#param /linc:""
+#statusline "statgal"
+
+#include galnet.inc end;
+
+
+#make "Crf\ms_sfo_kartUcheSfo.cnf" 

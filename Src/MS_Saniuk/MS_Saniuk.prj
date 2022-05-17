@@ -7,7 +7,11 @@
 
 #include galaktika.vil
 #include MS_Saniuk.vih
+#include ActsDelZeros.vih
 #include SanFuncs.vih
+#include Sdfuns.vih
+#include KatSoprFunc.vih
+#include KatSoprFunc.var
 
 /* ************************************************
  * *** Разные наработки Санюка В.В. ***************
@@ -34,3 +38,7 @@
  #make "Vip\Example\Functions\SanFuncs.vip"
 
  #make "Vip\AlgorAndConst\GetConst.vip"
+
+// ***********************************************************************
+// *********  Удаление нулевых услуг в актах на оказание услуг  **********
+#make "Vip\ActsDelZeros\ActsDelZeros.vip"

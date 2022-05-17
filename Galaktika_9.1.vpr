@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>2</ActiveIndex>
+		<ActiveIndex>16</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -393,9 +393,19 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\AlgorAndConst\GetConst.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="ActsDelZeros">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\ActsDelZeros\ActsDelZeros.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectFile FileName="Src\MS_Saniuk\MS_Saniuk.vih"/>
+					<ProjectFolder Name="Vih">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_Saniuk\Vih\ActsDelZeros.vih"/>
+						</ProjectItems>
+					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
 			<ProjectCompileFile FileName="Src\MS_SKLAD\ms_sklad.prj" Priority="0">
@@ -644,21 +654,27 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
+			<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\ms_sfo_kartUcheSfo.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Crf">
+						<ProjectItems>
+							<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.crf"/>
+							<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.cnf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44694,6108011227" DateTimeCompile="0,000205821765121073" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44697,6257668056" DateTimeCompile="0,000205416668904945" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\RU\ZAT\RUZAT.vip" SourceLine="31" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\RU\ZAT\RUZAT.vip" SourceLine="217" SourceColumn="110"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не совпадает тип параметра 3 при вызове F_BUHSCHET::GETBUHSCHET " SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\RU\ZAT\RUZAT.vip" SourceLine="456" SourceColumn="63"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="13.05.2022 14:39:51"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ACTSDELZEROS\ActsDelZeros.vip" SourceLine="1" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="16.05.2022 15:01:24"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="27" PosY="42" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\RU\Zat\RUZAT.vip" PosX="40" PosY="426" OpenEditor="True" Active="True" FoldLine="362,389,486,502,506,517,521,530"/>
-			<File Name="Src\RU_OLD\oborot_zar.vip" PosX="24" PosY="151" OpenEditor="True"/>
+			<File Name="Src\0_CRF\ms_sfo_kartUcheSfo\ms_sfo_kartUcheSfo.prj" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

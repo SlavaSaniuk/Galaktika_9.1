@@ -1,0 +1,253 @@
+object 'F_MBP::CART_MBP' : InterfaceWindow {
+  Title = 'Карточки учета СФО (все)';
+  Centered = True;
+  object GETMYMBP : Browser {
+    ViewFlags = 6;
+    RowColorDark = 10;
+    VerDelimiterWidth = 1;
+    // Информация: объект "'GROUPSFO.NAME'" типа Column не найден в базовой конфигурации!
+    object 'GROUPSFO.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = True;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Группа СФО';
+      HelpLine = '';
+      FieldName = 'GROUPSFO.NAME';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 1;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 220;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // GROUPSFO.NAME : Column
+    // Информация: объект "'GetKauReffName('KATMC',katmc.nrec,10265)'" типа Column не найден в базовой конфигурации!
+    object 'GetKauReffName(''KATMC'',katmc.nrec,10265)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'ВЭД';
+      HelpLine = '';
+      FieldName = 'GetKauReffName(''KATMC'',katmc.nrec,10265)';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 2;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // GetKauReffName('KATMC',katmc.nrec,10265) : Column
+    object 'c_GETMYMBP_KATMBP.NNUMBER_Номенклатурный_номер' : Column {
+      Index = 3;
+    } // c_GETMYMBP_KATMBP.NNUMBER_Номенклатурный_номер : Column
+    // Информация: объект "'GetKauReffName('KATMC',katmc.nrec,10261)'" типа Column не найден в базовой конфигурации!
+    object 'GetKauReffName(''KATMC'',katmc.nrec,10261)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      NoValidCheck = True;
+      StatusCtx = 16;
+      Title = 'Import';
+      HelpLine = '';
+      FieldName = 'GetKauReffName(''KATMC'',katmc.nrec,10261)';
+      DefaultValue = '';
+      Strings = ( // Список строк
+      )
+      StringsNull = 0;
+      Index = 4;
+      DefaultWidth = 26;
+      TextAlign = 0;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      SpinInc = 0.0;
+      SpinMin = 0.0;
+      SpinMax = 0.0;
+      NoAutoSize = False;
+      EnumValues = ( // Список целых
+      )
+      PassiveFormat = '';
+      Points = 0;
+      MaxLen = 255;
+      PrecisionVarName = '';
+      HistoryID = 0;
+      DropTarget = False;
+      DropSource = False;
+      FontBold = '<не установлено>';
+      FontItalic = '<не установлено>';
+      FontUnderline = '<не установлено>';
+      FontStrikeout = '<не установлено>';
+      FontColor = '<не установлено>';
+      FontBackColor = '<не установлено>';
+      InputMask = '<не установлено>';
+      FixedState = 0;
+      EditButton = False;
+      Hyperlink = False;
+      LessValue = False;
+      HeaderImageName = '';
+      CurRowFontBold = '<не установлено>';
+      CurRowFontItalic = '<не установлено>';
+      CurRowFontUnderline = '<не установлено>';
+      CurRowFontStrikeout = '<не установлено>';
+      CurRowFontColor = '<не установлено>';
+      CurRowFontBackColor = '<не установлено>';
+      HeaderAlign = 3;
+    } // GetKauReffName('KATMC',katmc.nrec,10261) : Column
+    object 'c_GETMYMBP_KATMBP.DESGR_Группа' : Column {
+      Index = 5;
+    } // c_GETMYMBP_KATMBP.DESGR_Группа : Column
+    object 'c_GETMYMBP_KATMBP.DESCR_Дескр.' : Column {
+      Index = 6;
+    } // c_GETMYMBP_KATMBP.DESCR_Дескр. : Column
+    object 'c_GETMYMBP_RELATE_МЦ' : Column {
+      Index = 7;
+    } // c_GETMYMBP_RELATE_МЦ : Column
+    object 'c_GETMYMBP_DGRIND_ДМ' : Column {
+      Index = 8;
+    } // c_GETMYMBP_DGRIND_ДМ : Column
+    object 'c_GETMYMBP_ISSERIALREG_У' : Column {
+      Visible = False;
+      Index = 9;
+    } // c_GETMYMBP_ISSERIALREG_У : Column
+    object c_GETMYMBP_ISPICKED_V : Column {
+      Index = 10;
+    } // c_GETMYMBP_ISPICKED_V : Column
+  } // GETMYMBP : Browser
+  object WORKEDITMBPWINDOW : InterfaceWindow {
+    Title = 'Карточка учета СФО (все приходы)';
+    object MBPINORGSCREEN : Screen {
+      object cb_MBPINORGSCREEN_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINORGSCREEN_IZNFLAG : PanelCheckBox
+    } // MBPINORGSCREEN : Screen
+    object SCMBPINIZL : Screen {
+      object cb_SCMBPINIZL_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_SCMBPINIZL_IZNFLAG : PanelCheckBox
+    } // SCMBPINIZL : Screen
+    object MBPINFMOVESCREEN : Screen {
+      object cb_MBPINFMOVESCREEN_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINFMOVESCREEN_IZNFLAG : PanelCheckBox
+    } // MBPINFMOVESCREEN : Screen
+    object MBPINPODRSCREEN : Screen {
+      object cb_MBPINPODRSCREEN_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINPODRSCREEN_IZNFLAG : PanelCheckBox
+    } // MBPINPODRSCREEN : Screen
+    object MBPINNEWPRICESCR : Screen {
+      object cb_MBPINNEWPRICESCR_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINNEWPRICESCR_IZNFLAG : PanelCheckBox
+    } // MBPINNEWPRICESCR : Screen
+    object SCMBPINRETFREXPL : Screen {
+      object cb_SCMBPINRETFREXPL_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_SCMBPINRETFREXPL_IZNFLAG : PanelCheckBox
+    } // SCMBPINRETFREXPL : Screen
+    object MBPINCHGPARSCR : Screen {
+      object cb_MBPINCHGPARSCR_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINCHGPARSCR_IZNFLAG : PanelCheckBox
+    } // MBPINCHGPARSCR : Screen
+    object MBPINSALDOSCR : Screen {
+      object cb_MBPINSALDOSCR_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPINSALDOSCR_IZNFLAG : PanelCheckBox
+    } // MBPINSALDOSCR : Screen
+    object MBPRESORTSCR : Screen {
+      object cb_MBPRESORTSCR_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPRESORTSCR_IZNFLAG : PanelCheckBox
+    } // MBPRESORTSCR : Screen
+    object MBPRETUSESCR : Screen {
+      object cb_MBPRETUSESCR_IZNFLAG : PanelCheckBox {
+        Visible = False;
+      } // cb_MBPRETUSESCR_IZNFLAG : PanelCheckBox
+    } // MBPRETUSESCR : Screen
+  } // WORKEDITMBPWINDOW : InterfaceWindow
+} // F_MBP::CART_MBP : InterfaceWindow
+//-----------------------------------------------------------------------------

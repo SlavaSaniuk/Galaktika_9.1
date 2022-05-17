@@ -1,0 +1,82 @@
+Interface ActsDelZeros 'Удаление нулевых услуг в актах на оказание услуг' EscClose;
+  show at (0,0,170,32);
+  var
+    iSdFuns: SDfuns; // Объект для работы со спецификацией актов;
+    actsNums: Integer = 0;
+    actsPossNums: Integer = 0;
+
+  create view Acts
+  as select KatSopr.nrec, KatSopr.dsopr, KatSopr.descr, KatSopr.nsopr, KatSopr.summa,
+    KatSopr.snalogs, KatSopr.name, KatSopr.dopr,
+    KatNotes.status, KatOrg.name, KatOrg.unn, Dogovor.nodoc
+  from KatSopr(KatSopr02), KatNotes, KatOrg, Dogovor
+  where ((
+    Word(211) == KatSopr.vidsopr
+    and KatSopr.cnote == KatNotes.nrec
+    and KatSopr.corg == KatOrg.nrec
+    and katSopr.cdogovor == Dogovor.nrec
+  )) order by KatSopr.dopr;
+
+  create view SpDels
+  as select *
+  from SpSopr;
+
+  procedure delZeroPosInAct(a_act_nrec: Comp); {
+    // Проверяется создана ли счет-фактура:
+    if((Acts.getfirst KatSopr where (a_act_nrec = KatSopr.nrec)) = tsOk) {
+      if(oKatSoprFunc.IsSchfactExist(KatSopr.buffer) = true) {
+        message('Для данного акта создана счет фактура.' +Chr(13) +'Удаление нулевых позиций не возможно.');
+        exit;
+      }
+    }
+
+    // Проверка на существование проводок в закрытом бух. периоде:
+    if  (iSDfuns.fncCloseBuhPeriodForSoprHoz(a_act_nrec, iSDfuns.GetVidSopr(a_act_nrec), true) = false)
+      exit;
+
+    // Поиск и удаление нулевых позиций в акте:
+    actsNums++;
+    SpDels._loop SpSopr where (a_act_nrec = SpSopr.cSopr) {
+      if(SpDels.SpSopr.KolFact=0) {
+        iSDfuns.SpSopr_Delete(SpDels.SpSopr.nrec);
+        actsPossNums++;
+      }}
+
+  }
+
+  procedure printDeletedPossNums(); {
+    message('Удалено ' +actsPossNums +' позиций в ' +actsNums +' актах.');
+    actsPossNums:=0;
+    actsNums:=0;
+  }
+
+  // =============== Browse: Acts ==================================
+  Browse Acts 'Акты на оказание услуг' ('',,sci1478EnIns);
+  show at(,,,)
+  fields
+    Acts.KatNotes.name 'Статус' headerAlign=centered: [6], Protect;
+    Acts.KatSopr.dsopr 'Дата', 'выписки' headerAlign=centered: [11], Protect;
+    Acts.KatSopr.descr 'Дескр.' headerAlign=centered: [5], Protect;
+    Acts.KatSopr.nsopr 'Номер', 'документа' headerAlign=centered: [9], Protect;
+    Acts.katOrg.name 'Контрагент' headerAlign=centered: [33], Protect;
+    Acts.katOrg.unn 'УНП' headerAlign=centered: [10], Protect;
+    Acts.KatSopr.summa 'Сумма' headerAlign=centered: [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+    Acts.KatSopr.snalogs 'НДС' headerAlign=centered: [10, '\2p[|-]3666`666`666`666`666.88'], Protect;
+    Acts.KatSopr.name 'Примечание' headerAlign=centered: [33], Protect;
+    Acts.Dogovor.nodoc '№', 'Дог.' headerAlign=centered: [7], Protect;
+    Acts.KatSopr.dopr 'Дата', 'исполнения' headerAlign=centered: [11], Protect;
+  End;
+  // =============== End browse: Acts ===============================
+
+  // =============== Handing events ==========================================
+  HandleEvent
+    cmDefault: { // ======== Обработка двойного нажатия кнопкой мыши
+      delZeroPosInAct(KatSopr.nrec);
+      printDeletedPossNums();
+    }
+
+
+  End;
+  // =============== End of handling events ==================================
+
+End.
