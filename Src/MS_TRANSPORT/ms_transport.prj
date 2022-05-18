@@ -6,6 +6,7 @@
 
 #include galnet.inc end;
 #include glovars.inc
+#include ms_transport.inc
 //#include C_EXTCLASS.vil
 //#include Z_Katpodr.vil
 //#include F_OS.vil
@@ -14,8 +15,15 @@
 
 // ********************************
 // *** Отчеты: Карточка работы автомобиля*
-//
-#make "Frm\tex-ekspl-pokaz\*.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto1Mues_rtf.rtf "
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto1Mues2019_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto2Mues_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto5Mues_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto6Mues_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvto7Mues_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog2bakVniz_rtf.rtf"
+#make "Frm\tex-ekspl-pokaz\ms_transport_kartUchetRabAvtoItog2bakVverh_rtf.rtf"
 
 // *** Отчеты: Карточки учета расхода топлива
 #make "Frm\uchet_gsm\ms_transport_kartUcheRashToplWMotachasMS_rtf.rtf"
