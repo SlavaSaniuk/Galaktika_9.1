@@ -1,0 +1,212 @@
+object 'F_OBOROT::VIEWOBOROT' : InterfaceWindow {
+  Title = 'Проводки (План счетов 2021г)';
+  EmbName = 'F_SOPRHOZ::SOPRHOZ->F_OBOROT::SYNCOBOROT->F_OBOROT::ALLVIEWOBOROT->';
+  object WISCREENSHORT : InterfaceWindow {
+    object SCREENSHORT : Screen {
+      object 'L_SCREENSHORT_Дата_отчета' : Label {
+        Visible = False;
+      } // L_SCREENSHORT_Дата_отчета : Label
+      object 'i_SCREENSHORT_OBOROT.DATAOT' : PanelInputLine {
+        Visible = False;
+      } // i_SCREENSHORT_OBOROT.DATAOT : PanelInputLine
+    } // SCREENSHORT : Screen
+  } // WISCREENSHORT : InterfaceWindow
+  object WIBROWSESHORT : InterfaceWindow {
+    Palette = 1;
+    object BROWSESHORT : Browser {
+      ViewFlags = 6;
+      RowColorDark = 10;
+      VerDelimiterWidth = 1;
+      // Информация: объект "DBKAU6" типа Column не найден в базовой конфигурации!
+      object DBKAU6 : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = False;
+        UpCase = False;
+        Password = False;
+        NoValidCheck = True;
+        StatusCtx = 16;
+        Title = 'Счет затрат 26 для РУ';
+        HelpLine = 'Счет затрат 26 для РУ';
+        FieldName = 'DBKAU6';
+        DefaultValue = '';
+        Strings = ( // Список строк
+        )
+        StringsNull = 0;
+        Index = 5;
+        DefaultWidth = 26;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+        SpinInc = 0.0;
+        SpinMin = 0.0;
+        SpinMax = 0.0;
+        NoAutoSize = False;
+        EnumValues = ( // Список целых
+        )
+        PassiveFormat = '';
+        Points = 0;
+        MaxLen = 255;
+        PrecisionVarName = '';
+        HistoryID = 0;
+        DropTarget = False;
+        DropSource = False;
+        FontBold = '<не установлено>';
+        FontItalic = '<не установлено>';
+        FontUnderline = '<не установлено>';
+        FontStrikeout = '<не установлено>';
+        FontColor = '<не установлено>';
+        FontBackColor = '<не установлено>';
+        InputMask = '<не установлено>';
+        FixedState = 0;
+        EditButton = False;
+        Hyperlink = False;
+        LessValue = False;
+        HeaderImageName = '';
+        CurRowFontBold = '<не установлено>';
+        CurRowFontItalic = '<не установлено>';
+        CurRowFontUnderline = '<не установлено>';
+        CurRowFontStrikeout = '<не установлено>';
+        CurRowFontColor = '<не установлено>';
+        CurRowFontBackColor = '<не установлено>';
+        HeaderAlign = 3;
+      } // DBKAU6 : Column
+      // Информация: объект "KATPODRONAME" типа Column не найден в базовой конфигурации!
+      object KATPODRONAME : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = False;
+        UpCase = False;
+        Password = False;
+        NoValidCheck = True;
+        StatusCtx = 16;
+        Title = 'Подразделение дебет';
+        HelpLine = 'Подразделение дебет';
+        FieldName = 'KATPODRONAME';
+        DefaultValue = '';
+        Strings = ( // Список строк
+        )
+        StringsNull = 0;
+        Index = 6;
+        DefaultWidth = 26;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+        SpinInc = 0.0;
+        SpinMin = 0.0;
+        SpinMax = 0.0;
+        NoAutoSize = False;
+        EnumValues = ( // Список целых
+        )
+        PassiveFormat = '';
+        Points = 0;
+        MaxLen = 255;
+        PrecisionVarName = '';
+        HistoryID = 0;
+        DropTarget = False;
+        DropSource = False;
+        FontBold = '<не установлено>';
+        FontItalic = '<не установлено>';
+        FontUnderline = '<не установлено>';
+        FontStrikeout = '<не установлено>';
+        FontColor = '<не установлено>';
+        FontBackColor = '<не установлено>';
+        InputMask = '<не установлено>';
+        FixedState = 0;
+        EditButton = False;
+        Hyperlink = False;
+        LessValue = False;
+        HeaderImageName = '';
+        CurRowFontBold = '<не установлено>';
+        CurRowFontItalic = '<не установлено>';
+        CurRowFontUnderline = '<не установлено>';
+        CurRowFontStrikeout = '<не установлено>';
+        CurRowFontColor = '<не установлено>';
+        CurRowFontBackColor = '<не установлено>';
+        HeaderAlign = 3;
+      } // KATPODRONAME : Column
+      // Информация: объект "KATPODRKNAME" типа Column не найден в базовой конфигурации!
+      object KATPODRKNAME : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = False;
+        UpCase = False;
+        Password = False;
+        NoValidCheck = True;
+        StatusCtx = 16;
+        Title = 'Подразделение кредит';
+        HelpLine = 'Подразделение кредит';
+        FieldName = 'KATPODRKNAME';
+        DefaultValue = '';
+        Strings = ( // Список строк
+        )
+        StringsNull = 0;
+        Index = 7;
+        DefaultWidth = 26;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+        SpinInc = 0.0;
+        SpinMin = 0.0;
+        SpinMax = 0.0;
+        NoAutoSize = False;
+        EnumValues = ( // Список целых
+        )
+        PassiveFormat = '';
+        Points = 0;
+        MaxLen = 255;
+        PrecisionVarName = '';
+        HistoryID = 0;
+        DropTarget = False;
+        DropSource = False;
+        FontBold = '<не установлено>';
+        FontItalic = '<не установлено>';
+        FontUnderline = '<не установлено>';
+        FontStrikeout = '<не установлено>';
+        FontColor = '<не установлено>';
+        FontBackColor = '<не установлено>';
+        InputMask = '<не установлено>';
+        FixedState = 0;
+        EditButton = False;
+        Hyperlink = False;
+        LessValue = False;
+        HeaderImageName = '';
+        CurRowFontBold = '<не установлено>';
+        CurRowFontItalic = '<не установлено>';
+        CurRowFontUnderline = '<не установлено>';
+        CurRowFontStrikeout = '<не установлено>';
+        CurRowFontColor = '<не установлено>';
+        CurRowFontBackColor = '<не установлено>';
+        HeaderAlign = 3;
+      } // KATPODRKNAME : Column
+      object 'c_BROWSESHORT_OBOROT.SUMVALUT_..._в_валюте' : Column {
+        Index = 8;
+      } // c_BROWSESHORT_OBOROT.SUMVALUT_..._в_валюте : Column
+      object 'c_BROWSESHORT_KLVALO.SIMVOLV_Вал.' : Column {
+        Index = 9;
+      } // c_BROWSESHORT_KLVALO.SIMVOLV_Вал. : Column
+      object 'c_BROWSESHORT_CONVFLAG_К' : Column {
+        Index = 10;
+      } // c_BROWSESHORT_CONVFLAG_К : Column
+      object 'c_BROWSESHORT_BRKOL_Количество' : Column {
+        Index = 11;
+      } // c_BROWSESHORT_BRKOL_Количество : Column
+      object 'c_BROWSESHORT_ЕдИзм' : Column {
+        Index = 12;
+      } // c_BROWSESHORT_ЕдИзм : Column
+      object 'c_BROWSESHORT_OBOROT.VHPROP_В' : Column {
+        Index = 13;
+      } // c_BROWSESHORT_OBOROT.VHPROP_В : Column
+      object 'c_BROWSESHORT_PROVAUTO_П' : Column {
+        Index = 14;
+      } // c_BROWSESHORT_PROVAUTO_П : Column
+    } // BROWSESHORT : Browser
+  } // WIBROWSESHORT : InterfaceWindow
+} // F_OBOROT::VIEWOBOROT : InterfaceWindow
+//-----------------------------------------------------------------------------

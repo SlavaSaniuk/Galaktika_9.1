@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>9</ActiveIndex>
+		<ActiveIndex>19</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -677,9 +677,23 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
+			<ProjectPackage Name="MS_CRF">
+				<ProjectItems>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_4Kuznetsov_crf\ms_4Kuznetsov_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_4Kuznetsov_crf\Crf\ms_4Kuznetsov_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_4Kuznetsov_crf\Crf\ms_4Kuznetsov_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+				</ProjectItems>
+			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_TRANSPORT\ms_transport.prj" DateTimeStart="44699,665644456" DateTimeCompile="0,000188877311302349" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_TRANSPORT\ms_transport.prj" DateTimeStart="44699,6679312153" DateTimeCompile="0,000182210649654735" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Файл D:\01_DEV\Galaktika_9.1\Src\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\MS_TRANSPORT_KARTUCHETRABAVTO1MUES_RTF.RTF  не найден" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_TRANSPORT\ms_transport.prj" SourceLine="18" SourceColumn="72"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto1Mues2019_rtf.rtf" SourceLine="93" SourceColumn="49"/>
@@ -735,32 +749,32 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto2Mues_rtf.rtf" SourceLine="227" SourceColumn="29"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto2Mues_rtf.rtf" SourceLine="228" SourceColumn="28"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto2Mues_rtf.rtf" SourceLine="231" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="171" SourceColumn="26"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="172" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="175" SourceColumn="22"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="176" SourceColumn="27"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="178" SourceColumn="30"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="180" SourceColumn="23"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="181" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="172" SourceColumn="26"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="173" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="176" SourceColumn="22"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="177" SourceColumn="27"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="179" SourceColumn="30"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="181" SourceColumn="23"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="182" SourceColumn="25"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="183" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="184" SourceColumn="23"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="190" SourceColumn="26"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="191" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="194" SourceColumn="22"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="197" SourceColumn="23"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="198" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="184" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="185" SourceColumn="23"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="191" SourceColumn="26"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="192" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="195" SourceColumn="22"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="198" SourceColumn="23"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="199" SourceColumn="25"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="200" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="201" SourceColumn="23"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="211" SourceColumn="29"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="212" SourceColumn="28"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="215" SourceColumn="25"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="216" SourceColumn="30"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="218" SourceColumn="33"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="229" SourceColumn="29"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="230" SourceColumn="28"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="233" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="201" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="202" SourceColumn="23"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="212" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="213" SourceColumn="28"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="216" SourceColumn="25"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="217" SourceColumn="30"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="219" SourceColumn="33"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="230" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="231" SourceColumn="28"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto5Mues_rtf.rtf" SourceLine="234" SourceColumn="25"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto6Mues_rtf.rtf" SourceLine="167" SourceColumn="26"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto6Mues_rtf.rtf" SourceLine="168" SourceColumn="25"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\TEX-EKSPL-POKAZ\ms_transport_kartUchetRabAvto6Mues_rtf.rtf" SourceLine="169" SourceColumn="22"/>
@@ -938,12 +952,9 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\UCHET_GSM\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf" SourceLine="206" SourceColumn="30"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\UCHET_GSM\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf" SourceLine="207" SourceColumn="32"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_TRANSPORT\FRM\UCHET_GSM\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf" SourceLine="208" SourceColumn="32"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="18.05.2022 15:58:48"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="18.05.2022 16:02:05"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
-		<FileList>
-			<File Name="Src\MS_TRANSPORT\ms_transport.prj" PosX="33" PosY="18" OpenEditor="True" Active="True"/>
-		</FileList>
 	</ProjectManager>
 </Viper>
