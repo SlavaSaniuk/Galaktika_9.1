@@ -4,6 +4,8 @@
 #include glovars.inc
 #include glotypes.inc
 
+#include MS_Osinma.inc
+
 //*************************************
 // Модули "Учет ОС" и "Учет НМА"
 //*************************************
@@ -40,6 +42,9 @@
 #make "Frm\nalichie_os\ms_osnma_vedomIznosaOsWoPriceOkrug2017_frm.frm"
 // ******** Отчет: Ведомость износа основных средств с инв.номерами БРТПЦ
 #make "Frm\nalichie_os\ms_osnma_vedomIznosaOsWinvBRTPC_frm.frm"
+// ******** Отчет: (МС) Ведомость износа основных средств в формате Excel
+#make "Frm\nalichie_os\ms_osnma_msVedomIznosaOs_slk.slk"
+
 
 // ***********************************************************
 // *********** ВНУТРЕННЕЕ ПЕРЕМЕЩЕНИЕ ************************

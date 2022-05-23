@@ -1,0 +1,691 @@
+ID;PWXL;N;E
+P;PGeneral
+P;P0
+P;P0.00
+P;P#,##0
+P;P#,##0.00
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P#,##0\ "$";;\-#,##0\ "$"
+P;P#,##0\ "$";;[Red]\-#,##0\ "$"
+P;P#,##0.00\ "$";;\-#,##0.00\ "$"
+P;P#,##0.00\ "$";;[Red]\-#,##0.00\ "$"
+P;P0%
+P;P0.00%
+P;P0.00E+00
+P;P##0.0E+0
+P;P#" "?/?
+P;P#" "??/??
+P;Pdd/mm/yyyy
+P;Pdd/mmm/yy
+P;Pdd/mmm
+P;Pmmm/yy
+P;Ph:mm\ AM/PM
+P;Ph:mm:ss\ AM/PM
+P;Ph:mm
+P;Ph:mm:ss
+P;Pdd/mm/yyyy\ h:mm
+P;Pmm:ss
+P;Pmm:ss.0
+P;P@
+P;P[h]:mm:ss
+P;P_-* #,##0\ "$"_-;;\-* #,##0\ "$"_-;;_-* "-"\ "$"_-;;_-@_-
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ "$"_-;;\-* #,##0.00\ "$"_-;;_-* "-"??\ "$"_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0_Ns_.;;\-#,##0_Ns_.
+P;P#,##0_Ns_.;;[Red]\-#,##0_Ns_.
+P;P#,##0.00_Ns_.;;\-#,##0.00_Ns_.
+P;P#,##0.00_Ns_.;;[Red]\-#,##0.00_Ns_.
+P;P#,##0"$";;\-#,##0"$"
+P;P#,##0"$";;[Red]\-#,##0"$"
+P;P#,##0.00"$";;\-#,##0.00"$"
+P;P#,##0.00"$";;[Red]\-#,##0.00"$"
+P;P_-* #,##0"$"_-;;\-* #,##0"$"_-;;_-* "-""$"_-;;_-@_-
+P;P_-* #,##0_Ns_._-;;\-* #,##0_Ns_._-;;_-* "-"_Ns_._-;;_-@_-
+P;P_-* #,##0.00"$"_-;;\-* #,##0.00"$"_-;;_-* "-"??"$"_-;;_-@_-
+P;P_-* #,##0.00_Ns_._-;;\-* #,##0.00_Ns_._-;;_-* "-"??_Ns_._-;;_-@_-
+P;Pd/m/yyyy
+P;Pd/mmm/yy
+P;Pd/mmm
+P;Pd/m/yyyy\ h:mm
+P;P#,##0.0000
+P;P#,##0.000000
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200;L19
+P;EArial Cyr;M200;SB;L19
+P;EArial Cyr;M200;SB;L57
+P;EArial Cyr;M200;L57
+P;EArial Cyr;M200;SB;L63
+P;EArial Cyr;M200;L63
+P;EArial Cyr;M200;SB;L13
+P;EArial Cyr;M200;L13
+P;EArial Cyr;M200;SB
+P;EArial Cyr;M200;SI
+P;EArial Cyr;M200;SU;L13
+P;EArial Cyr;M200;SU;L37
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+P;EArial Cyr;M200;L9
+F;P0;DG0G8;M255
+B;Y109;X11;D0 0 108 10
+O;L;D;V0;K47;G100 0.001
+F;W1 1 20
+F;W2 2 43
+F;W3 3 10
+F;W4 5 11
+F;W6 6 21
+F;W7 7 14
+F;W8 11 16
+F;SDM252;Y1;X1
+C;K"! NDa==========================================================================*<"
+F;SDM252;X2
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+F;SDM252;Y2;X1
+C;K"!                      (c)  2002 NCeNCiNsNHiNCiNsNAaNHoNAeNHy NDANAANHENAANCENAONAENCENAA"
+F;SDM252;X2
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y3;X1
+C;K"!  NHINsNCiNJaNCeNAo"
+F;SDM252;X2
+C;K"NDANAANHENAANCENAONAENCENAA"
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y4;X1
+C;K"!  NDNNAeNDnNAoNJaNAiNAa"
+F;SDM252;X2
+C;K"NBANBoNDoNDaNAaNHeNAoNJaNsNDnNCeNAeNBe NCeNCiNBiNAoNBoNs"
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y5;X1
+C;K"!  NCANJaNsNDnNAeNHy"
+F;SDM252;X2
+C;K"5.84, 7.1"
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y6;X1
+C;K"!  NBINAaNKcNBiNAa/7NJaNBiNAeNJa"
+F;SDM252;X2
+C;K"NCANJaNHaNCiNAiNCiNDnNAoNHu NBiNAaNHeNAe/7NAeNHy NCINDN (UIN 4702) NAe NBINAINAA (UIN 4705)."
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y7;X1
+C;K"!  NCINAoNCaNJaNAoNDnNAoNCaNJaNBiNBiNCuNBe"
+F;SDM252;X2
+C;K"NCENBoNKcNBiNJaNHoNCiNCa NAANHeNJaNCeNDnNAaNBiNHaNs NBINAeNCeNCiNHeNAaNJaNCaNAe/7"
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;K"*6"
+F;SDM252;Y8;X1
+C;K"! L==========================================================================-"
+F;SDM252;X2
+F;SDM252;X3
+F;SDM252;X4
+F;SDM252;X5
+F;SDM252;X6
+C;Y9;X1;K"#include Commission.frn"
+C;Y10;K"#include Responsible.frn"
+F;SM2;Y11
+C;K"!============================================================================="
+F;SM1;Y12
+C;K".LinkForm 'ms_osnma_msVedomIznosaOs_slk' Prototype is 'osopis'"
+F;SM2;Y13
+C;K"!============================================================================="
+C;Y14;K".NameInList '(NAINDN) NCANJaNHaNCiNAiNCiNDnNAoNHu NAeNKcNBiNCiNDnNAa NCiNDnNBiNCiNCaNBiNCuNDo NDnNsNJaNHaNDnNAoNCa NCa NCoNCiNsNAiNAaNAoNJa Excel'"
+C;Y15;K".Group 'NCANJaNHaNCiNAiNCiNDnNAoNAe NBiNAaNHeNAe/7NAeNHy NCINDN'"
+C;Y16;K"#CommissionLinkVar"
+C;Y17;K"#ResponsibleLinkVar"
+C;Y18;K"#CommissionLinkInit(OsOpis)"
+C;Y19;K"#ResponsibleLinkInit(OsOpis)"
+C;Y20;K".Fields"
+C;Y21;K"CommonFormHeader"
+C;Y22;K"UpCase(sNameField_Iznosa)"
+C;Y23;K"if (longint(NHANAaNAoNAa)<>0,DateToStr(NHANAaNAoNAa, 'DD.MM.YYYY'),'')"
+C;Y24;K"NAINJaNAoNCiNHa"
+C;Y25;K"NCO_NHaNJaNHeNAeNAoNJaNHeNHu"
+C;Y26;K"NHANJaNHeNAeNAoNJaNHeNHu_NHiNsNCiNHiNAeNDnNHuN|"
+C;Y27;K"NCANAaNHeN|NAoNAa_NAiNJaNAoNCiNHaNAa"
+C;Y28;K"NDANsNBoNHiNHiNAeNsNCiNCaNCeNAa"
+C;Y29;K"NDNNCiNsNAoNAeNsNCiNCaNCeNAa"
+C;Y30;K"NCONAeNHeNHuNAoNs"
+C;Y31;K"sNameField_Iznosa"
+C;Y32;K"sNameField_Iznosa"
+C;Y33;K" 'NKcNAa ' + if (longint(NHANAaNAoNAa)<>0,LoCase(DateToStr(NHANAaNAoNAa,'Month')), 'NAiNJaNDnNHyNHo')"
+C;Y34;K"if(wGetTune('OS.SrokIspEdIzm')=0,'NAiNJaNDn.','NHeNJaNAo')"
+C;Y35;K"NCANJaNAoNCeNAa"
+C;Y36;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NDnNAoNCiNAeNAiNCiNDnNAoNHu_2, doubleSumToExcelString)), '')"
+C;Y37;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NAeNKcNBiNCiNDn_NCaNJaNDnNHu_2, doubleSumToExcelString)), '')"
+C;Y38;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NAeNKcNBiNCiNDn_NAiNJaNDn_2, doubleSumToExcelString)), '')"
+C;Y39;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NCiNDnNAoNAaNAoNCi/7NBiNAaNHy_2, doubleSumToExcelString)), '')"
+C;Y40;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NDnNAoNCiNAeNAiNCiNDnNAoNHu, doubleSumToExcelString)), '')"
+C;Y41;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NAeNKcNBiNCiNDn_NCaNJaNDnNHu, doubleSumToExcelString)), '')"
+C;Y42;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NAeNKcNBiNCiNDn_NAiNJaNDn, doubleSumToExcelString)), '')"
+C;Y43;K"if ( NeedSum1, Trim(DoubleToStr(NAENAoNCiNDaNCi_NCaNJaNsNDo_NCiNDnNAoNAaNAoNCi/7NBiNAaNHy, doubleSumToExcelString)), '')"
+C;Y44;K"if (NCANCuNBaNCuNHe_NCa_NAoNJaNCeNBoNAuNJaNAi_NHiNJaNsNAeNCiNHaNJa, '*' + NAENBiNCaNBINCiNAiNJaNs, NAENBiNCaNBINCiNAiNJaNs)"
+C;Y45;K"NBINAaNAeNAiNJaNBiNCiNCaNAaNBiNAeNJa"
+C;Y46;K"NCENCiNHa_NBiNCiNsNAiNCu"
+C;Y47;K"  if (double(NBINCiNsNAiNAa)=0,'',if ((wGetTune('Country') = 1), Trim(DoubleToStr(NBINCiNsNAiNAa, '\6p\d,[|-]3666^888888')), Trim(DoubleToStr(NBINCiNsNAiNAa, '\4p\d,[|-]3666^8888'))))"
+C;Y48;K"NDNNsNCiNCe_NAeNDnNHiNCiNHeNHuNKcNCiNCaNAaNBiNAeNHy"
+C;Y49;K"if (longint(NHANAaNAoNAa_NHiNCiNDnNAoNBoNHiNHeNJaNBiNAeNHy)<>0,DateToStr(NHANAaNAoNAa_NHiNCiNDnNAoNBoNHiNHeNJaNBiNAeNHy, 'DD.MM.YYYY'),'')"
+C;Y50;K"Trim(DoubleToStr(NCENCiNHeNAe/7NJaNDnNAoNCaNCi, efKolFormatExcel))"
+C;Y51;K"Trim(DoubleToStr(NDNNAoNCiNAeNAiNCiNDnNAoNHu, doubleSumToExcelString))"
+C;Y52;K"Trim(DoubleToStr(NAENKcNBiNCiNDn_NCaNJaNDnNHu, doubleSumToExcelString))"
+C;Y53;K"Trim(DoubleToStr(NAENKcNBiNCiNDn_NAiNJaNDn, doubleSumToExcelString))"
+C;Y54;K"Trim(DoubleToStr(NCINDnNAoNAaNAoNCi/7NBiNAaNHy, doubleSumToExcelString))"
+C;Y55;K"NAENAoNCiNDaNCi"
+C;Y56;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NDnNAoNCiNAeNAiNCiNDnNAoNHu_2, doubleSumToExcelString))"
+C;Y57;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NAeNKcNBiNCiNDn_NCaNJaNDnNHu_2, doubleSumToExcelString))"
+C;Y58;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NAeNKcNBiNCiNDn_NAiNJaNDn_2, doubleSumToExcelString))"
+C;Y59;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NCiNDnNAoNAaNAoNCi/7NBiNAaNHy_2, doubleSumToExcelString))"
+C;Y60;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NDnNAoNCiNAeNAiNCiNDnNAoNHu, doubleSumToExcelString))"
+C;Y61;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NAeNKcNBiNCiNDn_NCaNJaNDnNHu, doubleSumToExcelString))"
+C;Y62;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NAeNKcNBiNCiNDn_NAiNJaNDn, doubleSumToExcelString))"
+C;Y63;K"Trim(DoubleToStr(NAENAoNCiNDaNCi_NCiNDnNAoNAaNAoNCi/7NBiNAaNHy, doubleSumToExcelString))"
+C;Y64;K"NDN_NBo/7NJaNAoNCiNAi_NCaNCuNBaNCuNCaNyNAeNDo_NCa_NHiNJaNsNAeNCiNHaNJa"
+C;Y65;K".EndFields"
+C;Y66;K"^"
+F;P0;FG0C;SM3;Y67;X6
+C;K"NCANJANHANCINAINCINDNNAONHU ^ NCINDNNBINCINCANBINCUNDO NDNNbNJANHANDNNAONCA"
+F;P0;FG0C;SM3;Y68
+C;K"NHiNCi NDnNCiNDnNAoNCiNHyNBiNAeN| NBiNAa ^"
+C;Y69;X1;K"NAINJaNAoNCiNHa:"
+C;X2;K"^"
+C;Y70;X1;K"NHANJaNBiNJaNqNBiNAaNHy NJaNHaNAeNBiNAeNHoNAa:"
+C;X2;K"^ ( ^ ) ^"
+C;Y71;X1;K"NDANsNBoNHiNHiNAeNsNCiNCaNCeNAa:"
+C;X2;K"^"
+C;Y72;X1;K"NDNNCiNsNAoNAeNsNCiNCaNCeNAa:"
+C;X2;K"^"
+F;P0;FG0R;Y73;X1
+C;K"NCONAeNHeNHuNAoNsNCu:"
+C;Y74;K".{ CheckEnter FilterOS1"
+C;Y75;X2;K" ^"
+C;Y76;X1;K".}"
+C;Y77;K".{"
+F;SM3;Y78
+C;K".[h"
+F;P0;FG0C;SLRTM3;Y79
+F;P0;FG0C;SLTM3;X2
+F;SLTBM3;X3
+F;P0;FG0C;STBM3;X4
+C;K"NAANAiNCiNsNAoNAeNKcNAaNHoNAeNHy"
+F;SRTBM3;X5
+F;P0;FG0C;SRTM3;X6
+C;K"NHANAaNAoNAa"
+F;P0;FG0C;SLRTM3;X7
+F;P0;FG0C;SLRTM3;X8
+F;P0;FG0C;SLRTM3;X9
+C;K"NDNNBoNAiNAiNAa"
+F;P0;FG0C;SLRTM3;X10
+C;K"NDNNBoNAiNAiNAa"
+F;P0;FG0C;SLRTM3;X11
+C;K"NCINDnNAoNAaNAoNCi/7NBiNAaNHy"
+F;P0;FG0C;SLRM3;Y80;X1
+C;K"NAENBiNCaNJaNBiNAoNAaNsNBiNCuNBe NBiNCiNAiNJaNs"
+F;P0;FG0C;SLRM3;X2
+C;K"NBINAaNAeNAiNJaNBiNCiNCaNAaNBiNAeNJa NCiNDnNBiNCiNCaNBiNCiNDaNCi NDnNsNJaNHaNDnNAoNCaNAa"
+F;P0;FG0C;SLRM3;X3
+C;K"NyNAeNCoNs"
+F;P0;FG0C;SLRM3;X4
+C;K"NBiNCiNsNAiNAa"
+F;P0;FG0C;SLRM3;X5
+C;K"NDNNsNCiNCe "
+F;P0;FG0C;SLRM3;X6
+C;K"NHiNCiNDnNAoNBoNHiNHeNJaNBiNAeNHy"
+F;P0;FG0C;SLRM3;X7
+C;K"NCENCiNHe-NCaNCi"
+F;P0;FG0C;SLRM3;X8
+C;K"NDNNAoNCiNAeNAiNCiNDnNAoNHu"
+F;P0;FG0C;SLRM3;X9
+C;K"^"
+F;P0;FG0C;SLRM3;X10
+C;K"^"
+F;P0;FG0C;SLRM3;X11
+C;K"NDnNAoNCiNAeNAiNCiNDnNAoNHu"
+F;P0;FG0C;SLRBM3;Y81;X1
+F;P0;FG0C;SLRBM3;X2
+F;P0;FG0C;SLRBM3;X3
+C;K"NBiNCiNsNAiNCu"
+F;P0;FG0C;SLRBM3;X4
+F;P0;FG0C;SLRBM3;X5
+C;K"NAeNDnNHi.@@@@"
+F;P0;FG0C;SLRBM3;X6
+F;P0;FG0C;SLRBM3;X7
+F;P0;FG0C;SLRBM3;X8
+F;P0;FG0C;SLRBM3;X9
+C;K"NHiNCiNHeNBiNAaNHy"
+F;P0;FG0C;SLRBM3;X10
+C;K"^"
+F;P0;FG0C;SLRBM3;X11
+F;SM3;Y82;X1
+C;K".]h"
+C;Y83;K".{ CheckEnter GruppaOS1"
+F;SLTM0;Y84
+C;K"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+F;STM0;X2
+F;STM0;X3
+F;STM0;X4
+F;STM0;X5
+F;STM0;X6
+F;STM0;X7
+F;P4;FF2G;SLRTBM0;X8
+C;K"&"
+F;P4;FF2G;SLRTBM0;X9
+C;K"&"
+F;P4;FF2G;SLRTBM0;X10
+C;K"&"
+F;P4;FF2G;SLRTBM0;X11
+C;K"&"
+C;Y85;X1;K".{?Internal;;(NeedSum1 and (NBO/7NJaNAo_NCaNCuNBaNCuNCaNyNAeNDo <> 4 ));;"
+F;SLBM0;Y86
+F;SBM0;X2
+F;SBM0;X3
+F;SBM0;X4
+F;SBM0;X5
+F;SBM0;X6
+F;P0;FG0R;SBM4;X7
+C;K"*"
+F;P4;FF2G;SLRTBM4;X8
+C;K"&"
+F;P4;FF2G;SLRTBM4;X9
+C;K"&"
+F;P4;FF2G;SLRTBM4;X10
+C;K"&"
+F;P4;FF2G;SLRTBM4;X11
+C;K"&"
+C;Y87;X1;K".}"
+C;Y88;K".}"
+C;Y89;K".{ CheckEnter NameOS1"
+F;SLRTBM0;Y90
+C;K"@@@@@@@@@@@@@@@@@@@@"
+F;SLRTBM0;X2
+C;K"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+F;P0;FG0L;SLRTBM0;X3
+C;K" ^"
+F;P0;FG0R;SLRTBM0;X4
+C;K"&&&&&&&&&"
+F;P58;FF4R;SLRTBM0;X5
+C;K"&&&&&&.&"
+F;P19;FG0G;SLRTBM0;X6
+C;K"@@@@@@@@@@"
+F;P3;FI0G;SLRTBM0;X7
+C;K"&"
+F;P4;FF2G;SLRTBM0;X8
+C;K"&"
+F;P4;FF2G;SLRTBM0;X9
+C;K"&"
+F;P4;FF2G;SLRTBM0;X10
+C;K"&"
+F;P4;FF2G;SLRTBM0;X11
+C;K"&"
+C;Y91;X1;K".{ CheckEnter UristDoc"
+F;P0;FG0L;X3
+F;P0;FG0R;X4
+F;P58;FF4R;X5
+F;P19;FG0G;X6
+F;P3;FI0G;X7
+F;P4;FF2G;X8
+F;P4;FF2G;X9
+F;P4;FF2G;X10
+F;P4;FF2G;X11
+C;Y92;X1;K".}"
+F;P0;FG0L;X3
+F;P0;FG0R;X4
+F;P58;FF4R;X5
+F;P19;FG0G;X6
+F;P3;FI0G;X7
+F;P4;FF2G;X8
+F;P4;FF2G;X9
+F;P4;FF2G;X10
+F;P4;FF2G;X11
+C;Y93;X1;K".{ CheckEnter MemoForKatOS"
+F;P0;FG0L;X3
+F;P58;FF4G;X4
+F;P58;FF4R;X5
+F;P19;FG0G;X6
+F;P3;FI0G;X7
+F;P4;FF2G;X8
+F;P4;FF2G;X9
+F;P4;FF2G;X10
+F;P4;FF2G;X11
+C;Y94;X1;K".}"
+F;P0;FG0L;X3
+F;P58;FF4G;X4
+F;P58;FF4R;X5
+F;P19;FG0G;X6
+F;P3;FI0G;X7
+F;P4;FF2G;X8
+F;P4;FF2G;X9
+F;P4;FF2G;X10
+F;P4;FF2G;X11
+C;Y95;X1;K".}"
+C;Y96;K".{ CheckEnter ItogOS1"
+F;SLTM0;Y97
+C;K"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+F;STM0;X2
+F;STM0;X3
+F;STM0;X4
+F;STM0;X5
+F;STM0;X6
+F;STM0;X7
+F;P2;FF2G;SLRTBM0;X8
+C;K"&"
+F;P4;FF2G;SLRTBM0;X9
+C;K"&"
+F;P4;FF2G;SLRTBM0;X10
+C;K"&"
+F;P4;FF2G;SLRTBM0;X11
+C;K"&"
+C;Y98;X1;K".{?Internal;;(NBO/7NJaNAo_NCaNCuNBaNCuNCaNyNAeNDo <> 4);;"
+F;SLBM0;Y99
+F;SBM0;X2
+F;SBM0;X3
+F;SBM0;X4
+F;SBM0;X5
+F;SBM0;X6
+F;P0;FG0R;SBM4;X7
+C;K"*"
+F;P4;FF2G;SLRTBM4;X8
+C;K"&"
+F;P4;FF2G;SLRTBM4;X9
+C;K"&"
+F;P4;FF2G;SLRTBM4;X10
+C;K"&"
+F;P4;FF2G;SLRTBM4;X11
+C;K"&"
+C;Y100;X1;K".}"
+C;Y101;K".}"
+C;Y102;K".}"
+C;Y103;K".{?Internal;;(NBO/7NJaNAo_NCaNCuNBaNCuNCaNyNAeNDo <> 4 );;"
+F;SM4;Y104
+C;K"       * - NDn NBo/7NJaNAoNCiNAi NCaNCuNBaNCuNCaNyNAeNDo NCa NCiNAo/7NJaNAoNBiNCiNAi ^"
+C;Y105;K".}"
+C;Y106;K"NBANBoNDoNDaNAaNHeNAoNJaNs"
+C;Y108;K"NCINAoNCaNJaNAoNDnNAoNCaNJaNBiNBiNCuNBe NKcNAa NCaNCuNHiNBoNDnNCe"
+C;Y109;K".EndForm"
+E

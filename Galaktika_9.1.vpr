@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>2</ActiveIndex>
+		<ActiveIndex>5</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -465,6 +465,7 @@
 									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_vedomIznosaOsWinvBRTPC_frm.frm"/>
 									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_vedomIznosaOsWoPriceOkrug2017_frm.frm"/>
 									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_msVedomAmorOs_slk.slk"/>
+									<ProjectFile FileName="Src\MS_OSiNMA\Frm\nalichie_os\ms_osnma_msVedomIznosaOs_slk.slk"/>
 								</ProjectItems>
 							</ProjectFolder>
 							<ProjectFolder Name="vnut_peremesh">
@@ -474,6 +475,11 @@
 									<ProjectFile FileName="Src\MS_OSiNMA\Frm\vnut_peremesh\ms_osnma_osGroup2021_rtf.rtf"/>
 								</ProjectItems>
 							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Inc">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_OSiNMA\Inc\MS_Osinma.inc"/>
 						</ProjectItems>
 					</ProjectFolder>
 				</ProjectItems>
@@ -703,25 +709,17 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44704,4583299537" DateTimeCompile="0,000223287039261777" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_OSiNMA\ms_os_nma.prj" DateTimeStart="44704,6797094444" DateTimeCompile="0,000163240743859205" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Компонент MS_SANIUK не имеет ни одной таблицы в словаре, возможно, ошибочно задано имя компонента" SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ZARALGORITHM_KOLVOSTAVOK\ZarAlgorithm_KolvoStavok.vip" SourceLine="5" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Отсутствует информация о лицензировании ZarAlgorithm_KolvoStavok. Помечаем как не лицензированный." SourceFileName="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\VIP\ZARALGORITHM_KOLVOSTAVOK\ZarAlgorithm_KolvoStavok.vip" SourceLine="52" SourceColumn="5"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.05.2022 11:00:19"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_OSINMA\FRM\VNUT_PEREMESH\ms_osnma_osGroup2021_rtf.rtf" SourceLine="961" SourceColumn="85"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.05.2022 16:19:01"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="50" PosY="52" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\GetSrKoef\GetSrKoef.vip" PosX="26" PosY="1" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="76" PosY="48" OpenEditor="True"/>
-			<File Name="..\00_GAL_SRC\Data\SRC\CompSrc\Z\Z_Zar\vip\ZarAlg.vih" PosX="49" PosY="57" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip" PosX="83" PosY="32" OpenEditor="True" Active="True"/>
-			<File Name="..\00_GAL_SRC\Data\FRM\SRC\CompSrc\Z\Z_Staff\vip\AppFuncs.vih" PosX="66" PosY="183" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\Compreg\CompReg.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\ActsDelZeros\ActsDelZeros.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Src\MS_SEL_BUY\Frm\sf\ms_sellBuy_sfArenda2022_frm.frm" PosX="62" PosY="381" OpenEditor="True"/>
+			<File Name="Src\MS_OSiNMA\ms_os_nma.prj" PosX="23" PosY="7" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_OSiNMA\Inc\MS_Osinma.inc" PosX="3" PosY="2" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="1" PosY="1" OpenEditor="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>
