@@ -1,0 +1,37 @@
+#define ComponentVersion
+#component "Z_Zar"
+
+Interface ZarAlgorithm_GetSrKoef;
+  var
+    persons_nrec: Comp;
+  parameters
+    persons_nrec;
+  create view
+  as select *
+  from Persons, Appointments
+  where ((
+    persons_nrec == Persons.nrec
+    and Persons.appointcur == Appointments.nrec
+  ));
+
+  function CalcSum(Parameter: string): double;
+  {
+    var tmp: Double;
+    if(GetFirst Appointments = tsOk) {
+        tmp := Appointments.emprate;
+    }else {
+        tmp := -666;
+    }
+
+    Result:=tmp;
+    CalcSum:=tmp;
+  }
+
+  function GetDescription: string;
+  {
+    Result := 'Вернуть среднесписочный коэффициент по пользователю';
+  }
+
+
+
+End.

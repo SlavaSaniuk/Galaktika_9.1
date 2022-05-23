@@ -1,0 +1,46 @@
+#include zaralg.vih
+
+VipInterface ZarAlgorithm_KolvoStavok implements IZarAlgorithm;
+
+Interface ZarAlgorithm_KolvoStavok cacheable;
+
+  create view
+  as select *
+  from Lschet, Persons, Appointments
+  where ((
+     Lschet.tperson == persons.nrec
+     and persons.appointcur == appointments.nrec
+  ));
+
+  #doc
+    Возвращает вычисленную алгоритмом сумму.
+  #end
+  function CalcSum(Parameter: string): double;
+  {
+    var cur_lsch: Comp;
+    var emp_rate: Double;
+
+    cur_lsch := UCH_LSCH;
+    writeMessageLog('Мат. помощь к отпуску на оздоровление:');
+
+    if((GetFirst Lschet where ((cur_lsch == Lschet.nrec))) = tsOk) {
+      emp_rate:=Appointments.emprate;
+    }else {
+      emp_rate:=1;
+    }
+
+    writeMessageLog('Коэффициент среднесписочный:' +DoubleToStr(emp_rate, '666.999'));
+    CalcSum:=emp_rate;
+  }
+
+  #doc
+    Возвращает краткое описание алгоритма.</brief>
+
+    <p>Используется при построении списка vip-алгоритмов.</p>
+  #end
+  function GetDescription: string;
+  {
+    GetDescription:='Вернуть количество ставок для сотрудника.';
+  }
+
+End.

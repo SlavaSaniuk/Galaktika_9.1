@@ -6,12 +6,14 @@
 #include glovars.inc
 
 #include galaktika.vil
+#include ZarAlg.vih
 #include MS_Saniuk.vih
 #include ActsDelZeros.vih
 #include SanFuncs.vih
 #include Sdfuns.vih
 #include KatSoprFunc.vih
 #include KatSoprFunc.var
+
 
 /* ************************************************
  * *** Разные наработки Санюка В.В. ***************
@@ -42,3 +44,9 @@
 // ***********************************************************************
 // *********  Удаление нулевых услуг в актах на оказание услуг  **********
 #make "Vip\ActsDelZeros\ActsDelZeros.vip"
+
+// ***********************************************************************
+// *********  Получение среднесписочного коэффицента для алгоритмов ЗП  **********
+#make "Vip\GetSrKoef\GetSrKoef.vip"
+
+#make "Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"
