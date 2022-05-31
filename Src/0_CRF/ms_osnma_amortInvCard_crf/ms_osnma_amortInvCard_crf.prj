@@ -4,4 +4,4 @@
 #include galnet.inc end;
 
 
-#make "Crf\.cnf" 
+#make "Crf\ms_osnma_amortInvCard_crf.cnf" 

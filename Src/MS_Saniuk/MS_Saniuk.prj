@@ -45,8 +45,4 @@
 // *********  Удаление нулевых услуг в актах на оказание услуг  **********
 #make "Vip\ActsDelZeros\ActsDelZeros.vip"
 
-// ***********************************************************************
-// *********  Получение среднесписочного коэффицента для алгоритмов ЗП  **********
-#make "Vip\GetSrKoef\GetSrKoef.vip"
-
 #make "Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"

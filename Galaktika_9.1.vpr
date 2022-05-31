@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>5</ActiveIndex>
+		<ActiveIndex>20</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -398,11 +398,6 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\ActsDelZeros\ActsDelZeros.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
-							<ProjectFolder Name="GetSrKoef">
-								<ProjectItems>
-									<ProjectFile FileName="Src\MS_Saniuk\Vip\GetSrKoef\GetSrKoef.vip"/>
-								</ProjectItems>
-							</ProjectFolder>
 							<ProjectFolder Name="ZarAlgorithm_KolvoStavok">
 								<ProjectItems>
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"/>
@@ -705,21 +700,28 @@
 							</ProjectFolder>
 						</ProjectItems>
 					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_osnma_amortInvCard_crf\ms_osnma_amortInvCard_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_amortInvCard_crf\Crf\ms_osnma_amortInvCard_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_amortInvCard_crf\Crf\ms_osnma_amortInvCard_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
 				</ProjectItems>
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_OSiNMA\ms_os_nma.prj" DateTimeStart="44704,6797094444" DateTimeCompile="0,000163240743859205" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\0_CRF\ms_osnma_amortInvCard_crf\ms_osnma_amortInvCard_crf.prj" DateTimeStart="44712,3902601968" DateTimeCompile="0,000121747689263429" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_OSINMA\FRM\VNUT_PEREMESH\ms_osnma_osGroup2021_rtf.rtf" SourceLine="961" SourceColumn="85"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.05.2022 16:19:01"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="31.05.2022 9:22:09"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_OSiNMA\ms_os_nma.prj" PosX="23" PosY="7" OpenEditor="True" Active="True"/>
-			<File Name="Src\MS_OSiNMA\Inc\MS_Osinma.inc" PosX="3" PosY="2" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Src\0_CRF\ms_osnma_amortInvCard_crf\ms_osnma_amortInvCard_crf.prj" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

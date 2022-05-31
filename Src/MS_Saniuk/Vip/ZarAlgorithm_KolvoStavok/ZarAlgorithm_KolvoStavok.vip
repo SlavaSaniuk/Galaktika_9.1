@@ -1,6 +1,6 @@
 #include zaralg.vih
 
-VipInterface ZarAlgorithm_KolvoStavok implements IZarAlgorithm;
+VipInterface ZarAlgorithm_KolvoStavok implements IZarAlgorithm Licensed (FREE);
 
 Interface ZarAlgorithm_KolvoStavok cacheable;
 
