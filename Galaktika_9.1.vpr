@@ -711,9 +711,23 @@
 					</ProjectCompileFile>
 				</ProjectItems>
 			</ProjectPackage>
+			<ProjectPackage Name="Others">
+				<ProjectItems>
+					<ProjectFolder Name="PATs">
+						<ProjectItems>
+							<ProjectFolder Name="4F">
+								<ProjectItems>
+									<ProjectFile FileName="Src\1_OTHERS\PATs\4F\4F-KOEF-RU.pat"/>
+									<ProjectFile FileName="Src\1_OTHERS\PATs\4F\4F-KOEF-RU.xltm"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44713,3927316088" DateTimeCompile="0,00015033564704936" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44713,3936822801" DateTimeCompile="0,000148738428833894" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
@@ -723,13 +737,14 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="92" SourceColumn="12"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
-					<CompileMessage MessageType="mtError" MessageText="Ожидалось имя выходного файла" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="4" SourceColumn="4"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="01.06.2022 9:25:45"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="01.06.2022 9:27:07"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<FileList>
-			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Src\1_OTHERS\PATs\4F\111\4F_zatr2022.PAT" PosX="60" PosY="243" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>
