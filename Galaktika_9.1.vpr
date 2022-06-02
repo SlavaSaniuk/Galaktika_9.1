@@ -725,6 +725,17 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectPackage>
+			<ProjectPackage Name="Resources">
+				<ProjectItems>
+					<ProjectFolder Name="F4FZ">
+						<ProjectItems>
+							<ProjectFile FileName="Src\2_Resources\F4FZ\f4fz.res"/>
+							<ProjectFile FileName="Src\2_Resources\F4FZ\Форма ввода 014.docx"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectCompileFile FileName="Src\2_Resources\Readme.txt.prj" Priority="0"/>
+				</ProjectItems>
+			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
 			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44713,3936822801" DateTimeCompile="0,000148738428833894" StateHistory="False">
@@ -744,7 +755,8 @@
 		</CompileMessengerList>
 		<FileList>
 			<File Name="Src\MS_SEL_BUY\ms_sell_buy.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Src\1_OTHERS\PATs\4F\111\4F_zatr2022.PAT" PosX="60" PosY="243" OpenEditor="True" Active="True"/>
+			<File Name="Src\1_OTHERS\PATs\4F\111\4F_zatr2022.PAT" PosX="60" PosY="243" OpenEditor="True"/>
+			<File Name="Src\2_Resources\Readme.txt.prj" PosX="9" PosY="2" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>
