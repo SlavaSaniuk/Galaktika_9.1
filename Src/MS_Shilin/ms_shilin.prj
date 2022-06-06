@@ -78,7 +78,9 @@
 #make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU\urep_ru.vip"
 #make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\RU\ru.vip"
 
-#make "D:\Work\Viper_Project\Temp\*.slk"
+// *** Перенесено в проект ms_os_nma
+//#make "D:\Work\Viper_Project\Temp\*.slk"
+
 // *** Перенесено в проект "ms_sell_buy"
 //#make "d:\01_DEV\Galaktika_9.1\Src\MS_Shilin\DO\Arenda\*.frm"
 
