@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>5</ActiveIndex>
+		<ActiveIndex>1</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -592,26 +592,6 @@
 					</ProjectFolder>
 				</ProjectItems>
 			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\ms_sell_buy_actUsl_crf.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.cnf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.crf"/>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\ms_sell_buy_Do_crf.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.cnf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.crf"/>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
 			<ProjectCompileFile FileName="Src\RU_OLD\ru_old.prj" Priority="0">
 				<ProjectItems>
 					<ProjectFile FileName="Src\RU_OLD\MyDlg_koef.vip"/>
@@ -626,21 +606,6 @@
 					<ProjectFile FileName="Src\RU_OLD\os_kart_balst_nov.vip"/>
 				</ProjectItems>
 			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\ms_sklad_naklVnPerem_crf.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.cnf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.crf"/>
-						</ProjectItems>
-					</ProjectFolder>
-					<ProjectFolder Name="Doc">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Doc\иземенения.jpg"/>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
 			<ProjectCompileFile FileName="Src\MS_OLD\ms_old.prj" Priority="0">
 				<ProjectItems>
 					<ProjectFolder Name="Vip">
@@ -653,36 +618,6 @@
 									<ProjectFile FileName="Src\MS_OLD\Vip\OS_Vorotilov\old_get4OS.vih"/>
 								</ProjectItems>
 							</ProjectFolder>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\ms_osnma_invBRTPC_crf.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.cnf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.crf"/>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\ms_sfo_kartUcheSfo.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.crf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.cnf"/>
-						</ProjectItems>
-					</ProjectFolder>
-				</ProjectItems>
-			</ProjectCompileFile>
-			<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\ms_sfo_otchNalNaBalanse_crf.prj" Priority="0">
-				<ProjectItems>
-					<ProjectFolder Name="Crf">
-						<ProjectItems>
-							<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.cnf"/>
-							<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.crf"/>
 						</ProjectItems>
 					</ProjectFolder>
 				</ProjectItems>
@@ -704,6 +639,71 @@
 							<ProjectFolder Name="Crf">
 								<ProjectItems>
 									<ProjectFile FileName="Src\0_CRF\ms_osnma_amortInv_crf\Crf\ms_osnma_amortInv_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\ms_sell_buy_actUsl_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_sell_buy_actUsl_crf\Crf\ms_sell_buy_actUsl_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\ms_sklad_naklVnPerem_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Crf\ms_sklad_naklVnPerem_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="Doc">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sklad_naklVnPerem_crf\Doc\иземенения.jpg"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\ms_osnma_invBRTPC_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_invBRTPC_crf\Crf\ms_osnma_invBRTPC_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\ms_sfo_otchNalNaBalanse_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_sfo_otchNalNaBalanse_crf\Crf\ms_sfo_otchNalNaBalanse_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\ms_sell_buy_Do_crf.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_sell_buy_Do_crf\Crf\ms_sell_buy_Do_crf.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\ms_sfo_kartUcheSfo.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.crf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_sfo_kartUcheSfo\Crf\ms_sfo_kartUcheSfo.cnf"/>
 								</ProjectItems>
 							</ProjectFolder>
 						</ProjectItems>
@@ -733,24 +733,33 @@
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectCompileFile FileName="Src\2_Resources\Readme.txt.prj" Priority="0"/>
+					<ProjectFolder Name="invCards">
+						<ProjectItems>
+							<ProjectFile FileName="Src\2_Resources\invCards\ms_osnma_invCardKrat_frm.frm"/>
+							<ProjectFile FileName="Src\2_Resources\invCards\ms_osnma_msInvCardFrm.res"/>
+						</ProjectItems>
+					</ProjectFolder>
 				</ProjectItems>
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_OSiNMA\ms_os_nma.prj" DateTimeStart="44718,652432037" DateTimeCompile="0,000172129628481343" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44719,4093747917" DateTimeCompile="0,000162245371029712" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Вы не обладаете правами для работы с выбранной базой данных.  Повторить попытку соединения?" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="Не найден компилятор VIP в ресурсе" SourceFileName="D:\01_DEV\Galaktika_9.1\Tmp\ресурсе" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="Компиляция прервана в результате ошибки процесса компиляции"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="06.06.2022 15:39:45"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="141" SourceColumn="98"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="202" SourceColumn="111"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="209" SourceColumn="105"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="92" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="07.06.2022 9:49:44"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
 		<BreakPointList>
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
-		<FileList>
-			<File Name="Src\MS_OSiNMA\ms_os_nma.prj" PosX="9" PosY="22" OpenEditor="True" Active="True"/>
-		</FileList>
 	</ProjectManager>
 </Viper>
