@@ -743,7 +743,7 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44719,4093747917" DateTimeCompile="0,000162245371029712" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44719,444464375" DateTimeCompile="0,000165254627063405" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
@@ -754,7 +754,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="07.06.2022 9:49:44"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="07.06.2022 10:40:16"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
