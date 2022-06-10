@@ -46,3 +46,8 @@ VipInterface RUZAT Licensed (Free);
 #define ComponentVersion
 #Component "MS_Saniuk"
 VipInterface ZarAlgorithm_GetSrKoef implements IZarAlgorithm Licensed (Free);
+
+#doc
+  Интерфейс, который ничего не делает.
+#end
+VipInterface Runner Licensed (Free);

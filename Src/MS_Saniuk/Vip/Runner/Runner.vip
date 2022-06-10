@@ -1,0 +1,6 @@
+#doc
+  Интерфейс, который ничего не делает.
+#end
+Interface Runner 'Интерфейс, который не смог' EscClose;
+  show at (0,0,170,32);
+End. // End of interface;

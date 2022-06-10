@@ -2,7 +2,7 @@
 <Viper Version="5005020000">
 	<ProjectManager>
 		<ProjectName>Galaktika_9.1</ProjectName>
-		<ActiveIndex>1</ActiveIndex>
+		<ActiveIndex>2</ActiveIndex>
 		<ProjectVarList>
 			<ProjectVar Name="$[GalExe]" Value="\\GAL_SERV9\GalSrv\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="D:\01_DEV\Galaktika_9.1\Tmp\"/>
@@ -403,6 +403,11 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="Runner">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\Runner\Runner.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectFile FileName="Src\MS_Saniuk\MS_Saniuk.vih"/>
@@ -761,5 +766,11 @@
 		<BreakPointList>
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
+		<FileList>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="25" PosY="50" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_Saniuk\Vip\Runner\Runner.vip" PosX="5" PosY="3" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Vip\Example\BrExp\BrExp.vip" PosX="3" PosY="4" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="1" PosY="50" OpenEditor="True"/>
+		</FileList>
 	</ProjectManager>
 </Viper>

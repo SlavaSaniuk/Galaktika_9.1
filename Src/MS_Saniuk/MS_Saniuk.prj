@@ -46,3 +46,5 @@
 #make "Vip\ActsDelZeros\ActsDelZeros.vip"
 
 #make "Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"
+
+#make "Vip\Runner\Runner.vip"
