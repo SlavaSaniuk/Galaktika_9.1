@@ -1,0 +1,32 @@
+#define ComponentVersion
+#Component "MS_Saniuk"
+
+Interface McsTabl;
+var
+  mcCount: Integer = 0; // MC Rec count;
+create view McsTable from Mcs Mcs1;
+
+procedure setMcNum(a_num : String); {
+  mcs1.mcNum := a_num;
+}
+
+function getMcNum(): String; {
+  getMcNum:= McsTable.mcs1.mcNum;
+}
+
+// ==========================================
+procedure insertRec(); {
+  McsTable.insert current Mcs1;
+  mcCount++;
+}
+
+procedure getNextRec(); {
+  McsTable.getNext Mcs1;
+}
+
+// ============================================
+function getSize(): Integer; {
+  getSize:=mcCount;
+}
+
+End.

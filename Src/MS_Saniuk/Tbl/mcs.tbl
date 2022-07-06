@@ -1,0 +1,17 @@
+table struct mcs
+(
+  mcNum: String,
+  mcName: String,
+  kauVed: String,
+  kauImp: String,
+  mcUnits: String,
+  mcPrice: String,
+  mcKol: String,
+  mcSum: String,
+  mcDep: String,
+  mcMol: String
+)
+with Index
+(
+  mcs01 = kauVed
+);

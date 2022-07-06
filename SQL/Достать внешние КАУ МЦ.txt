@@ -1,0 +1,1 @@
+SELECT SpKau.name, KauReff.ckau FROM SpKau WHERE KauReff.ckau = Comp(400120BCD56506B9h) and SpKau.nrec = KauReff.ckau;    

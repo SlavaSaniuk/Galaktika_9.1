@@ -1,0 +1,5 @@
+select * from vacations where cworkperiod=comp(0001000000000B37h);
+update VACATIONS where VACATIONS.nrec=comp(0001000000002614h) set CPUTVAC:=comp(00010000000011B3h), cworkperiod:=comp(0001000000000B36h);
+update VACATIONS where VACATIONS.nrec=comp(0001000000002615h) set CPUTVAC:=comp(00010000000011B5h), cworkperiod:=comp(0001000000000B36h);
+update VACATIONS where VACATIONS.nrec=comp(0001000000002616h) set CPUTVAC:=comp(00010000000011B4h), cworkperiod:=comp(0001000000000B36h);
+update FACTOTPUSK where nrec=comp(00010000000162C9h) set cworkperiod:=comp(0001000000000B36h);   

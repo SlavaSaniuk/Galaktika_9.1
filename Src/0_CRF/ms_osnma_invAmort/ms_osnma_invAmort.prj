@@ -1,0 +1,15 @@
+#param /linc:""
+#statusline "statgal"
+
+#include galnet.inc end;
+
+/**
+   В инентарной карточке учета ОС добавлены 2 поля:
+Срок исп. с учетом коэф.
+	'F_OS::KATOSS.WIEDITKATOS.KATOSSCR.DoubleToStr(SPKATOS.SROKISP*SPKATOS.POPRKOEF,'666666666.88')
+Оставший срок исп. с учетом коэф.
+	'F_OS::KATOSS.WIEDITKATOS.KATOSSCR.DoubleToStr(SPKATOS.SROKISP*SPKATOS.POPRKOEF-SPKATOS.ISPPS-SPKATOS.ISPCUR, '[|-]366666666.88')'
+
+*/
+
+#make "Crf\ms_osnma_invAmort.cnf" 

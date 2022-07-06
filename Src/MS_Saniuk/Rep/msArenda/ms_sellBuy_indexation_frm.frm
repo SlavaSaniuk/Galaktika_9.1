@@ -1,8 +1,8 @@
-.LinkForm 'ms_sellBuy_sfArenda2022_frm' Prototype is 'PRBDOC'
+.LinkForm 'ms_saniuk_indexation_frm' Prototype is 'PRBDOC'
 .Group 'Устаревшие формы (предоплата продаж)'
 .Group 'Устаревшие формы (продажа)'
 .Group 'Счет лесопользователя'
-.NameInList '2022 Счет(Аренда)'
+.NameInList '(МС) Счет - индексация'
 .f 'NUL'
 .var
   NrecOS:Comp
@@ -39,8 +39,21 @@
   executor_pname:String
   executor_tel:String
   executor_tel_last_nums:String
+  printIndexation: Integer
+  sPrintIndexation: String // Строковое представление вн. атр. печати индексации;
+  indexationParam: String // Вн. атр. услуги (параметр индексации);
+  indexationValue: Double // Сумма индексации;
+  isFactRashod: Boolean // Флаг фактических расходов;
+  factRashod: Double // Фактические расходы;
+  indexationKoef: Double // Коэффициент индексации;
+  arMergeRow: array [0..99] of Integer // Массив, содержащий строки с объед. ячейками;
+  arIter: Integer // Итератор по массиву;
+  arIterSt: Integer // Итератор по массиву 2;
+  //======================================
+  reportNote: String // Примечание;
+  isPrintReportNote: Boolean // Флаг печати примечания;
 .endvar
-.Create     view AppArenda
+.Create view AppArenda
 from
   BaseDoc
  ,StepDoc
@@ -55,60 +68,54 @@ from
  ,Kattar
  ,TRSTV
  ,tuneval, tuneval tuneval_fio, persons, appointments, catalogs
-where
-((
-    BaseDocNrec      == BaseDoc.nRec
-
-and Basedoc.nrec     == StepDoc.cBasedoc
-
-and StepDoc.nrec     == Spstep.cstepdoc
-
-and SpStep.nrec      == SpDocNal.CSPDOC
-and word(1201)       == SpDocNal.tipDoc
-
-and Basedoc.corg     == Katorg.nrec
-
-and Basedoc.Cdogovor == Dogovor.nrec
-
-and Dogovor.CCURPODR == Katpodr.nrec
-
-and SpStep.cmcusl    == KatUsl.nrec
-
-and Basedoc.cBank    == KatBankKontr.nrec
-
-// Получить исполнителя по дескриптору пользователя:
-and 184h == tuneval.ctune
-and BaseDoc.descr == tuneval.strval
-and 1 == tuneval_fio.obj
-and tuneval.cuser == tuneval_fio.cuser
-and 0001000000003EE1h == tuneval_fio.ctune
-and tuneval_fio.compval == persons.nrec
-
-// Получить должность исполнителя:
-and persons.appointcur == appointments.nrec
-and appointments.post  == catalogs.nrec
+where ((
+  BaseDocNrec      == BaseDoc.nRec
+  and Basedoc.nrec     == StepDoc.cBasedoc
+  and StepDoc.nrec     == Spstep.cstepdoc
+  and SpStep.nrec      == SpDocNal.CSPDOC
+  and word(1201)       == SpDocNal.tipDoc
+  and Basedoc.corg     == Katorg.nrec
+  and Basedoc.Cdogovor == Dogovor.nrec
+  and Dogovor.CCURPODR == Katpodr.nrec
+  and SpStep.cmcusl    == KatUsl.nrec
+  and Basedoc.cBank    == KatBankKontr.nrec
+  // Получить исполнителя по дескриптору пользователя:
+  and 184h == tuneval.ctune
+  and BaseDoc.descr == tuneval.strval
+  and 1 == tuneval_fio.obj
+  and tuneval.cuser == tuneval_fio.cuser
+  and 0001000000003EE1h == tuneval_fio.ctune
+  and tuneval_fio.compval == persons.nrec
+  // Получить должность исполнителя:
+  and persons.appointcur == appointments.nrec
+  and appointments.post  == catalogs.nrec
 ));
 .fields
 .endfields
 .begin
-PatchShablon:=StartPathName+'Xls\MS_RES\ms_sell_buy\ms_sf_arenda_2022.xlsx';
+PatchShablon:=StartPathName+'Xls\MS_RES\ms_saniuk\ms_sf_indexation.xltm';
 boRunReport:=true;
-if(not ExistFile(StartPathName+'Xls\MS_RES\ms_sell_buy\ms_sf_arenda_2022.xlsx'))
+if(not ExistFile(StartPathName+'Xls\MS_RES\ms_saniuk\ms_sf_indexation.xltm'))
   {
     message('По пути '+PatchShablon+' шаблон не обнаружен! Отчет не будет сформирован!');
     boRunReport:=false;
   }
-OpenMessageLog(GetDefaultUserPath+'CreateProtokolArenda.log',mfLog2Stream+mfNoTimeStamp);
+OpenMessageLog(GetDefaultUserPath+'CreateProtokolIndexation.log',mfLog2Stream+mfNoTimeStamp);
 RunInterface('MS_Shilin::GetPodpis', sNDov, sDDov, sFIO, sIOF, sDolzh, sFullName, persNRec);
 end.
 .{
 .begin
+// Инициализация переменных:
 NameOrg:='';
 totalSumBezNds:=0;
 totalNDS:=0;
 totalSumSNds:=0;
 iRowStart:=22;
 iNpp:=0;
+arIter:=0;
+isFactRashod:=false;
+isPrintReportNote:=true;
+// Конец инициализации переменных;
 if(boRunReport)
   {
   if(xlCreateExcelWithTemplate(PatchShablon,true))
@@ -128,7 +135,7 @@ if(boRunReport)
            xlSetCellStringValue(oKatOrgAttr.GetPostAddr(AppArenda.Katorg.nrec),12,2,12,9);
          }
 
-       writeMessageLog('Обработано ДО номер '+AppArenda.BaseDoc.NODOC+' от '+AppArenda.basedoc.DFORM+' контрагента '+NameOrg+'!');
+       //writeMessageLog('Обработано ДО номер '+AppArenda.BaseDoc.NODOC+' от '+AppArenda.basedoc.DFORM+' контрагента '+NameOrg+'!');
 
        if(AppArenda.getfirst KatBankKontr = tsok)
          {
@@ -138,7 +145,7 @@ if(boRunReport)
 
        if(AppArenda.getfirst Dogovor =tsok)
          {
-           xlSetCellStringValue('Дог. '+AppArenda.Dogovor.NODOC_EXT+' от '+AppArenda.Dogovor.DDOC+' г.',17,2,17,8);
+           xlSetCellStringValue('Дог. '+AppArenda.Dogovor.NODOC_EXT+' от '+DateToStr(AppArenda.Dogovor.DDOC,'DD.MM.YYYY')+' г.',17,2,17,8);
 
            if(AppArenda.getfirst Katpodr =tsok)
            {
@@ -152,10 +159,9 @@ if(boRunReport)
 
        //Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1)
 
-       if(AppArenda.getfirst StepDoc=tsok)
-         {
-           AppArenda._loop SpStep
-             {
+       if(AppArenda.getfirst StepDoc=tsok) {
+        // Цикл по спецификации ДО:
+        AppArenda._loop SpStep {
                datNezemnal:=date(0,0,0);
                NrecOS:=0;
                FormulaCalc:='';
@@ -165,53 +171,67 @@ if(boRunReport)
                ColumnRecordUsl_8:='';
                ColumnPrintUsl:='';
                KodTarif:='';
-               if(AppArenda.getfirst KatUsl = tsok)
-                 {
-                   if(iNpp<>0)
-                     {
-                       xlinsertRange(-4121,iRowStart,1,iRowStart,13);
-                     }
 
-                   xlSetCellStringValue(AppArenda.KatUsl.name,iRowStart,1,iRowStart,1);
+               // Получение текущей услуги из спецификации:
+               if(AppArenda.getfirst KatUsl = tsok) {
 
-                   NrecOS:=oAiExt.coGetAttr(coSpStep,SpStep.nrec,'ОС');
-                   //datNezemnal:=date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC))
-                   datNezemnal:=Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1);
+                // **** Проверка индексации услуги ****
+                printIndexation:=0; // Обнуление флага печати индексации;
+                sPrintIndexation:=''; // Обнуление строкового флага печати индексации;
+                sPrintIndexation:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_ПечатьИндексации');
+                if(length(sPrintIndexation)=0) printIndexation:=0;
+                else if(Boolean(sPrintIndexation)) printIndexation:=2;
+                else printIndexation:=1;
 
-                   ColumnRecordUsl_2:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_2');
+                // Если услуга индексации, то она не печатается:
+                if(printIndexation<>1) {
 
-                   if(length(ColumnRecordUsl_2)<>0)
-                     {
-                        if(AppArenda.getfirst ListPar where((ColumnRecordUsl_2 == ListPar.KATPARID
+                  // Вставить пустую строку
+                  if(iNpp<>0) xlInsertRange(-4121,iRowStart,1,iRowStart,13);
+
+
+                  // **** Колонка 1 (Наименование услуги) *****
+                  xlSetCellStringValue(AppArenda.KatUsl.name,iRowStart,1,iRowStart,1);
+                  // **** Конец колонка 1 (Наименование услуги) *****
+
+                  // **** Колонка 2 (Данные арендатора) *****
+                  NrecOS:=oAiExt.coGetAttr(coSpStep,SpStep.nrec,'ОС');
+                  datNezemnal:=Sub_Months(date(1,Month(AppArenda.BASEDOC.DDOC),Year(AppArenda.BASEDOC.DDOC)),1);
+
+                  ColumnRecordUsl_2:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_2');
+
+                  if(length(ColumnRecordUsl_2)<>0){
+                    if(AppArenda.getfirst ListPar where((ColumnRecordUsl_2 == ListPar.KATPARID
                                                         and  coSpStep          == ListPar.WTABLE
-                                                        and  SpStep.nrec       == ListPar.CDoc )) = tsok)
-                          {
+                                                        and  SpStep.nrec       == ListPar.CDoc )) = tsok){
                              xlSetCellStringValue(AppArenda.ListPar.Value,iRowStart,2,iRowStart,2);
-                          }
-                     }
+                  }}
+                  // **** Конец колонка 2 (Данные арендатора) *****
 
-                   // **** Столбец 8 (Тариф) ****
-                   ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_8'); // Код тарифа по услуге;
-                   if(substr(ColumnRecordUsl_8,1,5)='Тариф'){
-                     rate_code_by_service := oAiExt.sGetAttr(coSpStep,SpStep.nrec,'Код тарифа'); // Код тарифа по услуге из СФ
-                     if(length(rate_code_by_service)<>0){
+                  // **** Столбец 8 (Тариф) ****
+                  ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_8'); // Код тарифа по услуге;
+                  if(substr(ColumnRecordUsl_8,1,5)='Тариф'){
+                    rate_code_by_service := oAiExt.sGetAttr(coSpStep,SpStep.nrec,'Код тарифа'); // Код тарифа по услуге из СФ
+                    if(length(rate_code_by_service)<>0){
                         writeMessageLog('Код тарифа по услуге: ' +rate_code_by_service);
                         if(AppArenda.getfirst KatTar where ((rate_code_by_service == Kattar.ID))=tsok){
                             writeMessageLog('Код тарифа из KatTer: ' +KatTar.nrec);
                                 if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
-                                          xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
+                                          xlSetCellNumberValue(AppArenda.TRSTV.STAVKA,iRowStart,8,iRowStart,8);
                      }}} else if(AppArenda.getfirst Dogovor=tsok){ // Код тарифа по подразделению;
                         if(AppArenda.getfirst Katpodr =tsok){
                             writeMessageLog('Код тарифа по подразделению: ' +ColumnRecordUsl_8);
                             KodTarif:=oAiExt.sGetAttr(coKatpodr,Katpodr.nrec,ColumnRecordUsl_8);
                             if(AppArenda.getfirst KatTar where ((KodTarif == Kattar.ID))=tsok){
                                 if(AppArenda.getfirst TRSTV where ((Kattar.nrec ==  TRSTV.CKATTAR and datNezemnal >>= TRSTV.DOWND(noindex) and datNezemnal <<= TRSTV.UPD(noindex)))=tsok){
-                                    xlSetCellNumberValue(doubletostr(AppArenda.TRSTV.STAVKA,'666.88888'),iRowStart,8,iRowStart,8);
-                   // *** Код тарифа из данных арендатора ***
+                                    xlSetCellNumberValue(AppArenda.TRSTV.STAVKA,iRowStart,8,iRowStart,8);
+                   // *** Данные арендатора из Nezemnal ***
                    }}}}}else {
                       if(length(ColumnRecordUsl_8)<>0) {
                           if(getfirst Nezemnal where((ColumnRecordUsl_8 == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok) {
-                              xlSetCellNumberValue(AppArenda.NezemNal.KOEF3,iRowStart,8,iRowStart,8);
+                              isFactRashod:=true; // Установка флага фактических расходов;
+                              factRashod:=AppArenda.NezemNal.KOEF3;
+                              xlSetCellStringValue(DoubleToStr(factRashod, doubleSumToExcelString2dec),iRowStart,8,iRowStart,8);
                    }}}
                    // **** Конец столбца 8 (Тариф) ****
 
@@ -309,28 +329,76 @@ if(boRunReport)
                      }
                    xlSetCellNumberValue(Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2)+sumNDSmy,iRowStart,13,iRowStart,13);    //вывод
 
-                   totalSumBezNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2);
-                   totalNDS+=sumNDSmy;
-                   totalSumSNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2)+sumNDSmy;
-                   iRowStart++;
-                   iNpp++;
-                 }
-             }
-           xlSetCellNumberValue(totalSumBezNds,iRowStart,10,iRowStart,10);
-           xlSetCellNumberValue(totalNDS,iRowStart,12,iRowStart,12);
-           xlSetCellNumberValue(totalSumSNds,iRowStart,13,iRowStart,13);
+            // **********************************************************************
+            // Если услуга индексируемая, то печатать строку индексации по услуге:
+            if(printIndexation=2) {
+              iRowStart++;
+              xlinsertRange(-4121,iRowStart,1,iRowStart,13);
+              //xlMergeCells(iRowStart, 1, iRowStart, 13); // Объединить ячейки;
+              arIter++;
+              arMergeRow[arIter]:=iRowStart;
 
-           iRowStart:=iRowStart+2;
-           xlSetCellStringValue(DoubleToString(comp(0),totalNDS),iRowStart,2,iRowStart,13);
-           iRowStart:=iRowStart+2;
-           xlSetCellStringValue(DoubleToString(comp(0),totalSumSNds),iRowStart,1,iRowStart,13);
+              // Значение индексации:
+              indexationParam:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_ПараметрИндексации'); // Параметр индексации из вн. атр. услуги
+              if(getfirst Nezemnal where((indexationParam == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok)
+                indexationValue:=AppArenda.NezemNal.KOEF3;
+
+              // Коэффициент индексации:
+              indexationKoef:=(factRashod+indexationValue)/factRashod;
+
+              // Печать строки индексации:
+              xlSetCellStringValue('Коэффициент индексации = ('
+                +DoubleToStr(factRashod, doubleSumToExcelString2dec)
+                +' + ' +DoubleToStr(indexationValue, doubleSumToExcelString2dec)
+                +')/' +DoubleToStr(factRashod, doubleSumToExcelString2dec)
+                +'=' +DoubleToStr(indexationKoef, doubleSumToExcelString5dec) +': из них '
+                +DoubleToStr(factRashod, doubleSumToExcelString2dec) +' руб.коп. - фактические расходы по услуге, '
+                +DoubleToStr(indexationValue, doubleSumToExcelString2dec) +' руб.коп. - индексация по услуге.'
+                ,iRowStart, 1, iRowStart, 1);
+
+                // Если строка индексации печатается, то не печатать примечание:
+                isPrintReportNote:=false;
+              } // Конец печати услуги индексации;
+
+              iRowStart++;
+              iNpp++;
+
+              totalSumBezNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2);
+              totalNDS+=sumNDSmy;
+              totalSumSNds+=Round(AppArenda.SPSTEP.PRICE*AppArenda.SPSTEP.KOLSKL,2)+sumNDSmy;
+            } // Конец проверки печати услуги индексации;
+          } // Конец услуги из спецификации;
+          } // Конец цикла по спецификации ДО;
+
+          for(arIterSt:=1; arIterSt<arIter+1; arIterSt++) {
+            xlMergeCells(arMergeRow[arIterSt], 1, arMergeRow[arIterSt], 13); // Объединить ячейки;
+            xlSetRowHeight(15, arMergeRow[arIterSt], 1, arMergeRow[arIterSt], 1); // Объединить ячейки;
+          }
+
+
+          xlSetCellNumberValue(totalSumBezNds,iRowStart,10,iRowStart,10);
+          xlSetCellNumberValue(totalNDS,iRowStart,12,iRowStart,12);
+          xlSetCellNumberValue(totalSumSNds,iRowStart,13,iRowStart,13);
+
+          // *** Примечание ***
+          iRowStart++;
+          if(isPrintReportNote) {
+            reportNote:='Примечание: коэффициент индексации = (фактические расходы по услуге арендодателя + индексация по услуге арендодателя) / фактические расходы по услуге арендодателя';
+            xlSetCellStringValue(reportNote,iRowStart,1,iRowStart,1);
+          }
+
+          iRowStart++;
+          xlSetCellStringValue(DoubleToString(comp(0),totalNDS),iRowStart,2,iRowStart,13);
+          iRowStart:=iRowStart+2;
+          xlSetCellStringValue(DoubleToString(comp(0),totalSumSNds),iRowStart,1,iRowStart,13);
          }
         writeMessageLog(' ');
-      }
+      } // Конец прохода по ДО (BaseDoc)
+
+      // **** ФИО и должность подписанта: ****
       iRowStart:=iRowStart+2;
       xlSetCellStringValue(sDolzh,iRowStart,1,iRowStart,1);
-
-      iRowStart:=iRowStart+1;
+      iRowStart++;
       xlSetCellStringValue(sIOF,iRowStart,2,iRowStart,2);
 
       // **** ФИО и должность исполнителя: ****
@@ -385,6 +453,6 @@ end.
 .begin
   xlKillExcel;
   CloseMessageLog;
-  processText(GetDefaultUserPath+'CreateProtokolArenda.log',vfEscable+vfMacroSize,'Лог формирования счета аренды');
+  processText(GetDefaultUserPath+'CreateProtokolIndexation.log',vfEscable+vfMacroSize,'Лог формирования счета индексации');
 end.
 .endform

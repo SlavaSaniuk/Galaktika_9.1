@@ -1,0 +1,18 @@
+create table D_SKLAD.KatMcVed2 "Временная таблица для МЦ - ВЭД"
+  using "KatMcVed.dat"
+  component MS_Saniuk
+  with table_code = 31501 (
+    nrec: comp "Номер записи",
+    mcNum: String[20] "Номенклатурный номер МЦ",
+    mcName: String[240] "Наименование МЦ",
+    mcVed: String[240] "ВЭД МЦ",
+    mcImport: String[40] "Импортное происхождение МЦ",
+    mcMu: String[10] "Единица измерения МЦ",
+    mcPrice: Double "Цена МЦ",
+    mcKolvo: Double "Количество по МЦ",
+    mcSum: Double "Сумма по МЦ",
+    mcDep: String[100] "Подразделение МЦ",
+    mcMol: String[100] "МОЛ МЦ"
+  ) with index (
+    KatMcVed101 = nrec(unique, surrogate)
+);

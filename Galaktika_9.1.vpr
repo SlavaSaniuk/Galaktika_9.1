@@ -408,12 +408,48 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\Runner\Runner.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="McsTabl">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\McsTabl\McsTabl.vip"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="nalichieMc">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Vip\nalichieMc\KatMcVed.gcd"/>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectFile FileName="Src\MS_Saniuk\MS_Saniuk.vih"/>
-					<ProjectFolder Name="Vih">
+					<ProjectFolder Name="Rep">
 						<ProjectItems>
-							<ProjectFile FileName="Src\MS_Saniuk\Vih\ActsDelZeros.vih"/>
+							<ProjectFolder Name="nalichieMc">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Rep\nalichieMc\ms_sklad_nalichieMcVed_slk.slk"/>
+									<ProjectFile FileName="Src\MS_Saniuk\Rep\nalichieMc\ms_sklad_nalichieMcVed_frm.frm"/>
+									<ProjectFile FileName="Src\MS_Saniuk\Rep\nalichieMc\ms_sklad_nalichieMcVedExcel.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+							<ProjectFolder Name="msArenda">
+								<ProjectItems>
+									<ProjectFile FileName="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Tbl">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_Saniuk\Tbl\mcs.tbl"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Lot">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_Saniuk\Lot\katmcved.lot"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Inc">
+						<ProjectItems>
+							<ProjectFile FileName="Src\MS_Saniuk\Inc\ms_saniuk.inc"/>
 						</ProjectItems>
 					</ProjectFolder>
 				</ProjectItems>
@@ -713,6 +749,16 @@
 							</ProjectFolder>
 						</ProjectItems>
 					</ProjectCompileFile>
+					<ProjectCompileFile FileName="Src\0_CRF\ms_osnma_invAmort\ms_osnma_invAmort.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFolder Name="Crf">
+								<ProjectItems>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_invAmort\Crf\ms_osnma_invAmort.cnf"/>
+									<ProjectFile FileName="Src\0_CRF\ms_osnma_invAmort\Crf\ms_osnma_invAmort.crf"/>
+								</ProjectItems>
+							</ProjectFolder>
+						</ProjectItems>
+					</ProjectCompileFile>
 				</ProjectItems>
 			</ProjectPackage>
 			<ProjectPackage Name="Others">
@@ -748,18 +794,9 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_SEL_BUY\ms_sell_buy.prj" DateTimeStart="44719,444464375" DateTimeCompile="0,000165254627063405" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44748,6575548958" DateTimeCompile="0,00018815971998265" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2021ParametersMD_frm.frm" SourceLine="202" SourceColumn="109"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="131" SourceColumn="101"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="141" SourceColumn="98"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="202" SourceColumn="111"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArenda2022_frm.frm" SourceLine="209" SourceColumn="105"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="92" SourceColumn="12"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение типа с возможной потерей точности (ShortString -&gt; AnsiChar)" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfElEnergy2022_rtf.rtf" SourceLine="102" SourceColumn="12"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\SF\ms_sellBuy_sfArendaAms2021_rtf.rtf" SourceLine="93" SourceColumn="54"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Приведение строки к числу" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SEL_BUY\FRM\ACTS\ms_sellBuy_actUslugMsUnitsPodpis_rtf.rtf" SourceLine="150" SourceColumn="49"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="07.06.2022 10:40:16"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="06.07.2022 15:47:09"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -767,10 +804,8 @@
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="25" PosY="50" OpenEditor="True" Active="True"/>
-			<File Name="Src\MS_Saniuk\Vip\Runner\Runner.vip" PosX="5" PosY="3" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Vip\Example\BrExp\BrExp.vip" PosX="3" PosY="4" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.vih" PosX="1" PosY="50" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="23" PosY="17" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="22" PosY="390" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

@@ -1,0 +1,22 @@
+#info Создание структуры таблицы "Amort" 
+Create Table D_USER.KatMcVed "Временная МЦ - ВЭД"
+  With Table_CODE = 31600
+  With Replace
+(
+	nrec	: comp 		  "Номер записи"
+,   mcNum	: String[20]  "Номенклатурный номер МЦ"
+,   mcName  : String[240] "Наименование МЦ"
+,   mcVed	: String[240] "ВЭД МЦ"
+,   mcImport: String[40]  "Импортное происхождение МЦ"
+,   mcMu	: String[10]  "Единица измерения МЦ"
+,   mcPrice	: Double 	  "Цена МЦ"
+,   mcKolvo : Double 	  "Количество по МЦ"
+,   mcSum	: Double 	  "Сумма по МЦ"
+,   mcDep	: String[100] "Подразделение МЦ"
+,   mcMol	: String[100] "МОЛ МЦ"
+)
+With Index
+(
+  KatMcVed01  =  Nrec(Unique, Surrogate)
+, KatMcVed02  =  mcVed + mcImport + mcDep
+);

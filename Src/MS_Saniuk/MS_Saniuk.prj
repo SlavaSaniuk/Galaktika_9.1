@@ -8,12 +8,13 @@
 #include galaktika.vil
 #include ZarAlg.vih
 #include MS_Saniuk.vih
-#include ActsDelZeros.vih
 #include SanFuncs.vih
 #include Sdfuns.vih
 #include KatSoprFunc.vih
 #include KatSoprFunc.var
-
+#include KatOrgAttr.vih
+//#include katmcved.lot
+#include ms_saniuk.inc
 
 /* ************************************************
  * *** Разные наработки Санюка В.В. ***************
@@ -48,3 +49,11 @@
 #make "Vip\ZarAlgorithm_KolvoStavok\ZarAlgorithm_KolvoStavok.vip"
 
 #make "Vip\Runner\Runner.vip"
+
+// ************************************************************************
+// ****************** Отчеты **********************************************
+// ***************** Наличие МЦ с ВЭД *************************************
+//#make "Rep\nalichieMc\ms_sklad_nalichieMcVed_frm.frm"
+//#make "Rep\nalichieMc\ms_sklad_nalichieMcVed_slk.slk"
+#make "Rep\nalichieMc\ms_sklad_nalichieMcVedExcel.frm"
+#make "Rep\msArenda\ms_sellBuy_indexation_frm.frm"
