@@ -413,11 +413,6 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Vip\McsTabl\McsTabl.vip"/>
 								</ProjectItems>
 							</ProjectFolder>
-							<ProjectFolder Name="nalichieMc">
-								<ProjectItems>
-									<ProjectFile FileName="Src\MS_Saniuk\Vip\nalichieMc\KatMcVed.gcd"/>
-								</ProjectItems>
-							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectFile FileName="Src\MS_Saniuk\MS_Saniuk.vih"/>
@@ -430,7 +425,7 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Rep\nalichieMc\ms_sklad_nalichieMcVedExcel.frm"/>
 								</ProjectItems>
 							</ProjectFolder>
-							<ProjectFolder Name="msArenda">
+							<ProjectFolder Name="msIndexation">
 								<ProjectItems>
 									<ProjectFile FileName="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm"/>
 								</ProjectItems>
@@ -794,9 +789,9 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44748,6575548958" DateTimeCompile="0,00018815971998265" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44754,3784825694" DateTimeCompile="0,000267430557869375" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtEndCompile" MessageText="06.07.2022 15:47:09"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="12.07.2022 9:05:24"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -804,8 +799,8 @@
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="23" PosY="17" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="22" PosY="390" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="86" PosY="10" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>
