@@ -1,0 +1,6 @@
+SELECT * FROM FactOtpusk WHERE FactOtpusk.nrec = Comp(0001000000015052h);
+SELECT * FROM Vacations WHERE cfactotpusk = Comp(0001000000015052h);
+SELECT * FROM PutVacation WHERE nrec = Comp(0001000000000DAFh);
+UPDATE Vacations WHERE Vacations.nrec = Comp(0001000000001D73h) SET FACTYEARBEG:=Date(07,01,2021), FACTYEAREND:=Date(11,01,2021), Duration:=5;
+DELETE Vacations WHERE nrec = Comp(0001000000001D72h);
+DELETE PutVacation WHERE nrec = Comp(0001000000000DAFh); 

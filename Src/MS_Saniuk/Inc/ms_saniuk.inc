@@ -3,4 +3,8 @@ const
   doubleSumToExcelString5dec: string = '[|-]3666666666666666666,88888';
 
   doubleToStrWoDec: string = '[|-]3666666666666666666';
+
+  // ======= Отчет "индексация" =======
+  indexationParameterFactRashod: string = 'СчФакт_ПараметрФактРас';
+
 end;

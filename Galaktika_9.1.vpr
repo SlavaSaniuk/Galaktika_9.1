@@ -804,12 +804,13 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44756,6603071759" DateTimeCompile="0,000178935188159812" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44757,5922040741" DateTimeCompile="0,000203333329409361" StateHistory="False">
 				<CompileMessageList>
+					<CompileMessage MessageType="mtError" MessageText="Нет такой функции, поля или метода : ACTRASHOD" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSARENDA\ms_sellBuy_indexation_frm.frm" SourceLine="261" SourceColumn="32"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="148" SourceColumn="36"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="149" SourceColumn="34"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="154" SourceColumn="34"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.07.2022 15:51:06"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.07.2022 14:13:04"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -817,7 +818,9 @@
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="46" PosY="38" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="44" PosY="24" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="24" PosY="261" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_Saniuk\Inc\ms_saniuk.inc" PosX="44" PosY="8" OpenEditor="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

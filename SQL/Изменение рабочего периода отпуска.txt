@@ -2,4 +2,21 @@ select * from vacations where cworkperiod=comp(0001000000000B37h);
 update VACATIONS where VACATIONS.nrec=comp(0001000000002614h) set CPUTVAC:=comp(00010000000011B3h), cworkperiod:=comp(0001000000000B36h);
 update VACATIONS where VACATIONS.nrec=comp(0001000000002615h) set CPUTVAC:=comp(00010000000011B5h), cworkperiod:=comp(0001000000000B36h);
 update VACATIONS where VACATIONS.nrec=comp(0001000000002616h) set CPUTVAC:=comp(00010000000011B4h), cworkperiod:=comp(0001000000000B36h);
-update FACTOTPUSK where nrec=comp(00010000000162C9h) set cworkperiod:=comp(0001000000000B36h);   
+update FACTOTPUSK where nrec=comp(00010000000162C9h) set cworkperiod:=comp(0001000000000B36h);
+
+
+SELECT * FROM FactOtpusk WHERE FactOtpusk.nrec = Comp(0001000000015052h);
+SELECT * FROM Vacations WHERE cfactotpusk = Comp(0001000000015052h);
+SELECT * FROM PutVacation WHERE nrec = Comp(0001000000000DAEh);
+
+UPDATE Vacations WHERE Vacations.nrec = Comp(0001000000001D72h) SET FACTYEARBEG:=Date(07,01,2021), FACTYEAREND:=Date(11,01,2021), Duration:=5;   
+
+
+SELECT * FROM FactOtpusk WHERE FactOtpusk.nrec = Comp(0001000000015052h);
+SELECT * FROM Vacations WHERE cfactotpusk = Comp(0001000000015052h);
+
+// UPDATE Vacations WHERE Vacations.nrec = Comp(0001000000001D73h) SET FACTYEARBEG:=Date(07,01,2021), FACTYEAREND:=Date(11,01,2021), Duration:=5;
+// DELETE Vacations WHERE nrec = Comp(0001000000001D72h);
+
+SELECT * FROM PutVacation WHERE nrec = Comp(0001000000000DAFh);
+DELETE PutVacation WHERE nrec = Comp(0001000000000DAFh);      

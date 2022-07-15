@@ -1,6 +1,6 @@
 /**
   Отчёт "(МС) Счет - индексация" работает по следующему признаку:
-  Вся спецификация ДО перебирается в цикле. У каждой перебираемой услуге, есть 2 внешних атрибута:
+  Вся спецификация ДО перебирается в цикле. У каждой перебираемой услуге, есть 3 внешних атрибута:
   1) СчФакт_ПечатьИндексации {Признак} - который может принимать значения: "ДА" - услуга индексируется, то
 есть под услугой при печати будет строка индексации, "НЕТ" - услуга вообще не будет печататься
 (Для услуг индексации), не заполнен - услуга печатается как обычно.
@@ -11,6 +11,8 @@
  - ФР_ВодоснИндекс_Руб - для индексируемых услуг по водоснабжению;
  - ФР_ВодоотвИндекс_Руб - для индексируемых услуг по водоотведению;
  - ФР_ЭлектрИндекс_Руб - для индексируемых услуг по электроснабжению.
+  3)СчФакт_ПараметрФактРас - параметр расчета для фактических расходов (используется, для получения
+фактических расходов по услугам по тарифу).
 */
 .LinkForm 'ms_saniuk_indexation_frm' Prototype is 'PRBDOC'
 .Group 'Устаревшие формы (предоплата продаж)'
@@ -66,6 +68,9 @@
   //======================================
   reportNote: String // Примечание;
   isPrintReportNote: Boolean // Флаг печати примечания;
+  //======================================
+  isFactRashodByTarif: Boolean // Флаг факт. расходов по тарифу (Если услуга по тарифу);
+  factRashodByTarifParam: String // Параметр факт. расходов по тарифу;
 .endvar
 .Create view AppArenda
 from
@@ -196,6 +201,7 @@ if(boRunReport)
                 if(length(sPrintIndexation)=0) printIndexation:=0;
                 else if(Boolean(sPrintIndexation)) printIndexation:=2;
                 else printIndexation:=1;
+                isFactRashodByTarif:=false; // Обнуление флага факт. расходов по тарифу;
 
                 // Если услуга индексации, то она не печатается:
                 if(printIndexation<>1) {
@@ -224,7 +230,9 @@ if(boRunReport)
 
                   // **** Столбец 8 (Тариф) ****
                   ColumnRecordUsl_8:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_Колонка_8'); // Код тарифа по услуге;
+                  factRashodByTarifParam:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec, indexationParameterFactRashod); // Параметр факт. расходов по тарифу;
                   if(substr(ColumnRecordUsl_8,1,5)='Тариф'){
+                    isFactRashodByTarif:=true; // Установка флага взятия факт расходов по тарифу;
                     rate_code_by_service := oAiExt.sGetAttr(coSpStep,SpStep.nrec,'Код тарифа'); // Код тарифа по услуге из СФ
                     if(length(rate_code_by_service)<>0){
                         writeMessageLog('Код тарифа по услуге: ' +rate_code_by_service);
@@ -242,11 +250,16 @@ if(boRunReport)
                    // *** Данные арендатора из Nezemnal ***
                    }}}}}else {
                       if(length(ColumnRecordUsl_8)<>0) {
-                          if(getfirst Nezemnal where((ColumnRecordUsl_8 == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok) {
-                              isFactRashod:=true; // Установка флага фактических расходов;
-                              factRashod:=AppArenda.NezemNal.KOEF3;
-                              xlSetCellStringValue(DoubleToStr(factRashod, doubleSumToExcelString2dec),iRowStart,8,iRowStart,8);
+                        if(getfirst Nezemnal where((ColumnRecordUsl_8 == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok) {
+                          factRashod:=AppArenda.NezemNal.KOEF3;
+                          xlSetCellStringValue(DoubleToStr(factRashod, doubleSumToExcelString2dec),iRowStart,8,iRowStart,8);
                    }}}
+
+                   // Взятия факт расходов по тарифу:
+                   if(isFactRashodByTarif) {
+                    if(getfirst Nezemnal where((factRashodByTarifParam == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok)
+                      factRashod:=AppArenda.NezemNal.KOEF3;
+                   }
                    // **** Конец столбца 8 (Тариф) ****
 
                    ColumnRecordUsl_3_7:=oAiExt.sGetAttr(coKatUsl,KatUsl.nrec,'СчФакт_ПорядокКолонок_3_7');
@@ -348,7 +361,6 @@ if(boRunReport)
             if(printIndexation=2) {
               iRowStart++;
               xlinsertRange(-4121,iRowStart,1,iRowStart,13);
-              //xlMergeCells(iRowStart, 1, iRowStart, 13); // Объединить ячейки;
               arIter++;
               arMergeRow[arIter]:=iRowStart;
 
