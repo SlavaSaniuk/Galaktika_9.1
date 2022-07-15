@@ -369,18 +369,21 @@ if(boRunReport)
               if(getfirst Nezemnal where((indexationParam == NezemNal.param and NrecOS == NezemNal.cOS and datNezemnal == NezemNal.DataN))= tsok)
                 indexationValue:=AppArenda.NezemNal.KOEF3;
 
-              // Коэффициент индексации:
-              indexationKoef:=(factRashod+indexationValue)/factRashod;
-
               // Печать строки индексации:
-              xlSetCellStringValue('Коэффициент индексации = ('
-                +DoubleToStr(factRashod, doubleSumToExcelString2dec)
-                +' + ' +DoubleToStr(indexationValue, doubleSumToExcelString2dec)
-                +')/' +DoubleToStr(factRashod, doubleSumToExcelString2dec)
-                +'=' +DoubleToStr(indexationKoef, doubleSumToExcelString5dec) +': из них '
-                +DoubleToStr(factRashod, doubleSumToExcelString2dec) +' руб.коп. - фактические расходы по услуге, '
-                +DoubleToStr(indexationValue, doubleSumToExcelString2dec) +' руб.коп. - индексация по услуге.'
-                ,iRowStart, 1, iRowStart, 1);
+              if(factRashod <> 0) {
+                // Коэффициент индексации:
+                indexationKoef:=(factRashod+indexationValue)/factRashod;
+
+                xlSetCellStringValue('Коэффициент индексации = ('
+                  +DoubleToStr(factRashod, doubleSumToExcelString2dec)
+                  +' + ' +DoubleToStr(indexationValue, doubleSumToExcelString2dec)
+                  +')/' +DoubleToStr(factRashod, doubleSumToExcelString2dec)
+                  +'=' +DoubleToStr(indexationKoef, doubleSumToExcelString5dec) +': из них '
+                  +DoubleToStr(factRashod, doubleSumToExcelString2dec) +' руб.коп. - фактические расходы по услуге, '
+                  +DoubleToStr(indexationValue, doubleSumToExcelString2dec) +' руб.коп. - индексация по услуге.'
+                  ,iRowStart, 1, iRowStart, 1);
+              }else xlSetCellStringValue('Коэффициент индексации = 1.',iRowStart, 1, iRowStart, 1);
+
 
                 // Если строка индексации печатается, то не печатать примечание:
                 isPrintReportNote:=false;
