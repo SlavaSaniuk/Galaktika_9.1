@@ -430,6 +430,21 @@
 									<ProjectFile FileName="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm"/>
 								</ProjectItems>
 							</ProjectFolder>
+							<ProjectFolder Name="msTransport">
+								<ProjectItems>
+									<ProjectFolder Name="uchet-gsm">
+										<ProjectItems>
+											<ProjectFile FileName="Src\MS_Saniuk\Rep\msTransport\uchet-gsm\kart-ucheta-rash-topl.rtf"/>
+											<ProjectFile FileName="Src\MS_Saniuk\Rep\msTransport\uchet-gsm\kart-ucheta-rash-topl.frm"/>
+										</ProjectItems>
+									</ProjectFolder>
+									<ProjectFolder Name="svedenija-po-gsm">
+										<ProjectItems>
+											<ProjectFile FileName="Src\MS_Saniuk\Rep\msTransport\svedenija-po-gsm\otchet-po-gsm-itogoviy.rtf"/>
+										</ProjectItems>
+									</ProjectFolder>
+								</ProjectItems>
+							</ProjectFolder>
 						</ProjectItems>
 					</ProjectFolder>
 					<ProjectFolder Name="Tbl">
@@ -614,9 +629,9 @@
 							</ProjectFolder>
 							<ProjectFolder Name="uchet_gsm">
 								<ProjectItems>
-									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUcheRashToplWMotachasMS_rtf.rtf"/>
 									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUchetVRazbAvto_rtf.rtf"/>
 									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUchetVRazbAvtoWSpg_rtf.rtf"/>
+									<ProjectFile FileName="Src\MS_TRANSPORT\Frm\uchet_gsm\ms_transport_kartUcheRashToplWMotachasMS_rtf.rtf"/>
 								</ProjectItems>
 							</ProjectFolder>
 						</ProjectItems>
@@ -789,9 +804,12 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44754,3784825694" DateTimeCompile="0,000267430557869375" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44756,6603071759" DateTimeCompile="0,000178935188159812" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtEndCompile" MessageText="12.07.2022 9:05:24"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="148" SourceColumn="36"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="149" SourceColumn="34"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="154" SourceColumn="34"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="14.07.2022 15:51:06"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -799,8 +817,7 @@
 			<BreakPoint FileName="Src\MS_Saniuk\Vip\RepDogAll\RepDogAll.vip" Line="1621"/>
 		</BreakPointList>
 		<FileList>
-			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="86" PosY="10" OpenEditor="True" Active="True"/>
+			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="46" PosY="38" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>

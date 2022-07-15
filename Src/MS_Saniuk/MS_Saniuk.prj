@@ -13,7 +13,6 @@
 #include KatSoprFunc.vih
 #include KatSoprFunc.var
 #include KatOrgAttr.vih
-//#include katmcved.lot
 #include ms_saniuk.inc
 
 /* ************************************************
@@ -53,7 +52,12 @@
 // ************************************************************************
 // ****************** Отчеты **********************************************
 // ***************** Наличие МЦ с ВЭД *************************************
-//#make "Rep\nalichieMc\ms_sklad_nalichieMcVed_frm.frm"
-//#make "Rep\nalichieMc\ms_sklad_nalichieMcVed_slk.slk"
 #make "Rep\nalichieMc\ms_sklad_nalichieMcVedExcel.frm"
+
 #make "Rep\msArenda\ms_sellBuy_indexation_frm.frm"
+
+// ***************** Карточка учета расхода топлива ***********************
+#make "Rep\msTransport\uchet-gsm\kart-ucheta-rash-topl.rtf"
+
+// ***************** (МС) Отчет по ГСМ (Итоговый) *************************
+#make "Rep\msTransport\svedenija-po-gsm\otchet-po-gsm-itogoviy.rtf"
