@@ -67,26 +67,15 @@
   arIterSt: Integer // Итератор по массиву 2;
   //======================================
   reportNote: String // Примечание;
-  isPrintReportNote: Boolean // Флаг печати примечания;
+  isPrintReportNote: Boolean // Флаг печати примечания (!!!НЕ ИСПОЛЬЗУЕТСЯ, ПОЭТОМУ ВСЕГДА FALSE!!!);
   //======================================
   isFactRashodByTarif: Boolean // Флаг факт. расходов по тарифу (Если услуга по тарифу);
   factRashodByTarifParam: String // Параметр факт. расходов по тарифу;
 .endvar
 .Create view AppArenda
 from
-  BaseDoc
- ,StepDoc
- ,SpStep
- ,Katorg
- ,KatUsl
- ,SpDocNal
- ,KatBank KatBankKontr
- ,Nezemnal
- ,ListPar
- ,Katpodr
- ,Kattar
- ,TRSTV
- ,tuneval, tuneval tuneval_fio, persons, appointments, catalogs
+  BaseDoc, StepDoc, SpStep, Katorg, KatUsl, SpDocNal,KatBank KatBankKontr, Nezemnal, ListPar,
+  Katpodr, Kattar, TRSTV, tuneval, tuneval tuneval_fio, persons, appointments, catalogs
 where ((
   BaseDocNrec      == BaseDoc.nRec
   and Basedoc.nrec     == StepDoc.cBasedoc
@@ -133,7 +122,7 @@ iRowStart:=22;
 iNpp:=0;
 arIter:=0;
 isFactRashod:=false;
-isPrintReportNote:=true;
+isPrintReportNote:=false; // (!!!НЕ ИСПОЛЬЗУЕТСЯ, ПОЭТОМУ ВСЕГДА FALSE!!!)
 // Конец инициализации переменных;
 if(boRunReport)
   {
@@ -386,7 +375,7 @@ if(boRunReport)
 
 
                 // Если строка индексации печатается, то не печатать примечание:
-                isPrintReportNote:=false;
+                isPrintReportNote:=false; // (!!!НЕ ИСПОЛЬЗУЕТСЯ, ПОЭТОМУ ВСЕГДА FALSE!!!)
               } // Конец печати услуги индексации;
 
               iRowStart++;
@@ -411,7 +400,7 @@ if(boRunReport)
 
           // *** Примечание ***
           iRowStart++;
-          if(isPrintReportNote) {
+          if(isPrintReportNote) { // (!!!НЕ ИСПОЛЬЗУЕТСЯ, ПОЭТОМУ ВСЕГДА FALSE!!!)
             reportNote:='Примечание: коэффициент индексации = (фактические расходы по услуге арендодателя + индексация по услуге арендодателя) / фактические расходы по услуге арендодателя';
             xlSetCellStringValue(reportNote,iRowStart,1,iRowStart,1);
           }

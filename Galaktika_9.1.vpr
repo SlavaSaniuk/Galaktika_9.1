@@ -804,12 +804,12 @@
 			</ProjectPackage>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44757,6085706366" DateTimeCompile="0,000306678237393498" StateHistory="False">
+			<CompileMessenger Name="D:\01_DEV\Galaktika_9.1\Src\MS_Saniuk\MS_Saniuk.prj" DateTimeStart="44757,6098636458" DateTimeCompile="0,000182650459464639" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="148" SourceColumn="36"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="149" SourceColumn="34"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\01_DEV\GALAKTIKA_9.1\SRC\MS_SANIUK\REP\MSTRANSPORT\UCHET-GSM\kart-ucheta-rash-topl.rtf" SourceLine="154" SourceColumn="34"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="15.07.2022 14:36:47"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.07.2022 14:38:28"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -818,8 +818,7 @@
 		</BreakPointList>
 		<FileList>
 			<File Name="Src\MS_Saniuk\MS_Saniuk.prj" PosX="44" PosY="24" OpenEditor="True"/>
-			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="31" PosY="373" OpenEditor="True" Active="True"/>
-			<File Name="Src\MS_Saniuk\Inc\ms_saniuk.inc" PosX="66" PosY="8" OpenEditor="True"/>
+			<File Name="Src\MS_Saniuk\Rep\msArenda\ms_sellBuy_indexation_frm.frm" PosX="83" PosY="407" OpenEditor="True" Active="True"/>
 		</FileList>
 	</ProjectManager>
 </Viper>
